@@ -1,0 +1,1 @@
+This classes are purposed to used in Arduino to make proto-type of smart meter and direct communication with actual smart meter. Hense, all network and transport layers are relied on zigbee protocol.
