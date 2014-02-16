@@ -1,4 +1,4 @@
-#include "c1222.h"
+#include "C1222.h"
 #include "Utils.hpp"
 
 #include <iostream>
@@ -13,7 +13,7 @@
 /**
  * packet methods
  */
-c1222_packet::c1222_packet(char * called_ap, char * called_id,
+C1222_packet::C1222_packet(char * called_ap, char * called_id,
         char * calling_ap, char * calling_id, void * data, int len)
 {
     this->called_ap = called_ap;
@@ -56,7 +56,7 @@ c1222_packet::c1222_packet(char * called_ap, char * called_id,
  * ----------------------------------------------------
  *
  */
-c1222_packet& 
+C1222_packet& 
 parse(void * data)
 {
     byte * ptr = (byte *)data;
@@ -67,11 +67,11 @@ parse(void * data)
 }
 
 /**
- * build c1222 packet and return pointer
+ * build C1222 packet and return pointer
  *
  */ 
 void *
-c1222_packet::build()
+C1222_packet::build()
 {
 
 
@@ -101,7 +101,7 @@ c1222_packet::build()
  * return request raw data 
  */
 void *
-c1222_request::build()
+C1222_request::build()
 {
     return raw;
 }
@@ -112,7 +112,7 @@ c1222_request::build()
  * in order to prevent memory leak
  */
 void
-c1222_request::clear()
+C1222_request::clear()
 {
     delete raw;
 }
@@ -123,7 +123,7 @@ c1222_request::clear()
  * Header : 0x20
  */
 void
-c1222_request::identify()
+C1222_request::identify()
 {
     this->raw = new byte[1];
     this->request_num = '\x20';
@@ -144,7 +144,7 @@ c1222_request::identify()
  * @param octcount  octet count number (only for parital read 0x3F)
  */
 void 
-c1222_request::read(const byte* tableid, const byte* offset, 
+C1222_request::read(const byte* tableid, const byte* offset, 
         const byte* octcount)
 {
     this->request_num = '\x30';
@@ -170,7 +170,7 @@ c1222_request::read(const byte* tableid, const byte* offset,
  * @param data      typically byte array of table data 
  */
 void
-c1222_request::write(const byte * tableid, const byte * offset, 
+C1222_request::write(const byte * tableid, const byte * offset, 
         const byte * octcount, void * data)
 {
 
@@ -187,7 +187,7 @@ c1222_request::write(const byte * tableid, const byte * offset,
  * @param timeout          request session idle timeout (0 is forever) (word16)
  */
 void
-c1222_request::logon(const byte * user_id_code, const byte * id, 
+C1222_request::logon(const byte * user_id_code, const byte * id, 
         const byte * timeout)
 {
 
@@ -196,14 +196,14 @@ c1222_request::logon(const byte * user_id_code, const byte * id,
 /**
  * Security request
  * Detail : provide security to change table access privilege or auth
- * Note   : this request is not security mechanism for c1222 protocol 
+ * Note   : this request is not security mechanism for C1222 protocol 
  * Header : 0x51
  *
  * @param passwd        password (20bytes fixed)
  * @param user_id_code  user identification code
  */
 void 
-c1222_request::security(const byte * passwd, const byte * user_id_code)
+C1222_request::security(const byte * passwd, const byte * user_id_code)
 {
 
 }
@@ -214,7 +214,7 @@ c1222_request::security(const byte * passwd, const byte * user_id_code)
  * Header : 0x52
  */
 void
-c1222_request::logoff(void)
+C1222_request::logoff(void)
 {
 
 }
@@ -227,20 +227,20 @@ c1222_request::logoff(void)
  * Header : 0x21
  */
 void
-c1222_request::terminate(void)
+C1222_request::terminate(void)
 {
 
 }
 
 /**
  * Disconnect request
- * Detail : remove c1222 node from c1222 network 
+ * Detail : remove C1222 node from C1222 network 
  *          in order to execute this, initiator must have write access
  *          permission to Procedure 25 NETWORK_INTERFACE_CONTROL_PROC
  * Header : 0x22
  */
 void
-c1222_request::disconnect(void)
+C1222_request::disconnect(void)
 {
 
 }
@@ -253,16 +253,16 @@ c1222_request::disconnect(void)
  * @param interval wait period in seconds 
  */
 void
-c1222_request::wait(const byte interval)
+C1222_request::wait(const byte interval)
 {
 
 }
 
 /**
  * Registration request
- * Detail : add and keep routing table entries of c1222 relays active
- * Note   : to be part of c1222 network, node must send request to one 
- *          of c1222 master relays. * this request is carried as following
+ * Detail : add and keep routing table entries of C1222 relays active
+ * Note   : to be part of C1222 network, node must send request to one 
+ *          of C1222 master relays. * this request is carried as following
  *
  *          <ACSE-PDU> with
  *          <calling ap title> ap title of registering node
@@ -272,7 +272,7 @@ c1222_request::wait(const byte interval)
  *          neighbor relay to send message back to this node) 
  *
  *          Master relay sends a copy of registration to all notification
- *          hosts and all c1222 auth hosts that need to be notified 
+ *          hosts and all C1222 auth hosts that need to be notified 
  * Header : 0x27
  *
  * @param node_type identification of node's attribute (byte)
@@ -303,7 +303,7 @@ c1222_request::wait(const byte interval)
  *                      between successful re-reg request (default 0) (word24)
  */
 void
-c1222_request::registration(const byte node_type, const byte conn_type,
+C1222_request::registration(const byte node_type, const byte conn_type,
         const byte * device_class, const byte * ap_title, 
         const byte * serial_num, const byte addr_len, const byte * native_addr,
         const byte * reg_period)
@@ -313,7 +313,7 @@ c1222_request::registration(const byte node_type, const byte conn_type,
 
 /**
  * Deregistration request
- * Detail : remove routing table entries of c1222 relay, master relay 
+ * Detail : remove routing table entries of C1222 relay, master relay 
  *          and all notification hosts
  *
  * Header : 0x24
@@ -321,15 +321,15 @@ c1222_request::registration(const byte node_type, const byte conn_type,
  * @param ap_title aptitle of deregister device 
  */
 void
-c1222_request::deregistration(const byte * ap_title)
+C1222_request::deregistration(const byte * ap_title)
 {
 
 }
 
 /**
  * Resolve request
- * Detail : retrieve the native address of c1222 node, this address is used
- *          to communicate directly with other c1222 node in same network
+ * Detail : retrieve the native address of C1222 node, this address is used
+ *          to communicate directly with other C1222 node in same network
  * Note   : this also can be used to retrieve list of addresses relay by 
  *          not providing called ap title and calling ap title (optional)
  * Header : 0x25
@@ -337,14 +337,14 @@ c1222_request::deregistration(const byte * ap_title)
  * @param ap_title aptitle of requested node 
  */
 void
-c1222_request::resolve(const byte * ap_title)
+C1222_request::resolve(const byte * ap_title)
 {
 
 }
 
 /**
  * Trace request
- * Detail : retrieve the list of c1222 relays that have forwarded c1222 
+ * Detail : retrieve the list of C1222 relays that have forwarded C1222 
  *          message to a target node. 
  * Note   : each time relay receives this request, it adds its own aptitle
  *          to the list in User information element and forward it to next
@@ -355,7 +355,7 @@ c1222_request::resolve(const byte * ap_title)
  * @param aptitle called aptitle (target)
  */
 void
-c1222_request::trace(const byte * ap_title)
+C1222_request::trace(const byte * ap_title)
 {
 
 }
@@ -368,13 +368,13 @@ c1222_request::trace(const byte * ap_title)
  * ======================================================================== */
 
 void *
-c1222_response::build(void)
+C1222_response::build(void)
 {
     return raw;
 }
 
 void 
-c1222_response::clear(void)
+C1222_response::clear(void)
 {
     delete raw;
 }
@@ -393,7 +393,7 @@ c1222_response::clear(void)
  * @param rev binary representation of standard version right of decimal pts
  */
 void
-c1222_response::identify(const byte res, const byte std, const byte ver,
+C1222_response::identify(const byte res, const byte std, const byte ver,
         const byte rev)
 {
 
@@ -404,7 +404,7 @@ c1222_response::identify(const byte res, const byte std, const byte ver,
  *
  */
 void 
-c1222_response::read(const byte res, const byte * count, const byte * data,
+C1222_response::read(const byte res, const byte * count, const byte * data,
         const byte chksum)
 {
 
@@ -415,7 +415,7 @@ c1222_response::read(const byte res, const byte * count, const byte * data,
  *
  */
 void
-c1222_response::write(const byte res)
+C1222_response::write(const byte res)
 {
 
 }
@@ -427,7 +427,7 @@ c1222_response::write(const byte res)
  * @param timeout   seconds to be idle before termination (word16)
  */
 void
-c1222_response::logon(const byte res, const byte * timeout)
+C1222_response::logon(const byte res, const byte * timeout)
 {
 
 }
@@ -438,7 +438,7 @@ c1222_response::logon(const byte res, const byte * timeout)
  * @param res       response state
  */
 void
-c1222_response::security(const byte res)
+C1222_response::security(const byte res)
 {
 
 }
@@ -449,7 +449,7 @@ c1222_response::security(const byte res)
  * @param res       response state
  */
 void
-c1222_response::logoff(const byte res)
+C1222_response::logoff(const byte res)
 {
 
 }
@@ -460,7 +460,7 @@ c1222_response::logoff(const byte res)
  * @param res       response state
  */
 void
-c1222_response::terminate(const byte res)
+C1222_response::terminate(const byte res)
 {
 
 }
@@ -471,7 +471,7 @@ c1222_response::terminate(const byte res)
  * @param res       response state
  */
 void
-c1222_response::disconnect(const byte res)
+C1222_response::disconnect(const byte res)
 {
 
 }
@@ -482,7 +482,7 @@ c1222_response::disconnect(const byte res)
  * @param res       response state
  */
 void
-c1222_response::wait(const byte res)
+C1222_response::wait(const byte res)
 {
 
 }
@@ -497,7 +497,7 @@ c1222_response::wait(const byte res)
  * @param info      Node info about connection type (see Reg. request)
  */
 void
-c1222_response::registration(const byte res, const byte * ap_title,
+C1222_response::registration(const byte res, const byte * ap_title,
         const byte * delay, const byte * period, const byte info)
 {
 
@@ -509,7 +509,7 @@ c1222_response::registration(const byte res, const byte * ap_title,
  * @param res       response state
  */
 void
-c1222_response::deregistration(const byte res)
+C1222_response::deregistration(const byte res)
 {
 
 }
@@ -522,7 +522,7 @@ c1222_response::deregistration(const byte res)
  * @param addr      local address of requested aptitle
  */
 void
-c1222_response::resolve(const byte res, const byte addr_len, const byte * addr)
+C1222_response::resolve(const byte res, const byte addr_len, const byte * addr)
 {
 
 }

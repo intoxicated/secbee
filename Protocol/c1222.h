@@ -9,19 +9,19 @@ typedef unsigned char byte;
 /**
  * EPSEM format representation class
  */
-class c1222 {
+class C1222 {
     virtual void * build() = 0;
 };
 
 /**
  * C1222 packet representation 
  */
-class c1222_packet : public c1222 {
+class C1222_packet : public C1222 {
     public:
-        c1222_packet(char * called_ap, char * called_id, 
+        C1222_packet(char * called_ap, char * called_id, 
             char * calling_ap, char * calling_id, void * data, int len);
         void * build();
-        friend c1222_packet& parse(void * data);
+        friend C1222_packet& parse(void * data);
     
     private:
         void * data;
@@ -34,15 +34,15 @@ class c1222_packet : public c1222 {
  * epsem format representation
  *
  */
-class c1222_epsem : public c1222{
+class C1222_epsem : public C1222{
     public:
-        c1222_epsem(void * data, int e_class);
+        C1222_epsem(void * data, int e_class);
 
         int getType();
         bool getFlags(int flag);
         void * build();
 
-        friend c1222_epsem& epsem_parse(void * data);
+        friend C1222_epsem& epsem_parse(void * data);
 
     private:
         void * e_data; 
@@ -53,10 +53,10 @@ class c1222_epsem : public c1222{
 /**
  * ACSE format representation class
  */
-class c1222_acse : public c1222 {
+class C1222_acse : public C1222 {
     public:
         void * build();
-        friend c1222_acse& acse_parse(void * data);
+        friend C1222_acse& acse_parse(void * data);
 
     private:
         char * calling_ap_invo;
@@ -65,7 +65,7 @@ class c1222_acse : public c1222 {
 /**
  * C1222 request representation class
  */
-class c1222_request : public c1222 {
+class C1222_request : public C1222 {
     public:
         void * build();
         void clear();
@@ -125,7 +125,7 @@ class c1222_request : public c1222 {
 #define RES_SGNP    '\x11' //segment not possible
 
 
-class c1222_response : public c1222 {
+class C1222_response : public C1222 {
     public:
         void * build(void);
         void clear(void);
