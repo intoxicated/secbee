@@ -3,11 +3,11 @@
 
 #include <iostream>
 
-/* ======================================================================================= *
- *                                                                                         *
- *                                   C1222 packet class                                    *  
- *                                                                                         *
- * ======================================================================================= */
+/* ======================================================================== *
+ *                                                                          *
+ *                            C1222 packet class                            *  
+ *                                                                          *
+ * ======================================================================== */
 
 
 /**
@@ -79,25 +79,25 @@ c1222_packet::build()
 
 
 
-/* ======================================================================================= *
- *                                                                                         *
- *                                   ACSE class                                            *  
- *                                                                                         *
- * ======================================================================================= */
+/* ========================================================================= *
+ *                                                                           *
+ *                                 ACSE class                                *  
+ *                                                                           *
+ * ========================================================================= */
 
 
-/* ======================================================================================= *
- *                                                                                         *
- *                                   EPSEM class                                           *  
- *                                                                                         *
- * ======================================================================================= */
+/* ========================================================================= *
+ *                                                                           *
+ *                                EPSEM class                                *  
+ *                                                                           *
+ * ========================================================================= */
 
 
-/* ======================================================================================= *
- *                                                                                         *
- *                                   Request class                                         *  
- *                                                                                         *
- * ======================================================================================= */
+/* ========================================================================= *
+ *                                                                           *
+ *                               Request class                               *  
+ *                                                                           *
+ * ========================================================================= */
 
 /** 
  * return request raw data 
@@ -152,7 +152,8 @@ c1222_request::read(const byte* tableid, const byte* offset,
     this->request_num = '\x30';
     byte  table_id[] = "\x00\x01"; //should use paramter later
    
-    //offset and octcount should be used for other than full read (i.e partial read)
+    //offset and octcount should be used for other 
+    //than full read (i.e partial read)
     //
     this->raw = new byte[3]; //for now full read 
 
@@ -327,12 +328,34 @@ c1222_request::deregistration(const byte * ap_title)
 
 }
 
+/**
+ * Resolve request
+ * Detail : retrieve the native address of c1222 node, this address is used
+ *          to communicate directly with other c1222 node in same network
+ * Note   : this also can be used to retrieve list of addresses relay by 
+ *          not providing called ap title and calling ap title (optional)
+ * Header : 0x25
+ *
+ * @param ap_title aptitle of requested node 
+ */
 void
 c1222_request::resolve(const byte * ap_title)
 {
 
 }
 
+/**
+ * Trace request
+ * Detail : retrieve the list of c1222 relays that have forwarded c1222 
+ *          message to a target node. 
+ * Note   : each time relay receives this request, it adds its own aptitle
+ *          to the list in User information element and forward it to next
+ *          When it reaches target node, it includes its aptitle and send 
+ *          ok response with it to requesting node. 
+ * Header : 0x26
+ *
+ * @param aptitle called aptitle (target)
+ */
 void
 c1222_request::trace(const byte * ap_title)
 {

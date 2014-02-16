@@ -109,8 +109,9 @@ class c1222_request : public c1222 {
 };
 
 class c1222_response : public c1222 {
-    void * build();
-    void clear();
-
-    //response methods
+    public:
+        void * build();
+        void clear();
+    
+        //response methods
 };
