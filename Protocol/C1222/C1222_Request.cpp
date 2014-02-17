@@ -53,8 +53,8 @@ C1222_request::identify()
  * @param octcount  octet count number (only for parital read 0x3F)
  */
 void 
-C1222_request::read(const byte* tableid, const byte* offset, 
-        const byte* octcount)
+C1222_request::read(const byte * tableid, const byte * offset, 
+        const byte * octcount)
 {
     this->request_num = '\x30';
     byte  table_id[] = "\x00\x01"; //should use paramter later
