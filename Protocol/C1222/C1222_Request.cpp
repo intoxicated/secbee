@@ -61,8 +61,10 @@ C1222_request::read(const byte * tableid, const byte * offset,
    
     //offset and octcount should be used for other 
     //than full read (i.e partial read)
-    //
+    
     this->raw = new byte[3]; //for now full read 
+    this->raw[0] = this->request_num;
+    memcpy(raw+1, table_id, 2);
 
 }
 
@@ -125,7 +127,8 @@ C1222_request::security(const byte * passwd, const byte * user_id_code)
 void
 C1222_request::logoff(void)
 {
-
+    this->raw = new byte[1];
+    this->raw[0] = '\x52';
 }
 
 /**
@@ -151,7 +154,8 @@ C1222_request::terminate(void)
 void
 C1222_request::disconnect(void)
 {
-
+    this->raw = new byte[1];
+    this->raw[0] = '\x22';
 }
 
 /** 
@@ -164,7 +168,9 @@ C1222_request::disconnect(void)
 void
 C1222_request::wait(const byte interval)
 {
-
+    this->raw = new byte[2];
+    this->raw[0] = '\x70';
+    this->raw[1] = internal;
 }
 
 /**
