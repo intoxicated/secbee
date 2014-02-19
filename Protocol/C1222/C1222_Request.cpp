@@ -6,11 +6,15 @@
 
 
 #include "C1222_Request.h"
+#include <sstream>
+
+using namespace std;
+
 /** 
  * return request raw data 
  */
 void *
-C1222_request::build()
+C1222_Request::build()
 {
     return raw;
 }
@@ -21,7 +25,7 @@ C1222_request::build()
  * in order to prevent memory leak
  */
 void
-C1222_request::clear()
+C1222_Request::clear()
 {
     delete raw;
 }
@@ -32,11 +36,11 @@ C1222_request::clear()
  * Header : 0x20
  */
 void
-C1222_request::identify()
+C1222_Request::identify()
 {
     this->raw = new byte[1];
     this->request_num = '\x20';
-
+   
     this->raw[0] = this->request_num;
 }
 
@@ -53,7 +57,7 @@ C1222_request::identify()
  * @param octcount  octet count number (only for parital read 0x3F)
  */
 void 
-C1222_request::read(const byte* tableid, const byte* offset, 
+C1222_Request::read(const byte* tableid, const byte* offset, 
         const byte* octcount)
 {
     this->request_num = '\x30';
@@ -63,7 +67,6 @@ C1222_request::read(const byte* tableid, const byte* offset,
     //than full read (i.e partial read)
     //
     this->raw = new byte[3]; //for now full read 
-
 }
 
 /**
@@ -79,7 +82,7 @@ C1222_request::read(const byte* tableid, const byte* offset,
  * @param data      typically byte array of table data 
  */
 void
-C1222_request::write(const byte * tableid, const byte * offset, 
+C1222_Request::write(const byte * tableid, const byte * offset, 
         const byte * octcount, void * data)
 {
 
@@ -91,15 +94,42 @@ C1222_request::write(const byte * tableid, const byte * offset,
  * Note   : userid may be logged in target device if C1222 node 
  * Header : 0x50
  *
- * @param user_id_code     user identification code  (word16)
- * @aaram id               user identification (10 bytes)
- * @param timeout          request session idle timeout (0 is forever) (word16)
+ * @param user_id          user identification code  (2 bytes)
+ * @aaram usernmae         user identification (10 bytes)
+ * @param timeout          request session idle timeout (0 is forever) (2 bytes)
  */
 void
-C1222_request::logon(const byte * user_id_code, const byte * id, 
-        const byte * timeout)
+C1222_Request::logon(const unsigned short user_id, const string username, 
+        const unsigned short timeout)
 {
+    char uname[10];
+    this->request_num = '\x50';
+    this->raw = new byte[15];
 
+    //validation of input
+    if(username.length() > 10)
+        std::out_of_range("Request(Logon): out of range");
+
+    //add header
+    this->raw[0] = this->request_num;
+    
+    //add userid
+    std::stringstream sstream;
+    sstream << std::hex << user_id;
+    std::string ustr = sstream.str();
+    memcpy(this->raw + 1, ustr.c_str(), 2);
+
+    //padding username to 10 bytes 
+    memcpy(uname, username.c_str(), username.length());
+    for(int i = 0; i < (10 - username.length()); i++)
+        memcpy(uname+i, "\x20", 1);
+    //add username
+    memcpy(this->raw + 3, uname, 10);
+
+    //add timeout
+    sstream << std::hex << timeout;
+    std::string tstr = sstream.str();
+    memcpy(this->raw + 13, tstr.c_str(), 2);
 }
 
 /**
@@ -112,9 +142,29 @@ C1222_request::logon(const byte * user_id_code, const byte * id,
  * @param user_id_code  user identification code
  */
 void 
-C1222_request::security(const byte * passwd, const byte * user_id_code)
+C1222_Request::security(const string passwd, const unsigned short user_id)
 {
+    if(passwd.length() > 20)
+        std::out_of_range("Request(security): passwd out of range");
 
+    char pw[20];
+
+    this->request_num = '\x51';
+    this->raw = new byte[23];
+
+    //add header
+    this->raw[0] = this->request_num;
+
+    //add password
+    memcpy(pw, passwd.c_str(), passwd.length());
+    for(int i = 0; i < (20 - passwd.length()); i++)
+        memcpy(pw+i, "\x20", 1);
+   
+    //add userid
+    std::stringstream sstream;
+    sstream << std::hex << user_id;
+    std::string ustr = sstream.str();
+    memcpy(this->raw + 21, ustr.c_str(), 2);
 }
 
 /**
@@ -123,9 +173,12 @@ C1222_request::security(const byte * passwd, const byte * user_id_code)
  * Header : 0x52
  */
 void
-C1222_request::logoff(void)
+C1222_Request::logoff(void)
 {
-
+    this->raw = new byte[1];
+    this->request_num = '\x52';
+    
+    this->raw[0] = this->request_num;
 }
 
 /**
@@ -136,9 +189,12 @@ C1222_request::logoff(void)
  * Header : 0x21
  */
 void
-C1222_request::terminate(void)
+C1222_Request::terminate(void)
 {
-
+    this->raw = new byte[1];
+    this->request_num = '\x21';
+    
+    this->raw[0] = this->request_num;
 }
 
 /**
@@ -149,9 +205,12 @@ C1222_request::terminate(void)
  * Header : 0x22
  */
 void
-C1222_request::disconnect(void)
+C1222_Request::disconnect(void)
 {
-
+    this->raw = new byte[1];
+    this->request_num = '\x22';
+    
+    this->raw[0] = this->request_num;
 }
 
 /** 
@@ -162,9 +221,13 @@ C1222_request::disconnect(void)
  * @param interval wait period in seconds 
  */
 void
-C1222_request::wait(const byte interval)
+C1222_Request::wait(const byte interval)
 {
-
+    this->raw = new byte[2];
+    this->request_num = '\x70';
+    
+    this->raw[0] = this->request_num;
+    this->raw[1] = interval;
 }
 
 /**
@@ -212,7 +275,7 @@ C1222_request::wait(const byte interval)
  *                      between successful re-reg request (default 0) (word24)
  */
 void
-C1222_request::registration(const byte node_type, const byte conn_type,
+C1222_Request::registration(const byte node_type, const byte conn_type,
         const byte * device_class, const byte * ap_title, 
         const byte * serial_num, const byte addr_len, const byte * native_addr,
         const byte * reg_period)
@@ -230,7 +293,7 @@ C1222_request::registration(const byte node_type, const byte conn_type,
  * @param ap_title aptitle of deregister device 
  */
 void
-C1222_request::deregistration(const byte * ap_title)
+C1222_Request::deregistration(const byte * ap_title)
 {
 
 }
@@ -246,7 +309,7 @@ C1222_request::deregistration(const byte * ap_title)
  * @param ap_title aptitle of requested node 
  */
 void
-C1222_request::resolve(const byte * ap_title)
+C1222_Request::resolve(const byte * ap_title)
 {
 
 }
@@ -264,7 +327,11 @@ C1222_request::resolve(const byte * ap_title)
  * @param aptitle called aptitle (target)
  */
 void
-C1222_request::trace(const byte * ap_title)
+C1222_Request::trace(const string ap_title)
 {
-
+    this->raw = new byte[1+ap_title.length()];
+    this->request_num = '\x26';
+    
+    this->raw[0] = this->request_num;
+    memcpy(this->raw + 1, ap_title.c_str(), ap_title.length());
 }

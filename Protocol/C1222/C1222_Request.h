@@ -7,6 +7,9 @@
 #ifndef __C1222_REQUEST_H__
 #define __C1222_REQUEST_H__
 
+#include "C1222.h"
+#include <string>
+
 class C1222_Request : public C1222 {
     public:
         void * build();
@@ -18,8 +21,8 @@ class C1222_Request : public C1222 {
         
         void logoff(void);
         
-        void logon(const byte * user_id_code, const byte * id, 
-                const byte * timeout);
+        void logon(const unsigned short user_id, const std::string username, 
+                const unsigned short timeout);
 
         void write(const byte * tableid, const byte * offset,
                 const byte * octcount, void * data);
@@ -31,7 +34,7 @@ class C1222_Request : public C1222 {
         
         void terminate(void);
         
-        void security(const byte * passwd, const byte * user_id_code);
+        void security(const std::string passwd, const unsigned short user_id);
         
         void resolve(const byte * ap_title);
         
@@ -42,7 +45,7 @@ class C1222_Request : public C1222 {
 
         void deregistration(const byte * ap_title);
         
-        void trace(const byte * ap_title);
+        void trace(const std::string ap_title);
 
     private:
         byte request_num;
