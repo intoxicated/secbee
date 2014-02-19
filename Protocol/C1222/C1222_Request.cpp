@@ -57,16 +57,27 @@ C1222_Request::identify()
  * @param octcount  octet count number (only for parital read 0x3F)
  */
 void 
+<<<<<<< HEAD
 C1222_Request::read(const byte* tableid, const byte* offset, 
         const byte* octcount)
+=======
+C1222_request::read(const byte * tableid, const byte * offset, 
+        const byte * octcount)
+>>>>>>> 1f3f87e46e76f3e6ebb4b9602e00f386321ef52e
 {
     this->request_num = '\x30';
     byte  table_id[] = "\x00\x01"; //should use paramter later
    
     //offset and octcount should be used for other 
     //than full read (i.e partial read)
-    //
+    
     this->raw = new byte[3]; //for now full read 
+<<<<<<< HEAD
+=======
+    this->raw[0] = this->request_num;
+    memcpy(raw+1, table_id, 2);
+
+>>>>>>> 1f3f87e46e76f3e6ebb4b9602e00f386321ef52e
 }
 
 /**
@@ -176,9 +187,13 @@ void
 C1222_Request::logoff(void)
 {
     this->raw = new byte[1];
+<<<<<<< HEAD
     this->request_num = '\x52';
     
     this->raw[0] = this->request_num;
+=======
+    this->raw[0] = '\x52';
+>>>>>>> 1f3f87e46e76f3e6ebb4b9602e00f386321ef52e
 }
 
 /**
@@ -208,9 +223,13 @@ void
 C1222_Request::disconnect(void)
 {
     this->raw = new byte[1];
+<<<<<<< HEAD
     this->request_num = '\x22';
     
     this->raw[0] = this->request_num;
+=======
+    this->raw[0] = '\x22';
+>>>>>>> 1f3f87e46e76f3e6ebb4b9602e00f386321ef52e
 }
 
 /** 
@@ -224,10 +243,15 @@ void
 C1222_Request::wait(const byte interval)
 {
     this->raw = new byte[2];
+<<<<<<< HEAD
     this->request_num = '\x70';
     
     this->raw[0] = this->request_num;
     this->raw[1] = interval;
+=======
+    this->raw[0] = '\x70';
+    this->raw[1] = internal;
+>>>>>>> 1f3f87e46e76f3e6ebb4b9602e00f386321ef52e
 }
 
 /**
@@ -329,9 +353,13 @@ C1222_Request::resolve(const byte * ap_title)
 void
 C1222_Request::trace(const string ap_title)
 {
+<<<<<<< HEAD
     this->raw = new byte[1+ap_title.length()];
     this->request_num = '\x26';
     
     this->raw[0] = this->request_num;
     memcpy(this->raw + 1, ap_title.c_str(), ap_title.length());
+=======
+
+>>>>>>> 1f3f87e46e76f3e6ebb4b9602e00f386321ef52e
 }
