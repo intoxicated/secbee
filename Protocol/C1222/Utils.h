@@ -9,28 +9,28 @@
 
 #include <stdint.h>
 
-int ber_len_size(int n);
+int ber_len_size(long n);
 
-int ber_len_encode(void * ptr, int len, int mx);
+int ber_len_encode(void * ptr, long len, int mx);
 
-int ber_len_decode(void * ptr, void * buffer);
+long ber_len_decode(void * ptr);
 
-int ber_uid_encode(void * ptr, int len);
+long ber_uid_encode(void * ptr, int len);
 
-int ber_uid_decode(void * tpr, void * buffer);
+long ber_uid_decode(void * tpr, void * buffer);
 
-int checksum(void * ptr, int offset, int len);
-
-
+long checksum(void * ptr, int offset, int len);
 
 
-int ber_uid_encode(void * ptr, int len)
+
+
+long ber_uid_encode(void * ptr, int len)
 {
 
     return 0;
 }
 
-int ber_uid_decode(void * tpr, void * buffer)
+long ber_uid_decode(void * tpr, void * buffer)
 {
 
     return 0;
@@ -42,7 +42,7 @@ int ber_uid_decode(void * tpr, void * buffer)
  * @param length
  * @return BER length 
  */
-int ber_len_size(int n)
+int ber_len_size(long n)
 {
     int len = 1; //byte length
     if(n > 0x7f) len ++;
@@ -62,7 +62,7 @@ int ber_len_size(int n)
  *
  * @return length of ber encoding 
  */
-int ber_len_encode(void * ptr, int len, int mx)
+int ber_len_encode(void * ptr, long len, int mx)
 {
     int berlen = ber_len_size(len);
     int ret = 0; 
@@ -90,10 +90,12 @@ int ber_len_encode(void * ptr, int len, int mx)
  * @param ptr bar encoded buffer
  * @return actual length 
  * */
-int ber_len_decode(void * data)
+long ber_len_decode(void * data)
 {
     uint8_t * bptr = (uint8_t *)data;
-    int ret = 0, size = 0;
+    
+    long ret = 0; 
+    int size = 0;
     
     if(*bptr <= 0x7f)
         ret |= *bptr;
