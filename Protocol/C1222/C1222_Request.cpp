@@ -6,6 +6,7 @@
 
 
 #include "C1222_Request.h"
+
 #include <sstream>
 
 using namespace std;
@@ -57,7 +58,7 @@ C1222_Request::identify()
  * @param octcount  octet count number (only for parital read 0x3F)
  */
 void 
-C1222_Request::read(const byte* tableid, const byte* offset, 
+C1222_Request::read(const unsigned short tableid, const byte* offset, 
         const byte* octcount)
 {
     this->request_num = '\x30';
@@ -82,7 +83,7 @@ C1222_Request::read(const byte* tableid, const byte* offset,
  * @param data      typically byte array of table data 
  */
 void
-C1222_Request::write(const byte * tableid, const byte * offset, 
+C1222_Request::write(const unsigned short tableid, const byte * offset, 
         const byte * octcount, void * data)
 {
 
@@ -276,7 +277,7 @@ C1222_Request::wait(const byte interval)
  */
 void
 C1222_Request::registration(const byte node_type, const byte conn_type,
-        const byte * device_class, const byte * ap_title, 
+        const byte * device_class, const string ap_title, 
         const byte * serial_num, const byte addr_len, const byte * native_addr,
         const byte * reg_period)
 {
@@ -293,7 +294,7 @@ C1222_Request::registration(const byte node_type, const byte conn_type,
  * @param ap_title aptitle of deregister device 
  */
 void
-C1222_Request::deregistration(const byte * ap_title)
+C1222_Request::deregistration(const string ap_title)
 {
 
 }
@@ -302,16 +303,23 @@ C1222_Request::deregistration(const byte * ap_title)
  * Resolve request
  * Detail : retrieve the native address of C1222 node, this address is used
  *          to communicate directly with other C1222 node in same network
+ *          This request is carried calling ap title and called ap title with
+ *          in ACSE 
  * Note   : this also can be used to retrieve list of addresses relay by 
  *          not providing called ap title and calling ap title (optional)
  * Header : 0x25
  *
- * @param ap_title aptitle of requested node 
+ * @param ap_title aptitle of target node 
  */
 void
-C1222_Request::resolve(const byte * ap_title)
+C1222_Request::resolve(const string ap_title)
 {
+    //universal identifier encoding encode aptitle with ber
+    this->raw = new byte[1+ap_title.length()];
+    this->request_num = '\x25';
 
+    this->raw[0] = this->request_num;
+    memcpy(this->raw + 1, ap_title.c_str(), ap_title.length());
 }
 
 /**
@@ -329,6 +337,7 @@ C1222_Request::resolve(const byte * ap_title)
 void
 C1222_Request::trace(const string ap_title)
 {
+    //aptitle encoding
     this->raw = new byte[1+ap_title.length()];
     this->request_num = '\x26';
     
