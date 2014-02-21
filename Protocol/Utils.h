@@ -9,19 +9,19 @@
 
 #include <stdint.h>
 
-int ber_len_size(long n);
+int ber_len_size(int n);
 
-int ber_len_encode(void * ptr, long len, int mx);
+int ber_len_encode(void * ptr, int len, int mx);
 
-long ber_len_decode(void * ptr);
+int ber_len_decode(void * ptr, int * size);
 
-long ber_uid_encode(void * ptr, int len);
+int ber_uid_encode(void * ptr, int len);
 
-long ber_uid_decode(void * tpr, void * buffer);
+uint8_t * ber_uid_decode(void * data, int * size);
 
-long checksum(void * ptr, int offset, int len);
+int checksum(void * ptr, int offset, int len);
 
-void copy_to(long dst, void * source, int len); 
+void copy_to(int dst, void * source, int len); 
 
 /**
  * Called AP title element
@@ -66,7 +66,7 @@ void copy_to(long dst, void * source, int len);
  *
  */
 
-long ber_uid_encode(void * ptr, int len)
+int ber_uid_encode(void * ptr, int len)
 {
 
     return 0;
@@ -77,7 +77,7 @@ long ber_uid_encode(void * ptr, int len)
  *
  * 
  */
-long ber_uid_decode(void * tpr, void * buffer)
+uint8_t * ber_uid_decode(void * data, int& size)
 {
     
     return 0;
@@ -89,7 +89,7 @@ long ber_uid_decode(void * tpr, void * buffer)
  * @param length
  * @return BER length 
  */
-int ber_len_size(long n)
+int ber_len_size(int n)
 {
     int len = 1; //byte length
     if(n > 0x7f) len ++;
@@ -109,7 +109,7 @@ int ber_len_size(long n)
  *
  * @return length of ber encoding 
  */
-int ber_len_encode(void * ptr, long len, int mx)
+int ber_len_encode(void * ptr, int len, int mx)
 {
     int berlen = ber_len_size(len);
     int ret = 0; 
@@ -138,11 +138,11 @@ int ber_len_encode(void * ptr, long len, int mx)
  * @param ber_size (outbound)
  * @return actual length 
  * */
-long ber_len_decode(void * data, long * size)
+int ber_len_decode(void * data, int * size)
 {
     uint8_t * bptr = (uint8_t *)data;
     
-    long ret = 0; 
+    int ret = 0; 
     
     if(*bptr <= 0x7f){
         ret |= *bptr;
@@ -177,7 +177,7 @@ int checksum(void * ptr, int offset, int len)
     return (((sum - 1) & 0xFF) ^ 0xFF);
 }
 
-void copy_to(long * dst, void * source, int len)
+void copy_to(int * dst, void * source, int len)
 {
     uint8_t * ptr = source;
     for(int i = len - 1; i >= 0; i--)
