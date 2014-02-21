@@ -55,9 +55,6 @@ C1222_packet&
 parse(void * data)
 {
     uint8_t * ptr = (uint8_t *)data;
-    if(ptr[0] != 0x60)
-        std::domain_error("invalid packet header");
-
 
 }
 
