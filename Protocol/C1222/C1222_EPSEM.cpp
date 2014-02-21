@@ -72,8 +72,8 @@ epsem_parse(void * data)
     uint8_t * ptr = (uint8_t *)data;
     //first byte should be flag 
     uint8_t flag = *ptr;
-    long eclass = 0, ber_size = 0;
-    int datalen;
+    int eclass = 0;
+    int ber_size, datalen;
 
     //empty 
     if(*ptr == 0x0)
