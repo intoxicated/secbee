@@ -11,20 +11,35 @@
 /**
  * EPSEM format representation class
  */
-class C1222_epsem : public C1222{
-    public:
-        C1222_epsem(void * data, int e_class);
 
-        int getType();
-        bool getFlags(int flag);
+#define RESERVE_TAG 0
+#define REPONSE_TAG 1
+#define SECURITY_TAG 2
+#define PROXY_TAG 3
+#define RECOVERY_TAG 4
+
+class C1222_EPSEM : public C1222{
+    public:
+        C1222_EPSEM();
+        C1222_EPSEM(void * data, uint8_t flag, int ed_class, int datalen);
+        C1222_EPSEM(const C1222_EPSEM& other);
+        ~C1222_EPSEM();
+
+        int get_type();
+        uint8_t get_flag(int flag);
         void * build();
 
-        friend C1222_epsem& epsem_parse(void * data);
+        friend C1222_EPSEM epsem_parse(void * data);
 
     private:
-        void * e_data; 
-        int header, e_class;
-        bool reserved, recovery, proxy, security, response;
+        uint8_t * e_data; 
+        int e_data_len;
+
+        uint8_t control;
+        long  ed_class;
+        
+        uint8_t security_mode, response_mode;
+        bool reserve, recovery, proxy_service;
 };
 
 #endif
