@@ -35,26 +35,26 @@ C1222_packet::C1222_packet(char * called_ap, char * called_id,
  *
  * calling-ap-id
  * ----------------------------------------------------------------------
- * | 0xA8 | int length (bytes) | 0x02 | id length (bytes) | id (bytes)* | 
+ * | 0xA8 | int length (uint8_ts) | 0x02 | id length (uint8_ts) | id (uint8_ts)* | 
  * ----------------------------------------------------------------------
  *
  * user-info
  * ----------------------------------------------------
- * | 0xBE | ext len (bytes) | 0x28 | info len (bytes) |
+ * | 0xBE | ext len (uint8_ts) | 0x28 | info len (uint8_ts) |
  * ----------------------------------------------------
- * | 0x81 | oct str len (bytes) | epsem               |
+ * | 0x81 | oct str len (uint8_ts) | epsem               |
  * ----------------------------------------------------
  *
  * epsem
  * ----------------------------------------------------
- * | epsem ctrl (8bits)| serv len (bytes | req / res  | 
+ * | epsem ctrl (8bits)| serv len (uint8_ts | req / res  | 
  * ----------------------------------------------------
  *
  */
 C1222_packet& 
 parse(void * data)
 {
-    byte * ptr = (byte *)data;
+    uint8_t * ptr = (uint8_t *)data;
     if(ptr[0] != 0x60)
         std::domain_error("invalid packet header");
 

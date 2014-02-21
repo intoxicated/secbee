@@ -8,7 +8,7 @@
 #ifndef __C1222_BASE_H__
 #define __C1222_BASE_H__
 
-typedef unsigned char byte;
+typedef unsigned char uint8_t;
 
 
 class C1222 {

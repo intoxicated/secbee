@@ -7,6 +7,7 @@
 #ifndef __C1222_RESPONSE_H__
 #define __C1222_RESPONSE_H__
 
+#include <stdint.h>
 #include "C1222.h"
 
 //minimal response code
@@ -27,37 +28,37 @@ class C1222_Response : public C1222 {
         void clear(void);
     
         //feature excluded but necessary to add..
-        void identify(const byte res, const byte std, const byte ver, 
-                const byte rev);  
+        void identify(const uint8_t res, const uint8_t std, const uint8_t ver, 
+                const uint8_t rev);  
 
-        void read(const byte res, const byte * count, const byte * data,
-                const byte chksum);
+        void read(const uint8_t res, const uint8_t * count, const uint8_t * data,
+                const uint8_t chksum);
 
-        void write(const byte res);
+        void write(const uint8_t res);
 
-        void logon(const byte res, const byte * timeout);
+        void logon(const uint8_t res, const uint8_t * timeout);
 
-        void security(const byte res);
+        void security(const uint8_t res);
 
-        void logoff(const byte res);
+        void logoff(const uint8_t res);
 
-        void terminate(const byte res);
+        void terminate(const uint8_t res);
 
-        void disconnect(const byte res);
+        void disconnect(const uint8_t res);
 
-        void wait(const byte res);
+        void wait(const uint8_t res);
 
-        void registration(const byte res, const byte * ap_title, 
-                const byte * delay, const byte * period, const byte info);
+        void registration(const uint8_t res, const uint8_t * ap_title, 
+                const uint8_t * delay, const uint8_t * period, const uint8_t info);
 
-        void deregistration(const byte res);
+        void deregistration(const uint8_t res);
 
-        void resolve(const byte res, const byte addr_len, const byte * addr);
+        void resolve(const uint8_t res, const uint8_t addr_len, const uint8_t * addr);
 
-        void trace(const byte res, const byte ** aptitles);
+        void trace(const uint8_t res, const uint8_t ** aptitles);
 
     private:
-        byte * raw; 
+        uint8_t * raw; 
 };
 
 #endif

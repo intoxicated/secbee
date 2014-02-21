@@ -39,7 +39,7 @@ C1222_Request::clear()
 void
 C1222_Request::identify()
 {
-    this->raw = new byte[1];
+    this->raw = new uint8_t[1];
     this->request_num = '\x20';
    
     this->raw[0] = this->request_num;
@@ -53,21 +53,21 @@ C1222_Request::identify()
  *          0x3E         default able
  *          0x3F         partial table using offset/octcount 
  * 
- * @param tableid   byte array that contains table id (2bytes)
+ * @param tableid   uint8_t array that contains table id (2uint8_ts)
  * @param offset    offset of table (only for partial read 0x3F)
  * @param octcount  octet count number (only for parital read 0x3F)
  */
 void 
-C1222_Request::read(const unsigned short tableid, const byte* offset, 
-        const byte* octcount)
+C1222_Request::read(const unsigned short tableid, const uint8_t* offset, 
+        const uint8_t* octcount)
 {
     this->request_num = '\x30';
-    byte  table_id[] = "\x00\x01"; //should use paramter later
+    uint8_t  table_id[] = "\x00\x01"; //should use paramter later
    
     //offset and octcount should be used for other 
     //than full read (i.e partial read)
     //
-    this->raw = new byte[3]; //for now full read 
+    this->raw = new uint8_t[3]; //for now full read 
 }
 
 /**
@@ -77,14 +77,14 @@ C1222_Request::read(const unsigned short tableid, const byte* offset,
  *          0x41 - 0x49 partial table using 1-9 indices
  *          0x4F        partial table using offset/octcount 
  *          
- * @param tableid   byte array that contains table id (2bytes)
+ * @param tableid   uint8_t array that contains table id (2uint8_ts)
  * @param offset    offset of table (only for partial write 0x4F)
  * @param octcount  octet count number (only for partial write 0x4F)
- * @param data      typically byte array of table data 
+ * @param data      typically uint8_t array of table data 
  */
 void
-C1222_Request::write(const unsigned short tableid, const byte * offset, 
-        const byte * octcount, void * data)
+C1222_Request::write(const unsigned short tableid, const uint8_t * offset, 
+        const uint8_t * octcount, void * data)
 {
 
 }
@@ -95,9 +95,9 @@ C1222_Request::write(const unsigned short tableid, const byte * offset,
  * Note   : userid may be logged in target device if C1222 node 
  * Header : 0x50
  *
- * @param user_id          user identification code  (2 bytes)
- * @aaram usernmae         user identification (10 bytes)
- * @param timeout          request session idle timeout (0 is forever) (2 bytes)
+ * @param user_id          user identification code  (2 uint8_ts)
+ * @aaram usernmae         user identification (10 uint8_ts)
+ * @param timeout          request session idle timeout (0 is forever) (2 uint8_ts)
  */
 void
 C1222_Request::logon(const unsigned short user_id, const string username, 
@@ -105,7 +105,7 @@ C1222_Request::logon(const unsigned short user_id, const string username,
 {
     char uname[10];
     this->request_num = '\x50';
-    this->raw = new byte[15];
+    this->raw = new uint8_t[15];
 
     //validation of input
     if(username.length() > 10)
@@ -120,7 +120,7 @@ C1222_Request::logon(const unsigned short user_id, const string username,
     std::string ustr = sstream.str();
     memcpy(this->raw + 1, ustr.c_str(), 2);
 
-    //padding username to 10 bytes 
+    //padding username to 10 uint8_ts 
     memcpy(uname, username.c_str(), username.length());
     for(int i = 0; i < (10 - username.length()); i++)
         memcpy(uname+i, "\x20", 1);
@@ -139,7 +139,7 @@ C1222_Request::logon(const unsigned short user_id, const string username,
  * Note   : this request is not security mechanism for C1222 protocol 
  * Header : 0x51
  *
- * @param passwd        password (20bytes fixed)
+ * @param passwd        password (20uint8_ts fixed)
  * @param user_id_code  user identification code
  */
 void 
@@ -151,7 +151,7 @@ C1222_Request::security(const string passwd, const unsigned short user_id)
     char pw[20];
 
     this->request_num = '\x51';
-    this->raw = new byte[23];
+    this->raw = new uint8_t[23];
 
     //add header
     this->raw[0] = this->request_num;
@@ -176,7 +176,7 @@ C1222_Request::security(const string passwd, const unsigned short user_id)
 void
 C1222_Request::logoff(void)
 {
-    this->raw = new byte[1];
+    this->raw = new uint8_t[1];
     this->request_num = '\x52';
     
     this->raw[0] = this->request_num;
@@ -192,7 +192,7 @@ C1222_Request::logoff(void)
 void
 C1222_Request::terminate(void)
 {
-    this->raw = new byte[1];
+    this->raw = new uint8_t[1];
     this->request_num = '\x21';
     
     this->raw[0] = this->request_num;
@@ -208,7 +208,7 @@ C1222_Request::terminate(void)
 void
 C1222_Request::disconnect(void)
 {
-    this->raw = new byte[1];
+    this->raw = new uint8_t[1];
     this->request_num = '\x22';
     
     this->raw[0] = this->request_num;
@@ -222,9 +222,9 @@ C1222_Request::disconnect(void)
  * @param interval wait period in seconds 
  */
 void
-C1222_Request::wait(const byte interval)
+C1222_Request::wait(const uint8_t interval)
 {
-    this->raw = new byte[2];
+    this->raw = new uint8_t[2];
     this->request_num = '\x70';
     
     this->raw[0] = this->request_num;
@@ -248,7 +248,7 @@ C1222_Request::wait(const byte interval)
  *          hosts and all C1222 auth hosts that need to be notified 
  * Header : 0x27
  *
- * @param node_type identification of node's attribute (byte)
+ * @param node_type identification of node's attribute (uint8_t)
  *                  bit 0 : relay
  *                  bit 1 : master relay
  *                  bit 2 : host
@@ -256,7 +256,7 @@ C1222_Request::wait(const byte interval)
  *                  bit 4 : auth host
  *                  bit 5 : end device (1 is 1219 device, 0 is 1222)
  *
- * @param connection_type type of connection (byte)
+ * @param connection_type type of connection (uint8_t)
  *                  bit 0 : broadcast_and_multicast_supported
  *                  bit 1 : message_acceptance_window_supported
  *                  bit 2 : playback_rejection_supported (filter dup)
@@ -266,20 +266,20 @@ C1222_Request::wait(const byte interval)
  *                  bit 6 : connection_mode_support (should 1 if 4 is off)
  *                  bit 7 : accept_connection (related 6)
  *
- * @param device_class manufacturer_id in table 00 or device_class (4 bytes)
+ * @param device_class manufacturer_id in table 00 or device_class (4 uint8_ts)
  * @param ap_title      aptile of node (optional)
  * @param serial_num    unique serial number of device (optional) (table 122)
- * @param addr_len      number of byte in native addr
+ * @param addr_len      number of uint8_t in native addr
  * @param native_addr   native address to use to foward message (optional
  *                      if lower layer provides it)
  * @param reg_period    max period in seconds desired by node to elapse 
  *                      between successful re-reg request (default 0) (word24)
  */
 void
-C1222_Request::registration(const byte node_type, const byte conn_type,
-        const byte * device_class, const string ap_title, 
-        const byte * serial_num, const byte addr_len, const byte * native_addr,
-        const byte * reg_period)
+C1222_Request::registration(const uint8_t node_type, const uint8_t conn_type,
+        const uint8_t * device_class, const string ap_title, 
+        const uint8_t * serial_num, const uint8_t addr_len, const uint8_t * native_addr,
+        const uint8_t * reg_period)
 {
 
 }
@@ -315,7 +315,7 @@ void
 C1222_Request::resolve(const string ap_title)
 {
     //universal identifier encoding encode aptitle with ber
-    this->raw = new byte[1+ap_title.length()];
+    this->raw = new uint8_t[1+ap_title.length()];
     this->request_num = '\x25';
 
     this->raw[0] = this->request_num;
@@ -338,7 +338,7 @@ void
 C1222_Request::trace(const string ap_title)
 {
     //aptitle encoding
-    this->raw = new byte[1+ap_title.length()];
+    this->raw = new uint8_t[1+ap_title.length()];
     this->request_num = '\x26';
     
     this->raw[0] = this->request_num;

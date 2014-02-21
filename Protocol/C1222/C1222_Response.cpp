@@ -5,23 +5,28 @@
  * ======================================================================== */
 
 #include "C1222_Response.h"
+#include <stdlib.h>
+#include <string>
+    
+
+    
 void *
-C1222_response::build(void)
+C1222_Response::build(void)
 {
     return raw;
 }
 
 void 
-C1222_response::clear(void)
+C1222_Response::clear(void)
 {
     delete raw;
 }
 
 /**
- * Identify response
+ * Identify Response
  * 
- * @param res response isss or bsy or err or ok with parameters
- * @param std represent standard type of device (byte)
+ * @param res Response isss or bsy or err or ok with parameters
+ * @param std represent standard type of device (uint8_t)
  *              0x00 : ANSI C12.18
  *              0x01 : Reserve
  *              0x02 : ANSI C12.21
@@ -31,10 +36,22 @@ C1222_response::clear(void)
  * @param rev binary representation of standard version right of decimal pts
  */
 void
-C1222_response::identify(const byte res, const byte std, const byte ver,
-        const byte rev)
+C1222_Response::identify(const uint8_t res, const uint8_t std, const uint8_t ver,
+        const uint8_t rev)
 {
-
+    if(res != RES_OK)
+    {
+        this->raw = new uint8_t[1];
+        this->raw[0] = res;
+    }
+    else
+    {
+        this->raw = new uint8_t[4];
+        this->raw[0] = RES_OK;
+        this->raw[1] = std;
+        this->raw[2] = ver;
+        this->raw[3] = rev;
+    }
 }
 
 /**
@@ -42,8 +59,8 @@ C1222_response::identify(const byte res, const byte std, const byte ver,
  *
  */
 void 
-C1222_response::read(const byte res, const byte * count, const byte * data,
-        const byte chksum)
+C1222_Response::read(const uint8_t res, const uint8_t * count, const uint8_t * data,
+        const uint8_t chksum)
 {
 
 }
@@ -53,126 +70,143 @@ C1222_response::read(const byte res, const byte * count, const byte * data,
  *
  */
 void
-C1222_response::write(const byte res)
+C1222_Response::write(const uint8_t res)
 {
 
 }
 
 /**
- * Logon response
+ * Logon Response
  *
- * @param res       response state 
+ * @param res       Response state 
  * @param timeout   seconds to be idle before termination (word16)
  */
 void
-C1222_response::logon(const byte res, const byte * timeout)
+C1222_Response::logon(const uint8_t res, const uint8_t * timeout)
 {
-
+    if(res != RES_OK)
+    {
+        this->raw = new uint8_t[1];
+        this->raw[0] = res;
+    }
+    else
+    {
+        this->raw = new uint8_t[3];
+        this->raw[0] = RES_OK;   
+        memcpy(this->raw + 1, timeout, 2);
+    }
 }
 
 /**
- * Security response
+ * Security Response
  *
- * @param res       response state
+ * @param res       Response state
  */
 void
-C1222_response::security(const byte res)
+C1222_Response::security(const uint8_t res)
 {
-
+    this->raw = new uint8_t[1];
+    this->raw[0] = res;
 }
 
 /**
- * Logoff response
+ * Logoff Response
  *
- * @param res       response state
+ * @param res       Response state
  */
 void
-C1222_response::logoff(const byte res)
+C1222_Response::logoff(const uint8_t res)
 {
-
+    this->raw = new uint8_t[1];
+    this->raw[0] = res;
 }
 
 /**
- * Terminate response
+ * Terminate Response
  *
- * @param res       response state
+ * @param res       Response state
  */
 void
-C1222_response::terminate(const byte res)
+C1222_Response::terminate(const uint8_t res)
 {
-
+    this->raw = new uint8_t[1];
+    this->raw[0] = res;
 }
 
 /**
- * Disconnect response
+ * Disconnect Response
  *
- * @param res       response state
+ * @param res       Response state
  */
 void
-C1222_response::disconnect(const byte res)
+C1222_Response::disconnect(const uint8_t res)
 {
-
+    this->raw = new uint8_t[1];
+    this->raw[0] = res;
 }
 
 /**
- * Wait response
+ * Wait Response
  *
- * @param res       response state
+ * @param res       Response state
  */
 void
-C1222_response::wait(const byte res)
+C1222_Response::wait(const uint8_t res)
 {
-
+    this->raw = new uint8_t[1];
+    this->raw[0] = res;
 }
 
 /**
- * Registration response
+ * Registration Response
  *
- * @param res       response state
+ * @param res       Response state
  * @param ap_title  registred ap title
  * @param delay     maximum delay in seconds that device should waits
  * @param period    maximum period in seconds allowed to elapse re-reg
  * @param info      Node info about connection type (see Reg. request)
  */
 void
-C1222_response::registration(const byte res, const byte * ap_title,
-        const byte * delay, const byte * period, const byte info)
+C1222_Response::registration(const uint8_t res, const uint8_t * ap_title,
+        const uint8_t * delay, const uint8_t * period, const uint8_t info)
 {
 
 }
 
 /**
- * Deregistration response
+ * Deregistration Response
  *
- * @param res       response state
+ * @param res       Response state
  */
 void
-C1222_response::deregistration(const byte res)
+C1222_Response::deregistration(const uint8_t res)
 {
-
+    this->raw = new uint8_t[1];
+    this->raw[0] = res;
 }
 
 /**
- * Resolve response
+ * Resolve Response
  *
- * @param res       response state
+ * @param res       Response state
  * @param addr_len  address length 
  * @param addr      local address of requested aptitle
  */
 void
-C1222_response::resolve(const byte res, const byte addr_len, const byte * addr)
+C1222_Response::resolve(const uint8_t res, const uint8_t addr_len, 
+        const uint8_t * addr)
 {
 
 }
 
 /**
- * Resolve response
+ * trace  Response
  *
- * @param res       response state
+ * @param res       Response state
  * @param ap_titles aptitle of c12.22 relays used to forward this request
  */
 void
-trace(const byte res, const byte ** aptitles)
+trace(const uint8_t res, const uint8_t ** aptitles)
 {
 
 }

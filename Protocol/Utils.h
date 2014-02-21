@@ -21,8 +21,50 @@ long ber_uid_decode(void * tpr, void * buffer);
 
 long checksum(void * ptr, int offset, int len);
 
+void copy_to(long dst, void * source, int len); 
 
+/**
+ * Called AP title element
+ * 
+ * identify the target of ACSE message
+ *  
+ * -----------------------------------
+ * | 0xA2 | title length | ap title  |
+ * -----------------------------------
+ *
+ * ap title (universal aptitle element)
+ * -------------------------------------
+ * | 0x06 | id length | universal id   |
+ * -------------------------------------
+ */
 
+/**
+ * Calling AP Title element
+ *
+ * identfiy the source of ACSE message
+ *
+ * -----------------------------------
+ * | 0xA6 | title length | ap title  |
+ * -----------------------------------
+ *
+ * ap title (universal aptitle element)
+ * -----------------------------------------------------------
+ * | 0x06 | len(byte) | universal id (not exceed 127 bytes)  |
+ * -----------------------------------------------------------
+ */
+//app-context-oid := 06 07 60 7C 86 F7 54 01 16 
+/**
+ * Encode data into Universal identifier 
+ *
+ * Foramt:
+ * value1.value2.value3. ... .valuen
+ *
+ * first byte value 40 x value1 + value2
+ * following by - value(i) encoded base 128 most sig digit first and most
+ *                significant bit 1 except last byte 
+ *
+ *
+ */
 
 long ber_uid_encode(void * ptr, int len)
 {
@@ -30,9 +72,14 @@ long ber_uid_encode(void * ptr, int len)
     return 0;
 }
 
+/**
+ * decode universal identifier (most likely aptitle)
+ *
+ * 
+ */
 long ber_uid_decode(void * tpr, void * buffer)
 {
-
+    
     return 0;
 }
 
@@ -88,27 +135,30 @@ int ber_len_encode(void * ptr, long len, int mx)
  * length decoding 
  *
  * @param ptr bar encoded buffer
+ * @param ber_size (outbound)
  * @return actual length 
  * */
-long ber_len_decode(void * data)
+long ber_len_decode(void * data, long * size)
 {
     uint8_t * bptr = (uint8_t *)data;
     
     long ret = 0; 
-    int size = 0;
     
-    if(*bptr <= 0x7f)
+    if(*bptr <= 0x7f){
         ret |= *bptr;
+        *size = 1;
+    }
     else
     {
-        size = *bptr & 0x0F;
+        *size = *bptr & 0x0F;
+        
         bptr += 1;
 
-        for(int i = size-1; i >= 0; i--) {
+        for(int i = *size-1; i >= 0; i--) {
             ret |= (0xFF & *bptr++) << (i * 8);
         }
     }
-
+    
     return ret;
 }
 
@@ -125,6 +175,13 @@ int checksum(void * ptr, int offset, int len)
     for(int i = 0; i < len; i++)
         sum += ptr[offset++];
     return (((sum - 1) & 0xFF) ^ 0xFF);
+}
+
+void copy_to(long * dst, void * source, int len)
+{
+    uint8_t * ptr = source;
+    for(int i = len - 1; i >= 0; i--)
+        *dst |= (*ptr++) << (i * 8);
 }
 
 #endif

@@ -8,6 +8,8 @@
 #define __C1222_REQUEST_H__
 
 #include <string>
+#include <stdint.h>
+
 #include "C1222.h"
 
 class C1222_Request : public C1222 {
@@ -24,13 +26,13 @@ class C1222_Request : public C1222 {
         void logon(const unsigned short user_id, const std::string username, 
                 const unsigned short timeout);
 
-        void write(const unsigned short tableid, const byte * offset,
-                const byte * octcount, void * data);
+        void write(const unsigned short tableid, const uint8_t * offset,
+                const uint8_t * octcount, void * data);
 
-        void read(const unsigned short tableid, const byte * offset,
-                const byte * octcount);
+        void read(const unsigned short tableid, const uint8_t * offset,
+                const uint8_t * octcount);
 
-        void wait(const byte interval);
+        void wait(const uint8_t interval);
         
         void terminate(void);
         
@@ -38,18 +40,18 @@ class C1222_Request : public C1222 {
         
         void resolve(const std::string ap_title);
         
-        void registration(const byte node_type, const byte conn_type,
-                const byte * device_class, const std::string ap_title,
-                const byte * serial_num, const byte addr_len, 
-                const byte * native_addr, const byte * reg_period);
+        void registration(const uint8_t node_type, const uint8_t conn_type,
+                const uint8_t * device_class, const std::string ap_title,
+                const uint8_t * serial_num, const uint8_t addr_len, 
+                const uint8_t * native_addr, const uint8_t * reg_period);
 
         void deregistration(const std::string ap_title);
         
         void trace(const std::string ap_title);
 
     private:
-        byte request_num;
-        byte * raw;
+        uint8_t request_num;
+        uint8_t * raw;
 };
 
 #endif
