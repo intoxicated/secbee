@@ -6,8 +6,7 @@
 
 #include "C1222_Response.h"
 #include <stdlib.h>
-#include <string>
-    
+#include <string.h>
 
     
 void *

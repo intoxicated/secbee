@@ -12,6 +12,8 @@
 
 #include "C1222.h"
 
+using namespace std;
+
 class C1222_Request : public C1222 {
     public:
         void * build();
@@ -23,7 +25,7 @@ class C1222_Request : public C1222 {
         
         void logoff(void);
         
-        void logon(const unsigned short user_id, const std::string username, 
+        void logon(const unsigned short user_id, const char * username, 
                 const unsigned short timeout);
 
         void write(const unsigned short tableid, const uint8_t * offset,
@@ -36,18 +38,18 @@ class C1222_Request : public C1222 {
         
         void terminate(void);
         
-        void security(const std::string passwd, const unsigned short user_id);
+        void security(const char * passwd, const unsigned short user_id);
         
-        void resolve(const std::string ap_title);
+        void resolve(const char * ap_title);
         
         void registration(const uint8_t node_type, const uint8_t conn_type,
-                const uint8_t * device_class, const std::string ap_title,
+                const uint8_t * device_class, const char * ap_title,
                 const uint8_t * serial_num, const uint8_t addr_len, 
                 const uint8_t * native_addr, const uint8_t * reg_period);
 
-        void deregistration(const std::string ap_title);
+        void deregistration(const char * ap_title);
         
-        void trace(const std::string ap_title);
+        void trace(const char * ap_title);
 
     private:
         uint8_t request_num;

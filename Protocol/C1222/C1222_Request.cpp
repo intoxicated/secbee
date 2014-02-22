@@ -8,6 +8,10 @@
 #include "C1222_Request.h"
 
 #include <sstream>
+#include <iostream>
+#include <string>
+#include <stdlib.h>
+#include <string.h>
 
 using namespace std;
 
@@ -95,12 +99,12 @@ C1222_Request::write(const unsigned short tableid, const uint8_t * offset,
  * Note   : userid may be logged in target device if C1222 node 
  * Header : 0x50
  *
- * @param user_id          user identification code  (2 uint8_ts)
- * @aaram usernmae         user identification (10 uint8_ts)
- * @param timeout          request session idle timeout (0 is forever) (2 uint8_ts)
+ * @param user_id          user identification code  (2 bytes)
+ * @aaram usernmae         user identification (10 bytes)
+ * @param timeout          request session idle timeout (0 is forever) (2 bytes)
  */
 void
-C1222_Request::logon(const unsigned short user_id, const string username, 
+C1222_Request::logon(const unsigned short user_id, const char * username, 
         const unsigned short timeout)
 {
     char uname[10];
@@ -108,29 +112,30 @@ C1222_Request::logon(const unsigned short user_id, const string username,
     this->raw = new uint8_t[15];
 
     //validation of input
-    if(username.length() > 10)
-        std::out_of_range("Request(Logon): out of range");
+    //if(strlen(username) > 10)
+    //    throw std::out_of_range("Request(Logon): out of range");
 
     //add header
     this->raw[0] = this->request_num;
     
-    //add userid
-    std::stringstream sstream;
-    sstream << std::hex << user_id;
-    std::string ustr = sstream.str();
-    memcpy(this->raw + 1, ustr.c_str(), 2);
+    //add userid //need to change in c style
+    //std::stringstream sstream;
+    //sstream << std::hex << user_id;
+    //std::string ustr = sstream.str();
+    //memcpy(this->raw + 1, ustr.c_str(), 2);
 
-    //padding username to 10 uint8_ts 
-    memcpy(uname, username.c_str(), username.length());
-    for(int i = 0; i < (10 - username.length()); i++)
-        memcpy(uname+i, "\x20", 1);
+    //padding username to 10 byte 
+    int usrlen = strlen(username);
+    memcpy(uname, username, usrlen);
+    for(int i = 0; i < (10 - usrlen); i++)
+        memcpy(uname + usrlen, "\x20", 1);
     //add username
     memcpy(this->raw + 3, uname, 10);
 
     //add timeout
-    sstream << std::hex << timeout;
-    std::string tstr = sstream.str();
-    memcpy(this->raw + 13, tstr.c_str(), 2);
+    //sstream << std::hex << timeout;
+    //std::string tstr = sstream.str();
+    //memcpy(this->raw + 13, tstr.c_str(), 2);
 }
 
 /**
@@ -143,13 +148,13 @@ C1222_Request::logon(const unsigned short user_id, const string username,
  * @param user_id_code  user identification code
  */
 void 
-C1222_Request::security(const string passwd, const unsigned short user_id)
+C1222_Request::security(const char * passwd, const unsigned short user_id)
 {
-    if(passwd.length() > 20)
-        std::out_of_range("Request(security): passwd out of range");
+    int pwlen = strlen(passwd);
+    //if(pwlen> 20)
+    //    throw std::out_of_range("Request(security): passwd out of range");
 
     char pw[20];
-
     this->request_num = '\x51';
     this->raw = new uint8_t[23];
 
@@ -157,15 +162,15 @@ C1222_Request::security(const string passwd, const unsigned short user_id)
     this->raw[0] = this->request_num;
 
     //add password
-    memcpy(pw, passwd.c_str(), passwd.length());
-    for(int i = 0; i < (20 - passwd.length()); i++)
-        memcpy(pw+i, "\x20", 1);
+    memcpy(pw, passwd, pwlen);
+    for(int i = 0; i < (20 - pwlen); i++)
+        memcpy(pw+pwlen, "\x20", 1);
    
     //add userid
-    std::stringstream sstream;
-    sstream << std::hex << user_id;
-    std::string ustr = sstream.str();
-    memcpy(this->raw + 21, ustr.c_str(), 2);
+    //std::stringstream sstream;
+    //sstream << std::hex << user_id;
+    //std::string ustr = sstream.str();
+    //memcpy(this->raw + 21, ustr.c_str(), 2);
 }
 
 /**
@@ -277,7 +282,7 @@ C1222_Request::wait(const uint8_t interval)
  */
 void
 C1222_Request::registration(const uint8_t node_type, const uint8_t conn_type,
-        const uint8_t * device_class, const string ap_title, 
+        const uint8_t * device_class, const char * ap_title, 
         const uint8_t * serial_num, const uint8_t addr_len, const uint8_t * native_addr,
         const uint8_t * reg_period)
 {
@@ -294,7 +299,7 @@ C1222_Request::registration(const uint8_t node_type, const uint8_t conn_type,
  * @param ap_title aptitle of deregister device 
  */
 void
-C1222_Request::deregistration(const string ap_title)
+C1222_Request::deregistration(const char * ap_title)
 {
 
 }
@@ -312,14 +317,14 @@ C1222_Request::deregistration(const string ap_title)
  * @param ap_title aptitle of target node 
  */
 void
-C1222_Request::resolve(const string ap_title)
+C1222_Request::resolve(const char * ap_title)
 {
     //universal identifier encoding encode aptitle with ber
-    this->raw = new uint8_t[1+ap_title.length()];
+    this->raw = new uint8_t[1 + strlen(ap_title)];
     this->request_num = '\x25';
 
     this->raw[0] = this->request_num;
-    memcpy(this->raw + 1, ap_title.c_str(), ap_title.length());
+    memcpy(this->raw + 1, ap_title, strlen(ap_title));
 }
 
 /**
@@ -335,12 +340,12 @@ C1222_Request::resolve(const string ap_title)
  * @param aptitle called aptitle (target)
  */
 void
-C1222_Request::trace(const string ap_title)
+C1222_Request::trace(const char * ap_title)
 {
     //aptitle encoding
-    this->raw = new uint8_t[1+ap_title.length()];
+    this->raw = new uint8_t[1 + strlen(ap_title)];
     this->request_num = '\x26';
     
     this->raw[0] = this->request_num;
-    memcpy(this->raw + 1, ap_title.c_str(), ap_title.length());
+    memcpy(this->raw + 1, ap_title, strlen(ap_title));
 }
