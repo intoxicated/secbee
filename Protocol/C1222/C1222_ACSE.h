@@ -24,23 +24,26 @@ class C1222_ACSE : public C1222 {
         C1222_ACSE(void * usrinfo, uint8_t * calling_title, uint8_t * calling_id,
                 uint8_t * called_title, uint8_t * called_id, int usrlen);
         ~C1222_ACSE();
-        
-        
+                
         void * build();
+        void clear();
+
         void parse(void * data);
 
         uint8_t * get_calling_title();
         uint8_t * get_calling_id();
         uint8_t * get_called_title();
         uint8_t * get_called_id();
-        uint8_t * get_usrinfo();
-
+        uint8_t * get_epsem();
+        long get_data_len();
+        
+        void set_epsem(void * data, long size);
     private:
         ap_element calling_title, calling_id;
         ap_element called_title, called_id;
         ap_element userinfo;
 
-        C1222_EPSEM epsem;
+        long acse_len;
 };
 
 #endif

@@ -26,6 +26,9 @@ class C1222_EPSEM : public C1222{
         ~C1222_EPSEM();
 
         int get_type();
+        void set_data(void * data, long len);
+        long get_data_len();
+        uint8_t * get_data();
         uint8_t get_flag(int flag);
 
         void * build();
@@ -37,9 +40,10 @@ class C1222_EPSEM : public C1222{
 
         uint8_t control;
         long  ed_class;
-        
+        long  epsem_len; 
         uint8_t security_mode, response_mode;
         bool reserve, recovery, proxy_service;
+
 };
 
 #endif

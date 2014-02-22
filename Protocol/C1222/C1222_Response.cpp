@@ -21,6 +21,11 @@ C1222_Response::clear(void)
     delete raw;
 }
 
+long
+C1222_Response::get_data_len()
+{
+    return this->datalen;
+}
 /**
  * Identify Response
  * 

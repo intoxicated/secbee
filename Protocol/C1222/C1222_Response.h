@@ -26,7 +26,8 @@ class C1222_Response : public C1222 {
     public:
         void * build(void);
         void clear(void);
-    
+        long get_data_len();
+
         //feature excluded but necessary to add..
         void identify(const uint8_t res, const uint8_t std, const uint8_t ver, 
                 const uint8_t rev);  
@@ -59,6 +60,7 @@ class C1222_Response : public C1222 {
 
     private:
         uint8_t * raw; 
+        long datalen;
 };
 
 #endif

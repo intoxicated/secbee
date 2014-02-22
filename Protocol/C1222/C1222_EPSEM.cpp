@@ -94,7 +94,7 @@ C1222_EPSEM::parse(void * data)
     }
     else //if e_class is not present
     {
-        datalen = ber_len_decode(ptr+1, &ber_size);
+        ber_len_decode(ptr+1, &ber_size);
         ptr = ptr + 1 + ber_size;
     }
 
@@ -102,4 +102,26 @@ C1222_EPSEM::parse(void * data)
     this->e_data_len = datalen;
     this->ed_class = eclass;
     this->control = flag;
+}
+
+
+
+
+uint8_t *
+C1222_EPSEM::get_data()
+{
+    return this->e_data;
+}
+
+void
+C1222_EPSEM::set_data(void * data, long len)
+{
+    this->e_data = (uint8_t *)data;
+    this->e_data_len = len;
+}
+
+long
+C1222_EPSEM::get_data_len()
+{
+    return this->e_data_len;
 }

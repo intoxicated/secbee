@@ -35,6 +35,13 @@ C1222_ACSE::~C1222_ACSE()
 {
 
 }
+
+void 
+C1222_ACSE::clear()
+{
+
+}
+
 void *
 C1222_ACSE::build()
 {
@@ -105,6 +112,12 @@ usrinfo_parse(void * data, long * datalen, long * berlen)
     return ptr;
 }
 
+void
+usrinfo_build(void * data, long size)
+{
+
+
+}
 
 void
 C1222_ACSE::parse(void * data)
@@ -152,9 +165,8 @@ C1222_ACSE::parse(void * data)
         //parse user information
         if(*ptr == 0xBE){
             this->userinfo.data = usrinfo_parse(ptr, &datalen, &berlen);
+            this->userinfo.size = datalen;
             ptr = ptr + berlen + datalen;
-
-            this->epsem.parse(this->userinfo.data);
         }
         
         
@@ -188,7 +200,21 @@ C1222_ACSE::get_called_id()
 }
  
 uint8_t * 
-C1222_ACSE::get_usrinfo()
+C1222_ACSE::get_epsem()
 {
     return this->userinfo.data;
 }
+
+long
+C1222_ACSE::get_data_len()
+{
+    return this->acse_len;
+}
+
+void
+C1222_ACSE::set_epsem(void * data, long size)
+{
+    usrinfo_build(data, size);
+}
+
+
