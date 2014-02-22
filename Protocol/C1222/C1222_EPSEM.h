@@ -27,9 +27,9 @@ class C1222_EPSEM : public C1222{
 
         int get_type();
         uint8_t get_flag(int flag);
-        void * build();
 
-        friend C1222_EPSEM epsem_parse(void * data);
+        void * build();
+        void parse(void * data);
 
     private:
         uint8_t * e_data; 

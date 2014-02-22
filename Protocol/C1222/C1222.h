@@ -14,7 +14,7 @@
 typedef struct {
     uint8_t * data;
     int size;
-} container;
+} ap_element;
 
 class C1222 {
     virtual void * build() = 0;

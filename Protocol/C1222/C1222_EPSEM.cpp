@@ -5,9 +5,16 @@
  * ========================================================================= */
 
 #include <string>
+#include <stdlib.h>
+#include <string.h>
 
-#include "../Utils.h"
 #include "C1222_EPSEM.h"
+#include "Utils.hpp"
+
+C1222_EPSEM::C1222_EPSEM()
+{
+
+}
 
 C1222_EPSEM::C1222_EPSEM(void * data, uint8_t flag, int e_class, int datalen)
 {
@@ -66,8 +73,8 @@ C1222_EPSEM::get_flag(int flag)
     return 0;
 }
 
-C1222_EPSEM
-epsem_parse(void * data)
+void
+C1222_EPSEM::parse(void * data)
 {
     uint8_t * ptr = (uint8_t *)data;
     //first byte should be flag 
@@ -91,6 +98,8 @@ epsem_parse(void * data)
         ptr = ptr + 1 + ber_size;
     }
 
-    C1222_EPSEM ret(ptr, flag, eclass, datalen); 
-    return ret;
+    this->e_data = ptr;
+    this->e_data_len = datalen;
+    this->ed_class = eclass;
+    this->control = flag;
 }

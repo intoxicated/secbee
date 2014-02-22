@@ -9,6 +9,7 @@
 #define __C1222_ACSE_H__
 
 #include <stdint.h>
+
 #include "C1222.h"
 #include "C1222_EPSEM.h"
 
@@ -26,15 +27,18 @@ class C1222_ACSE : public C1222 {
         
         
         void * build();
-        friend C1222_ACSE acse_parse(void * data);
+        void parse(void * data);
 
+        uint8_t * get_calling_title();
+        uint8_t * get_calling_id();
+        uint8_t * get_called_title();
+        uint8_t * get_called_id();
+        uint8_t * get_usrinfo();
 
     private:
-        uint8_t * calling_ap_title, * calling_id;
-        uint8_t * called_ap_title, * called_id;
-        uint8_t * userinfo;
-
-        container calling_title;
+        ap_element calling_title, calling_id;
+        ap_element called_title, called_id;
+        ap_element userinfo;
 
         C1222_EPSEM epsem;
 };
