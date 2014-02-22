@@ -349,3 +349,10 @@ C1222_Request::trace(const char * ap_title)
     this->raw[0] = this->request_num;
     memcpy(this->raw + 1, ap_title, strlen(ap_title));
 }
+
+/*
+C1222_Request_Ident::C1222_Request_Ident()
+{
+
+}
+*/

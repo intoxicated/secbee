@@ -57,3 +57,50 @@ class C1222_Request : public C1222 {
 };
 
 #endif
+
+class C1222_Request_Ident : public C1222_Request
+{
+
+};
+
+class C1222_Request_Logoff : public C1222_Request
+{
+
+};
+
+class C1222_Request_Logon : public C1222_Request
+{
+
+};
+
+class C1222_Request_Write : public C1222_Request
+{
+
+};
+
+class C1222_Request_Read : public C1222_Request
+{
+
+};
+
+class C1222_Request_Terminate : public C1222_Request
+{
+
+};
+
+class C1222_Request_Wait : public C1222_Request
+{
+
+};
+
+class C1222_Request_Resolve : public C1222_Request
+{
+
+};
+
+class C1222_Request_Trace : public C1222_Request
+{
+
+};
+
+
