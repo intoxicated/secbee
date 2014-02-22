@@ -1,3 +1,8 @@
+#include <C1222.h>
+#include <C1222_ACSE.h>
+#include <C1222_EPSEM.h>
+#include <C1222_Response.h>
+#include <C1222_Request.h>
 
 // C12.22 protocol minimal prototype
 // Author: Wooyoung
@@ -6,21 +11,21 @@
 
 const int led = 13;
 int readyToRespond = 0;
-byte incomingData[1024];
+byte incomingData[2048];
 int counter = 0;
 
-//send response to node
-void sendResponse(int * buffer, int bufferSize)
-{
-  for(int i = 0; i < bufferSize; ++i)
-    Serial.print(buffer[i]);
-}
+C1222_ACSE acse;
+C1222_EPSEM epsem;
+C1222_Response res;
 
 //request handler
-void handleRequest(int request)
+void handleRequest(byte request, byte * data)
 {
-  switch (request)
-    //case 0x20: //id request
+  C1222_Response res;
+  switch (request){
+    case 0x20: //id request
+      res.identify(RES_OK, 12, 22, 1);
+      break;
     //case 0x21 -- terminate 
     //case 0x22 -- disconnect
     
@@ -41,8 +46,9 @@ void handleRequest(int request)
     //form response into data
     //pass it to epsem to create epsem envolope
     //pass next to acse to create outer packet
-    
-    readyToRespond = true;
+  }
+ 
+   readyToRespond = true;
 }
 
 
@@ -53,11 +59,25 @@ void setup(){
 
 void loop()
 {
-  if(readyToRespond == 1)
+  void * d;
+  if(readyToRespond == true)
   {
-    //handleRequest will fill buffer to respond 
-
-    //Serial.write(re, sizeof(re));
+    //build response 
+    d = res.build();
+    //build EPSEM
+    epsem.set_data(d, res.get_data_len());
+    d = epsem.build();
+    //build ACSE
+    acse.set_epsem(d,epsem.get_data_len());
+    d = acse.build();
+    //send back 
+    
+    int byteSent = Serial.write((uint8_t *)d, acse.get_data_len());
+    if(byteSent != acse.get_data_len())
+      Serial.println("byte was sent but not matched with size");
+      
+    //clear all memory allocation
+    acse.clear();
   }
 }
 
@@ -72,11 +92,11 @@ void serialEvent()
   int offset = 0;
   
   //parse c1222 packet
-  C1222_ACSE acse;
-  acse.parse((void*)incomingData); //parse usrinfo part
   
-  C1222_EPSEM epsem; 
-  epsem.parse((void *)acse.get_usrinfo()); // pass usrinfo from
+  acse.parse((void*)incomingData); //parse asce
+ 
+  epsem.parse((void*)acse.get_epsem()); //parse epsem 
   
-  //handleRequest(
+  handleRequest(*(epsem.get_data()), epsem.get_data());
+  
 }
