@@ -166,8 +166,8 @@ int main(int argc, char ** argv)
     struct xbee_conAddress target_addr;
     memset(&target_addr, 0x0, sizeof(target_addr));
     target_addr.addr64_enabled = 1;
-    memcpy(target_addr.addr64, "\x00\x13\xA2\x00\x40\xA9\x33\x85", 8);
-    //memcpy(target_addr.addr64, "\x00\x00\x00\x00\x00\x00\xFF\xFF", 8);
+    //memcpy(target_addr.addr64, "\x00\x13\xA2\x00\x40\xA9\x33\x85", 8);
+    memcpy(target_addr.addr64, "\x00\x00\x00\x00\x00\x00\xFF\xFF", 8);
 
     //setup connection 
     if((ret = xbee_conNew(xbee, &con, "Data", &target_addr)) != XBEE_ENONE){

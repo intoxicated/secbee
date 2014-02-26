@@ -1,49 +1,49 @@
-[36m  6[90m#[[32mconn.c:494[90m][33m _xbee_conNew()[0m [35m0x7fd77ac03c90[90m:[0m Created new 'Data' type connection
-[36m  8[90m#[[32mconn.c:181[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m address @ 0x7fff599fb990...
-[36m  8[90m#[[32mconn.c:182[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    broadcast:      No
-[36m  8[90m#[[32mconn.c:186[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    16-bit address:  --
-[36m  8[90m#[[32mconn.c:191[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    64-bit address:  0x0013A200 0x40A93385
-[36m  8[90m#[[32mconn.c:198[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    endpoints:       --
-[36m  8[90m#[[32mconn.c:203[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    profile ID:      ----
-[36m  8[90m#[[32mconn.c:208[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    cluster ID:      ----
-[36m 25[90m#[[32mlog.c:242[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Tx[[31m0x7fd77ac03cf0[0m] length: 18
-[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Tx[[31m0x7fd77ac03cf0[0m]: 0x0000 : 0x10 0x00 0x00 0x13 0xA2 0x00 0x40 0xA9  | ......@.
-[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Tx[[31m0x7fd77ac03cf0[0m]: 0x0008 : 0x33 0x85 0xFF 0xFE 0x00 0x00 0x48 0x49  | 3.....HI
-[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Tx[[31m0x7fd77ac03cf0[0m]: 0x0010 : 0x47 0x48                                | GH      
-[36m 25[90m#[[32mlog.c:242[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Rx[[31m0x7fd77ac03d80[0m] length: 28
-[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Rx[[31m0x7fd77ac03d80[0m]: 0x0000 : 0x90 0x00 0x13 0xA2 0x00 0x40 0xA9 0x33  | .....@.3
-[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Rx[[31m0x7fd77ac03d80[0m]: 0x0008 : 0x85 0x57 0x33 0x01 0x4C 0x69 0x67 0x68  | .W3.Ligh
-[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Rx[[31m0x7fd77ac03d80[0m]: 0x0010 : 0x74 0x20 0x69 0x73 0x20 0x6F 0x6E 0x20  | t is on 
-[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Rx[[31m0x7fd77ac03d80[0m]: 0x0018 : 0x4E 0x4F 0x57 0x21                      | NOW!    
-[36m 12[90m#[[32mrx.c:197[90m][33m xbee_rxHandler()[0m [35m0x7fd77ac03c90[90m:[0m received 'Data' type packet...
-[36m 15[90m#[[32mrx.c:214[90m][33m xbee_rxHandler()[0m [35m0x7fd77ac03c90[90m:[0m matched packet with con @ 0x7fd77af00000
-[36m 16[90m#[[32mconn.c:181[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m address @ 0x106379e08...
-[36m 16[90m#[[32mconn.c:182[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    broadcast:      No
-[36m 16[90m#[[32mconn.c:184[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    16-bit address:  0x5733
-[36m 16[90m#[[32mconn.c:191[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    64-bit address:  0x0013A200 0x40A93385
-[36m 16[90m#[[32mconn.c:198[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    endpoints:       --
-[36m 16[90m#[[32mconn.c:203[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    profile ID:      ----
-[36m 16[90m#[[32mconn.c:208[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    cluster ID:      ----
-[36m 15[90m#[[32mthread.c:68[90m][33m threadFunc()[0m [35m0x7fd77ac03c90[90m:[0m starting thread 0x7fd77ad00470, function xbee_conCallbackHandler()...
-[36m  8[90m#[[32mconn.c:924[90m][33m xbee_conCallbackHandler()[0m [35m0x7fd77ac03c90[90m:[0m connection @ 0x7fd77af00000 got packet @ 0x7fd77ad00370, about to hand to callback function @ 0x106205680...
-[36m 25[90m#[[32mlog.c:242[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Tx[[31m0x7fd77ac03cf0[0m] length: 17
-[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Tx[[31m0x7fd77ac03cf0[0m]: 0x0000 : 0x10 0x00 0x00 0x13 0xA2 0x00 0x40 0xA9  | ......@.
-[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Tx[[31m0x7fd77ac03cf0[0m]: 0x0008 : 0x33 0x85 0x57 0x33 0x00 0x00 0x4C 0x4F  | 3.W3..LO
-[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Tx[[31m0x7fd77ac03cf0[0m]: 0x0010 : 0x57                                     | W       
-[36m 25[90m#[[32mlog.c:242[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Rx[[31m0x7fd77ac03d80[0m] length: 29
-[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Rx[[31m0x7fd77ac03d80[0m]: 0x0000 : 0x90 0x00 0x13 0xA2 0x00 0x40 0xA9 0x33  | .....@.3
-[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Rx[[31m0x7fd77ac03d80[0m]: 0x0008 : 0x85 0x57 0x33 0x01 0x4C 0x69 0x67 0x68  | .W3.Ligh
-[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Rx[[31m0x7fd77ac03d80[0m]: 0x0010 : 0x74 0x20 0x69 0x73 0x20 0x6F 0x66 0x66  | t is off
-[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7fd77ac03c90[90m:[0m Rx[[31m0x7fd77ac03d80[0m]: 0x0018 : 0x20 0x4E 0x4F 0x57 0x21                 |  NOW!   
-[36m 12[90m#[[32mrx.c:197[90m][33m xbee_rxHandler()[0m [35m0x7fd77ac03c90[90m:[0m received 'Data' type packet...
-[36m 15[90m#[[32mrx.c:214[90m][33m xbee_rxHandler()[0m [35m0x7fd77ac03c90[90m:[0m matched packet with con @ 0x7fd77af00000
-[36m 16[90m#[[32mconn.c:181[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m address @ 0x106379e08...
-[36m 16[90m#[[32mconn.c:182[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    broadcast:      No
-[36m 16[90m#[[32mconn.c:184[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    16-bit address:  0x5733
-[36m 16[90m#[[32mconn.c:191[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    64-bit address:  0x0013A200 0x40A93385
-[36m 16[90m#[[32mconn.c:198[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    endpoints:       --
-[36m 16[90m#[[32mconn.c:203[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    profile ID:      ----
-[36m 16[90m#[[32mconn.c:208[90m][33m xbee_conLogAddress()[0m [35m0x7fd77ac03c90[90m:[0m    cluster ID:      ----
-[36m  8[90m#[[32mconn.c:924[90m][33m xbee_conCallbackHandler()[0m [35m0x7fd77ac03c90[90m:[0m connection @ 0x7fd77af00000 got packet @ 0x7fd77af003d0, about to hand to callback function @ 0x106205680...
-[36m 10[90m#[[32mthread.c:78[90m][33m threadFunc()[0m [35m0x7fd77ac03c90[90m:[0m thread 0x7fd77ad00470, function xbee_conCallbackHandler() returned without error...
-[36m 15[90m#[[32mthread.c:93[90m][33m threadFunc()[0m [35m0x7fd77ac03c90[90m:[0m thread 0x7fd77ad00470, function xbee_conCallbackHandler() has now ended...
+[36m  6[90m#[[32mconn.c:494[90m][33m _xbee_conNew()[0m [35m0x7f8f20403c90[90m:[0m Created new 'Data' type connection
+[36m  8[90m#[[32mconn.c:181[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m address @ 0x7fff58ee1990...
+[36m  8[90m#[[32mconn.c:182[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    broadcast:      Yes
+[36m  8[90m#[[32mconn.c:186[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    16-bit address:  --
+[36m  8[90m#[[32mconn.c:191[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    64-bit address:  0x00000000 0x0000FFFF
+[36m  8[90m#[[32mconn.c:198[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    endpoints:       --
+[36m  8[90m#[[32mconn.c:203[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    profile ID:      ----
+[36m  8[90m#[[32mconn.c:208[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    cluster ID:      ----
+[36m 25[90m#[[32mlog.c:242[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Tx[[31m0x7f8f20403cf0[0m] length: 20
+[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Tx[[31m0x7f8f20403cf0[0m]: 0x0000 : 0x10 0x00 0x00 0x00 0x00 0x00 0x00 0x00  | ........
+[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Tx[[31m0x7f8f20403cf0[0m]: 0x0008 : 0xFF 0xFF 0xFF 0xFE 0x00 0x00 0x48 0x49  | ......HI
+[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Tx[[31m0x7f8f20403cf0[0m]: 0x0010 : 0x47 0x48 0x0D 0x0A                      | GH..    
+[36m 25[90m#[[32mlog.c:242[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Rx[[31m0x7f8f20403d80[0m] length: 28
+[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Rx[[31m0x7f8f20403d80[0m]: 0x0000 : 0x90 0x00 0x13 0xA2 0x00 0x40 0xA9 0x33  | .....@.3
+[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Rx[[31m0x7f8f20403d80[0m]: 0x0008 : 0x85 0xA0 0x3B 0x01 0x4C 0x69 0x67 0x68  | ..;.Ligh
+[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Rx[[31m0x7f8f20403d80[0m]: 0x0010 : 0x74 0x20 0x69 0x73 0x20 0x6F 0x6E 0x20  | t is on 
+[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Rx[[31m0x7f8f20403d80[0m]: 0x0018 : 0x4E 0x4F 0x57 0x21                      | NOW!    
+[36m 12[90m#[[32mrx.c:197[90m][33m xbee_rxHandler()[0m [35m0x7f8f20403c90[90m:[0m received 'Data' type packet...
+[36m 15[90m#[[32mrx.c:214[90m][33m xbee_rxHandler()[0m [35m0x7f8f20403c90[90m:[0m matched packet with con @ 0x7f8f20600150
+[36m 16[90m#[[32mconn.c:181[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m address @ 0x106e95e08...
+[36m 16[90m#[[32mconn.c:182[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    broadcast:      No
+[36m 16[90m#[[32mconn.c:184[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    16-bit address:  0xA03B
+[36m 16[90m#[[32mconn.c:191[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    64-bit address:  0x0013A200 0x40A93385
+[36m 16[90m#[[32mconn.c:198[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    endpoints:       --
+[36m 16[90m#[[32mconn.c:203[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    profile ID:      ----
+[36m 16[90m#[[32mconn.c:208[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    cluster ID:      ----
+[36m 15[90m#[[32mthread.c:68[90m][33m threadFunc()[0m [35m0x7f8f20403c90[90m:[0m starting thread 0x7f8f206004f0, function xbee_conCallbackHandler()...
+[36m  8[90m#[[32mconn.c:924[90m][33m xbee_conCallbackHandler()[0m [35m0x7f8f20403c90[90m:[0m connection @ 0x7f8f20600150 got packet @ 0x7f8f20600040, about to hand to callback function @ 0x106d1f680...
+[36m 25[90m#[[32mlog.c:242[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Tx[[31m0x7f8f20403cf0[0m] length: 19
+[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Tx[[31m0x7f8f20403cf0[0m]: 0x0000 : 0x10 0x00 0x00 0x00 0x00 0x00 0x00 0x00  | ........
+[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Tx[[31m0x7f8f20403cf0[0m]: 0x0008 : 0xFF 0xFF 0xFF 0xFE 0x00 0x00 0x4C 0x4F  | ......LO
+[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Tx[[31m0x7f8f20403cf0[0m]: 0x0010 : 0x57 0x0D 0x0A                           | W..     
+[36m 25[90m#[[32mlog.c:242[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Rx[[31m0x7f8f20403d80[0m] length: 29
+[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Rx[[31m0x7f8f20403d80[0m]: 0x0000 : 0x90 0x00 0x13 0xA2 0x00 0x40 0xA9 0x33  | .....@.3
+[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Rx[[31m0x7f8f20403d80[0m]: 0x0008 : 0x85 0xA0 0x3B 0x01 0x4C 0x69 0x67 0x68  | ..;.Ligh
+[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Rx[[31m0x7f8f20403d80[0m]: 0x0010 : 0x74 0x20 0x69 0x73 0x20 0x6F 0x66 0x66  | t is off
+[36m 25[90m#[[32mlog.c:256[90m][33m _xbee_logData()[0m [35m0x7f8f20403c90[90m:[0m Rx[[31m0x7f8f20403d80[0m]: 0x0018 : 0x20 0x4E 0x4F 0x57 0x21                 |  NOW!   
+[36m 12[90m#[[32mrx.c:197[90m][33m xbee_rxHandler()[0m [35m0x7f8f20403c90[90m:[0m received 'Data' type packet...
+[36m 15[90m#[[32mrx.c:214[90m][33m xbee_rxHandler()[0m [35m0x7f8f20403c90[90m:[0m matched packet with con @ 0x7f8f20600150
+[36m 16[90m#[[32mconn.c:181[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m address @ 0x106e95e08...
+[36m 16[90m#[[32mconn.c:182[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    broadcast:      No
+[36m 16[90m#[[32mconn.c:184[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    16-bit address:  0xA03B
+[36m 16[90m#[[32mconn.c:191[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    64-bit address:  0x0013A200 0x40A93385
+[36m 16[90m#[[32mconn.c:198[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    endpoints:       --
+[36m 16[90m#[[32mconn.c:203[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    profile ID:      ----
+[36m 16[90m#[[32mconn.c:208[90m][33m xbee_conLogAddress()[0m [35m0x7f8f20403c90[90m:[0m    cluster ID:      ----
+[36m  8[90m#[[32mconn.c:924[90m][33m xbee_conCallbackHandler()[0m [35m0x7f8f20403c90[90m:[0m connection @ 0x7f8f20600150 got packet @ 0x7f8f207001b0, about to hand to callback function @ 0x106d1f680...
+[36m 10[90m#[[32mthread.c:78[90m][33m threadFunc()[0m [35m0x7f8f20403c90[90m:[0m thread 0x7f8f206004f0, function xbee_conCallbackHandler() returned without error...
+[36m 15[90m#[[32mthread.c:93[90m][33m threadFunc()[0m [35m0x7f8f20403c90[90m:[0m thread 0x7f8f206004f0, function xbee_conCallbackHandler() has now ended...
