@@ -53,8 +53,10 @@ callback(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt,
         memcpy(&manu_id, (*pkt)->data + 16 + ni_len, 2);
     
         my = my >> 8 | my << 8;
-        sh = (sh & 0xFF000000) >> 24 | (sh & 0xFF0000) >> 8 | (sh & 0xFF00) << 8 | (sh & 0xFF) << 24;
-        sl = (sl & 0xFF000000) >> 24 | (sl & 0xFF0000) >> 8 | (sl & 0xFF00) << 8 | (sl & 0xFF) << 24;
+        sh = (sh & 0xFF000000) >> 24 | (sh & 0xFF0000) >> 8 
+            | (sh & 0xFF00) << 8 | (sh & 0xFF) << 24;
+        sl = (sl & 0xFF000000) >> 24 | (sl & 0xFF0000) >> 8 
+            | (sl & 0xFF00) << 8 | (sl & 0xFF) << 24;
         parent = parent >> 8 | parent << 8;
         profile_id = profile_id >> 8 | profile_id << 8;
         manu_id = manu_id >> 8 | manu_id << 8;
