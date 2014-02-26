@@ -1,6 +1,7 @@
 /**
  * Bruteforce pan ID to identify neighbor devices
  *
+ * Wooyoung Chung
  */
 
 #include <stdio.h>
@@ -12,13 +13,15 @@
 #include <xbee.h>
 
 #define ID_REQUEST 0x4449
+
+int didFound = 0;    
+    
 void
 callback(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt,
         void ** data)
 {
     if((*pkt)->dataLen == 0)
     {
-        printf("too short!\n");
         return;
     }
     
@@ -30,6 +33,8 @@ callback(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt,
         panid = temp | temp2;    
         printf("rx: 0x%hx\n", panid);
     }
+
+    //actual ATND result parsing
     else if((*pkt)->dataLen >= 20){
         unsigned short my;
         uint32_t sl,sh;
@@ -52,6 +57,7 @@ callback(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt,
         memcpy(&profile_id, (*pkt)->data + 14 + ni_len, 2);
         memcpy(&manu_id, (*pkt)->data + 16 + ni_len, 2);
     
+        //byte order swap
         my = my >> 8 | my << 8;
         sh = (sh & 0xFF000000) >> 24 | (sh & 0xFF0000) >> 8 
             | (sh & 0xFF00) << 8 | (sh & 0xFF) << 24;
@@ -64,6 +70,7 @@ callback(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt,
         printf("MY: 0x%hx SH: 0x%x SL: 0x%x\nNI: [%s]\nPARENT: 0x%hxDEVICE: 0x%x STATUS: 0x%x \
                 \nPROFILE: 0x%02x  MANU: 0x%02x\n", my, sh, sl,
                 ni, parent, device_type, status, profile_id, manu_id);
+        didFound = 1;
     }
 }
 
@@ -99,28 +106,30 @@ main (int argc, char ** argv)
     }
     
     unsigned int pan_request = 0x4449;
-    unsigned int pan_force = 0x22330000;
+    unsigned int pan_force = 0x0;
     char req_ptr[5];
     unsigned char ret_ptr[1024];
-    //for(; pan_force < 0x33240000; pan_force = pan_force + 0x10000)
-    //{
+    for(; pan_force < 0xFFFF0000; pan_force = pan_force + 0x10000)
+    {
         //init id request
         pan_request = ID_REQUEST | pan_force;
 
-        printf("Pan request %x\n", pan_request);
+        //create char * request with right byte order
         memset(req_ptr, 0x0, 5);
         memcpy(req_ptr, &pan_request, 4);
         req_ptr[4] = '\0';
 
-        //ret = xbee_conTx(con, NULL, req_ptr);
-        //ret = xbee_conTx(con, NULL, "ID");
+        //change pan id 
+        ret = xbee_conTx(con, NULL, req_ptr);
         usleep(1000000);
 
         //neighbor discovery
         ret = xbee_conTx(con, ret_ptr, "ND");
-        usleep(5000000);
-    //    exit(0);
-    //}
+        usleep(4000000);
+
+        if(didFound)
+            break;
+    }
 
     if((ret = xbee_conEnd(con)) != XBEE_ENONE)
     {
