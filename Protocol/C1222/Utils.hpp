@@ -18,6 +18,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 /**
  * Called AP title element
  * 
@@ -29,7 +30,7 @@ extern "C" {
  *
  * ap title (universal aptitle element)
  * -------------------------------------
- * | 0x06 | id length | universal id   |
+ * | 0x80 | id length | universal id   |
  * -------------------------------------
  */
 
@@ -44,23 +45,21 @@ extern "C" {
  *
  * ap title (universal aptitle element)
  * -----------------------------------------------------------
- * | 0x06 | len(byte) | universal id (not exceed 127 bytes)  |
+ * | 0x80 | len(byte) | universal id (not exceed 127 bytes)  |
  * -----------------------------------------------------------
  */
-//app-context-oid := 06 07 60 7C 86 F7 54 01 16 
 
-    
+/**
+ * TODO: write unittest for functions to make sure it returns correct values
+ *       refactor uid_encoded
+ */
+
 /**
  * Encode data into Universal identifier 
  * Relative **
- * Foramt:
- * value1.value2.value3. ... .valuen
- *
- * first byte value 40 x value1 + value2
- * following by - value(i) encoded base 128 most sig digit first and most
- *                significant bit 1 except last byte 
  *
  * due to complexity issue, encode in relative manner
+ * caller responsible to free data in struct and struct itself
  *
  * @param ptr string in "x.x.xx" format
  * @param len length of string
@@ -73,7 +72,11 @@ inline ap_element * ber_uid_encode(char * ptr, int len)
     char * idPtr[512];
     int count = 0;
     
-    idPtr[count] = strtok(ptr, ".");
+    char dup[strlen(ptr)+1];
+    strcpy(dup, ptr);
+    dup[strlen(ptr)] = '\0';
+
+    idPtr[count] = strtok(dup, ".");
 
     //store pointer to each value
     while(idPtr[count] != NULL)
@@ -82,19 +85,78 @@ inline ap_element * ber_uid_encode(char * ptr, int len)
         idPtr[count] = strtok(NULL, ".");
     }
 
-    unsigned int vals[count];
+    uint8_t * tempVals[count]; 
     unsigned int sizes[count];
+    unsigned int temp, intVal;
 
+    uint8_t mask = 0x80;
+    int totalSize = 0;    
     for(int i =0; i< count; i++)
     {
         printf("to be encoded : %s\n", idPtr[i]);
+        intVal = atoi(idPtr[i]);
         //for each value
         //
         //encode
+        tempVals[i] = (uint8_t *)malloc(sizeof(uint8_t)*5);
+        temp = (intVal >> 28) & 0x0F; //last 4 bits
 
+        //TODO: maybe better way to parse this
+        if(temp != 0){
+            tempVals[i][0] = mask | temp;
+            tempVals[i][1] = mask | ((intVal >> 21) & 0x7F);
+            tempVals[i][2] = mask | ((intVal >> 14) & 0x7F);
+            tempVals[i][3] = mask | ((intVal >> 7 ) & 0x7F);
+            tempVals[i][4] = (intVal & 0x7F);
+            sizes[i] = 5;
+        }
+        else if((temp = ((intVal >> 21) & 0x7F)) != 0)
+        {
+            tempVals[i][0] = mask | temp;
+            tempVals[i][1] = mask | ((intVal >> 14) & 0x7F);
+            tempVals[i][2] = mask | ((intVal >> 7 ) & 0x7F);
+            tempVals[i][3] = (intVal & 0x7F);
+            sizes[i] = 4;
+        }
+        else if((temp = ((intVal >> 14) & 0x7F)) != 0)
+        {
+            tempVals[i][0] = mask | temp;
+            tempVals[i][1] = mask | ((intVal >> 7) & 0x7F);
+            tempVals[i][2] = (intVal & 0x7F);
+            sizes[i] = 3;
+        }
+        else if((temp = ((intVal >> 7) & 0x7F)) != 0)
+        {
+            tempVals[i][0] = mask | temp;
+            tempVals[i][1] = (intVal & 0x7F);
+            sizes[i] = 2;
+        }
+        else{
+            tempVals[i][0] = (intVal & 0x7F);
+            sizes[i] = 1;
+        }
+
+        printf("sizeof %s is %d -> %x\n", idPtr[i], sizes[i], tempVals[i][0]);
+        totalSize += sizes[i];
     }
 
     ap_element * ret = (ap_element *)malloc(sizeof(ap_element));
+    
+    ret->size = totalSize + 2;
+    ret->data = (uint8_t *)malloc(sizeof(uint8_t)*totalSize+2);
+
+    //header and size
+    ret->data[0] = 0x80;
+    ret->data[1] = totalSize;
+
+    for(int i = 0; i < count; i++)
+    {
+        if(i == 0)
+            memcpy(ret->data + 2, tempVals[i], sizes[i]);
+        else 
+            memcpy(ret->data + 2 + (i*sizes[i-1]), tempVals[i], sizes[i]);
+        free(tempVals[i]);
+    }
 
     return ret;
 }
