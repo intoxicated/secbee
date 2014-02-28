@@ -70,7 +70,33 @@ extern "C" {
 
 inline ap_element * ber_uid_encode(char * ptr, int len)
 {
+    char * idPtr[512];
+    int count = 0;
     
+    idPtr[count] = strtok(ptr, ".");
+
+    //store pointer to each value
+    while(idPtr[count] != NULL)
+    {
+        count++;
+        idPtr[count] = strtok(NULL, ".");
+    }
+
+    unsigned int vals[count];
+    unsigned int sizes[count];
+
+    for(int i =0; i< count; i++)
+    {
+        printf("to be encoded : %s\n", idPtr[i]);
+        //for each value
+        //
+        //encode
+
+    }
+
+    ap_element * ret = (ap_element *)malloc(sizeof(ap_element));
+
+    return ret;
 }
 
 /**
