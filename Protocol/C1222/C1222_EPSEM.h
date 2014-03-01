@@ -28,16 +28,19 @@ class C1222_EPSEM : public C1222{
         int get_type();
         void set_data(void * data, long len);
         long get_data_len();
-        uint8_t * get_data();
-        uint8_t get_flag(int flag);
-
+        uint8_t get_flag(int tag);
+        void set_flags(uint8_t flag);
         void * build();
         void parse(void * data);
-
+        
+        uint8_t * get_userinfo();
     private:
-        uint8_t * e_data; 
-        int e_data_len;
+        //uint8_t * e_data; 
+        //int e_data_len;
+        
+        element e_data;
 
+        int data_len;
         uint8_t control;
         long  ed_class;
         long  epsem_len; 
