@@ -14,7 +14,10 @@
 
 C1222_ACSE::C1222_ACSE()
 {
-
+    this->calling_id.size = 0;
+    this->calling_title.size = 0;
+    this->called_id.size = 0;
+    this->called_title.size = 0;
 }
 
 C1222_ACSE::C1222_ACSE(void * usrinfo, uint8_t * calling_title, 
@@ -33,7 +36,14 @@ C1222_ACSE::C1222_ACSE(void * data)
 
 C1222_ACSE::~C1222_ACSE()
 {
-
+    if(this->calling_id.size != 0)
+        free(this->calling_id.data);
+    if(this->calling_title.size != 0)
+        free(this->calling_title.data);
+    if(this->called_title.size != 0)
+        free(this->called_title.data);
+    if(this->called_id.size != 0)
+        free(this->called_id.data);
 }
 
 void 
@@ -55,28 +65,24 @@ C1222_ACSE::build()
  * ===================================================================== */
 
 uint8_t *
-calling_ap_title_parse(void * data, long * datalen, long * berlen)
-{
-    return NULL;
-}
-
-uint8_t *
 calling_id_parse(void * data, long * size)
 {
     return NULL;
 }
 
 uint8_t *
-called_ap_title_parse(void * data, long * datalen, long * berlen)
+ap_title_parse(void * data, long * datalen, long * berlen)
 {
     uint8_t * ptr = (uint8_t *)data;
+    ptr++;
     int ber_size;
 
     *datalen = ber_len_decode(ptr, &ber_size);
     *berlen = ber_size;
-
-    return NULL;
-    //return ber_uid_decode(ptr, &datalen);
+    ptr = ptr  + *berlen; 
+   
+    return (*ptr == 0x80 || *ptr == 0x02) ? (uint8_t *)ber_uid_decode(ptr) : NULL;
+    
 }
 
 uint8_t *
@@ -88,24 +94,28 @@ called_id_parse(void * data, long * datalen, long * berlen)
 uint8_t *
 usrinfo_parse(void * data, long * datalen, long * berlen)
 {
-    uint8_t * ptr = (uint8_t *)data;
+    uint8_t * ptr = (uint8_t *)data + 1;
     int ber_size;
 
-    *datalen = ber_len_decode(ptr+1, &ber_size);
-    ptr = ptr + ber_size; //point user_info_external
+    *datalen = ber_len_decode(ptr, &ber_size);
+    ptr = ptr +  ber_size; //point user_info_external
 
     //check header for user-info external
     if(*ptr == 0x28)
     {
+        printf("[--->] check user info external \n");
         *datalen = ber_len_decode(ptr+1, &ber_size);
-        ptr = ptr + ber_size;
+        ptr = ptr + 1 + ber_size;
+        printf(" [--->] external size : %ld\n", *datalen);
     }
 
     //check header for user info octet string
     if(*ptr == 0x81)
     {
+        printf("[--->] check user info octet string ..\n");
         *datalen = ber_len_decode(ptr+1, &ber_size);
-        ptr = ptr + ber_size;
+        ptr = ptr + 1 + ber_size;
+        printf(" [--->] octet size : %ld\n", *datalen);
     }
 
     //now ptr points epsem section
@@ -129,71 +139,90 @@ C1222_ACSE::parse(void * data)
     uint8_t * usrinfo;
     int datalen, ber_size;
 
+    printf("ACSE parsing start..\n");
     if(*ptr != 0x60){
         return;
     }
     else {
+        printf("Decoding length of ACSE..\n");
         datalen = ber_len_decode(ptr + 1, &ber_size);
         ptr = ptr + 1 + ber_size; //now pointing elements
-    
+        printf("data length is : %x \n", datalen);
         long datalen, berlen;
         
         //parse called
         if(*ptr == 0xA2){
-            this->called_title.data = called_ap_title_parse(ptr, &datalen, &berlen);
-            this->called_title.size = datalen; 
-            ptr = ptr + berlen + datalen;
+            printf("[*] Parsing called title... \n");
+            this->called_title.data = ap_title_parse(ptr, &datalen, &berlen);
+            this->called_title.size = datalen;
+            ptr = ptr + 1 + berlen + datalen;
         }
-        
+
+        printf("[---->] Called ap title is : %s\n", this->called_title.data);
+   
+        //check first
         if(*ptr == 0xA4){
             this->called_id.data = called_id_parse(ptr, &datalen, &berlen);
             this->called_id.size = datalen;
-            ptr = ptr + berlen + datalen;
+            ptr = ptr + 1 + berlen + datalen;
         }
         
         //parse calling
         if(*ptr == 0xA6){
-            this->calling_title.data = calling_ap_title_parse(ptr, &datalen, &berlen);
+            printf("[*] Parsing calling title... \n");
+            this->calling_title.data = ap_title_parse(ptr, &datalen, &berlen);
             this->calling_title.size = datalen;
-            ptr = ptr + berlen + datalen;
+            ptr = ptr + 1 + berlen + datalen;
         }
         
+        printf("[---->] Calling ap title is : %s\n", this->calling_title.data);
+         
         if(*ptr == 0xA8){
-
+            printf("[*] Parsing calling invo id... \n");
+            this->calling_id.data = ap_title_parse(ptr, &datalen, &berlen);
+            this->calling_id.size = datalen;
+            ptr = ptr + 1 + berlen + datalen;
         }
-
+        
+        printf("[---->] Calling invo id is : %s\n", this->calling_id.data);
+         
         //parse user information
         if(*ptr == 0xBE){
+            printf("[*] Parsing user info ... \n");
+            //this->userinfo.data = ptr;
             this->userinfo.data = usrinfo_parse(ptr, &datalen, &berlen);
             this->userinfo.size = datalen;
-            ptr = ptr + berlen + datalen;
+            ptr = ptr + 1 + berlen + datalen;
+            printf("[!] userinfo data start with : 0x%x and length %ld\n", *(this->userinfo.data)
+                    , datalen);
         }
         
         
     }
+    printf("[!!] ACSE Parsing done!\n");
 }
 
 /* getters */
 
-uint8_t * 
+char * 
 C1222_ACSE::get_calling_title()
 {
     return NULL;
 }
 
-uint8_t * 
+char * 
 C1222_ACSE::get_calling_id()
 {
     return NULL;
 }
      
-uint8_t * 
+char * 
 C1222_ACSE::get_called_title()
 {
     return NULL;
 }
                 
-uint8_t * 
+char * 
 C1222_ACSE::get_called_id()
 {
     return NULL;

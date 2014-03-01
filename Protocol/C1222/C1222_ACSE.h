@@ -30,18 +30,18 @@ class C1222_ACSE : public C1222 {
 
         void parse(void * data);
 
-        uint8_t * get_calling_title();
-        uint8_t * get_calling_id();
-        uint8_t * get_called_title();
-        uint8_t * get_called_id();
+        char * get_calling_title();
+        char * get_calling_id();
+        char * get_called_title();
+        char * get_called_id();
         uint8_t * get_epsem();
         long get_data_len();
         
         void set_epsem(void * data, long size);
     private:
-        ap_element calling_title, calling_id;
-        ap_element called_title, called_id;
-        ap_element userinfo;
+        element calling_title, calling_id;
+        element called_title, called_id;
+        element userinfo;
 
         long acse_len;
 };
