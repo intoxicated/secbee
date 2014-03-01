@@ -51,6 +51,7 @@ class C1222_Request : public C1222 {
         
         void trace(const char * ap_title);
 
+        static void parse_request(void * data);
     private:
         uint8_t request_num;
         uint8_t * raw;
@@ -58,6 +59,7 @@ class C1222_Request : public C1222 {
 
 #endif
 
+/*
 class C1222_Request_Ident : public C1222_Request
 {
 
@@ -102,5 +104,5 @@ class C1222_Request_Trace : public C1222_Request
 {
 
 };
-
+*/
 

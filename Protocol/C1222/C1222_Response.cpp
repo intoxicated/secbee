@@ -210,7 +210,14 @@ C1222_Response::resolve(const uint8_t res, const uint8_t addr_len,
  * @param ap_titles aptitle of c12.22 relays used to forward this request
  */
 void
-trace(const uint8_t res, const uint8_t ** aptitles)
+C1222_Response::trace(const uint8_t res, const uint8_t ** aptitles)
 {
+
+}
+
+void
+C1222_Response::parse_response(void * data)
+{
+
 
 }

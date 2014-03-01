@@ -58,6 +58,7 @@ class C1222_Response : public C1222 {
 
         void trace(const uint8_t res, const uint8_t ** aptitles);
 
+        static void parse_response(void * data);
     private:
         uint8_t * raw; 
         long datalen;
