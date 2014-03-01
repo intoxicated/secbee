@@ -64,10 +64,10 @@ extern "C" {
  * @param ptr string in "x.x.xx" format
  * @param len length of string
  *
- * @return ap_element struct data (0x80 <length> <encoded data>) with size
+ * @return element struct data (0x80 <length> <encoded data>) with size
  */
 
-inline ap_element * ber_uid_encode(char * ptr, int len)
+inline element * ber_uid_encode(char * ptr, int len)
 {
     char * idPtr[512];
     int count = 0;
@@ -140,7 +140,7 @@ inline ap_element * ber_uid_encode(char * ptr, int len)
         totalSize += sizes[i];
     }
 
-    ap_element * ret = (ap_element *)malloc(sizeof(ap_element));
+    element * ret = (element *)malloc(sizeof(element));
     
     ret->size = totalSize + 2;
     ret->data = (uint8_t *)malloc(sizeof(uint8_t)*totalSize+2);
@@ -170,20 +170,20 @@ inline ap_element * ber_uid_encode(char * ptr, int len)
  * @param data encoded raw data
  * @param size (outbound) length of byte
  */
-inline char * ber_uid_decode(void * data, int * size)
+inline char * ber_uid_decode(void * data)
 {
-    uint8_t * origin = (uint8_t *)data + 1;
-    uint8_t * ptr = (uint8_t *)data;
+    uint8_t * origin = (uint8_t *)data + 2;
+    uint8_t * ptr = (uint8_t *)data + 1;
 
     //save encoded length 
-    *size = ptr[0];
+    int size = ptr[0];
+
+
     //move pointer to first byte of data
     ptr++;
-
     //innerCount : flag for how much I need to shift
     //bcount : flag for couting left bit 
     int innerCount = 3, bcount = 0;;
-
     //temporary holder for value
     unsigned int temp = 0;
     uint8_t val  = 0;
@@ -192,7 +192,7 @@ inline char * ber_uid_decode(void * data, int * size)
     char * ret = (char *)malloc(512);
     memset(ret, 0x0, 512);
 
-    for(;ptr < origin + *size; ++ptr)
+    for(;ptr < origin + size; ++ptr)
     {
         //check for block of value
         //8th bit is not on than last block 
@@ -211,7 +211,6 @@ inline char * ber_uid_decode(void * data, int * size)
             //copy to buffer
             snprintf(ret + strlen(ret), sizeof(ret), "%u", temp);
             strcat(ret, ".");
-            
             //reset flags
             innerCount = 3;     
             temp = 0;
@@ -286,7 +285,7 @@ inline int ber_len_encode(void * ptr, int len, int mx)
 inline int ber_len_decode(void * data, int * size)
 {
     uint8_t * bptr = (uint8_t *)data;
-    
+   
     int ret = 0; 
     
     if(*bptr <= 0x7f){
