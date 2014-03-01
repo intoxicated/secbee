@@ -18,6 +18,7 @@
 #include "../Protocol/C1222/C1222_ACSE.h"
 #include "../Protocol/C1222/C1222_EPSEM.h"
 #include "../Protocol/C1222/C1222_Request.h"
+#include "../Protocol/C1222/C1222_Response.h"
 
 #include "Secbee.h"
 
@@ -49,6 +50,12 @@
  */
 
 void
+banner()
+{
+
+}
+
+void
 signal_handler(int signum)
 {
     switch(signum)
@@ -63,21 +70,26 @@ void
 myCB(struct xbee * xbee, struct xbee_con * con,
         struct xbee_pkt ** pkt, void ** data)
 {
-    printf("[**] callback routine starting .. \n");
+    printf("[**] Receiving phase ... \n");
     if((*pkt)->dataLen == 0)
     {
         printf("[!!] datalen is too short \n");
         return;
     }
-
+    //prepare parsing incoming data
+    C1222_ACSE acse;
+    C1222_EPSEM epsem;
+    
+    //parse acse
+    acse.parse((*pkt)->data);
+    //parse epsem
+    epsem.parse(acse.get_epsem());
+    //parse and print response part 
+    C1222_Response::parse_response(epsem.get_userinfo());
+    //parse
     printf("Receive: [%s]\n", (*pkt)->data);
 }
 
-void 
-banner()
-{
-
-}
 /**
  * wrapper for setup log
  * 
@@ -185,22 +197,14 @@ int main(int argc, char ** argv)
         printf("[!] xbee_conCallbackSet return: %d(%s)\n", ret, XBEE_ERR(ret));
         return ret;
     }
-    /*
-    char **types;
-    int i;
-
-    if (xbee_conGetTypes(xbee, &types) != XBEE_ENONE) 
-        return -1;
-
-
-    free(types);
-    */
+    
     struct xbee_conSettings settings;
     xbee_conSettings(con, NULL, &settings);
     settings.disableAck = 1;
     settings.catchAll = 1;
     xbee_conSettings(con, &settings, NULL);
 
+    //sending phase
     ret = xbee_conTx(con, NULL, "HIGH\r\n");
     printf("Ret: %d\n", ret);
     usleep(3000000);
