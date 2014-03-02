@@ -98,7 +98,8 @@ inline element * ber_uid_encode(char * ptr, int len)
         //for each value
         //
         //encode
-        tempVals[i] = (uint8_t *)malloc(sizeof(uint8_t)*5);
+        //tempVals[i] = (uint8_t *)malloc(sizeof(uint8_t)*5);
+        tempVals[i] = new uint8_t[5];
         temp = (intVal >> 28) & 0x0F; //last 4 bits
 
         //TODO: maybe better way to parse this
@@ -140,15 +141,17 @@ inline element * ber_uid_encode(char * ptr, int len)
         totalSize += sizes[i];
     }
 
-    element * ret = (element *)malloc(sizeof(element));
+    element * ret = new element();
+    //element * ret = (element *)malloc(sizeof(element));
     
     ret->size = totalSize + 2;
-    ret->data = (uint8_t *)malloc(sizeof(uint8_t)*totalSize+2);
+    ret->data = new uint8_t[totalSize + 2];
+    //ret->data = (uint8_t *)malloc(sizeof(uint8_t)*totalSize+2);
 
     //header and size
     ret->data[0] = 0x80;
     ret->data[1] = totalSize;
-
+    //totalSize cannot exceed 127 bytes
     for(int i = 0; i < count; i++)
     {
         if(i == 0)
@@ -167,13 +170,13 @@ inline element * ber_uid_encode(char * ptr, int len)
  *
  * caller must to free the memory after calling this function
  *
- * @param data encoded raw data
+ * @param data encoded raw data starting with length of data
  * @param size (outbound) length of byte
  */
 inline char * ber_uid_decode(void * data)
 {
-    uint8_t * origin = (uint8_t *)data + 2;
-    uint8_t * ptr = (uint8_t *)data + 1;
+    uint8_t * origin = (uint8_t *)data + 1;
+    uint8_t * ptr = (uint8_t *)data ;
 
     //save encoded length 
     int size = ptr[0];
@@ -189,7 +192,8 @@ inline char * ber_uid_decode(void * data)
     uint8_t val  = 0;
 
     //max 127 bytes of data (defined in c1222 doc)
-    char * ret = (char *)malloc(512);
+    //char * ret = (char *)malloc(512);
+    char * ret = new char[512];
     memset(ret, 0x0, 512);
 
     for(;ptr < origin + size; ++ptr)

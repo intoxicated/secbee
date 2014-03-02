@@ -14,10 +14,10 @@ int main()
     char * ret;
     int size;
    
-    ret = ber_uid_decode((void *)"\x03\x7B\xC1\x75", &size); 
+    ret = ber_uid_decode((void *)"\x03\x7B\xC1\x75"); 
 
     char  input[] = "156.5454";
-    ap_element * enc = ber_uid_encode(input, 8);
+    element * enc = ber_uid_encode(input, 8);
     printf("return value is :%s\n", ret);
 
     printf("encoded %s is:\n", input);
@@ -28,11 +28,11 @@ int main()
     }
     puts("");
     if(enc != NULL){
-        free(enc->data);
-        free(enc);
+        delete enc->data;
+        delete enc;
     }
     if(ret != NULL)
-        free(ret);
+        delete ret;
     return 0;
 }
 
