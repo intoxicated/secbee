@@ -17,7 +17,7 @@ typedef struct {
 } element;
 
 class C1222 {
-    virtual void * build() = 0;
+    virtual uint8_t * build() = 0;
 };
 
 #endif
