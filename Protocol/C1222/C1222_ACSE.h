@@ -21,8 +21,9 @@ class C1222_ACSE : public C1222 {
         C1222_ACSE();
         C1222_ACSE(const C1222_ACSE& other);
         C1222_ACSE(void * data);
-        C1222_ACSE(void * usrinfo, uint8_t * calling_title, uint8_t * calling_id,
-                uint8_t * called_title, uint8_t * called_id, int usrlen);
+        C1222_ACSE(void * usrinfo, const char * calling_title, 
+            const char * calling_id, const char * called_title, 
+            const char * called_id, int usrlen);
         ~C1222_ACSE();
                 
         uint8_t * build();
@@ -43,6 +44,7 @@ class C1222_ACSE : public C1222 {
         element called_title, called_id;
         element userinfo;
 
+        uint8_t * raw_data;
         long acse_len;
 };
 
