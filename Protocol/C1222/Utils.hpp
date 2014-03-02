@@ -67,7 +67,7 @@ extern "C" {
  * @return element struct data (0x80 <length> <encoded data>) with size
  */
 
-inline element * ber_uid_encode(char * ptr, int len)
+inline element * ber_uid_encode(char * ptr, int len, int tag)
 {
     char * idPtr[512];
     int count = 0;
@@ -93,7 +93,7 @@ inline element * ber_uid_encode(char * ptr, int len)
     int totalSize = 0;    
     for(int i =0; i< count; i++)
     {
-        printf("to be encoded : %s\n", idPtr[i]);
+        //printf("to be encoded : %s\n", idPtr[i]);
         intVal = atoi(idPtr[i]);
         //for each value
         //
@@ -118,7 +118,7 @@ inline element * ber_uid_encode(char * ptr, int len)
             tempVals[i][2] = mask | ((intVal >> 7 ) & 0x7F);
             tempVals[i][3] = (intVal & 0x7F);
             sizes[i] = 4;
-        }
+        } 
         else if((temp = ((intVal >> 14) & 0x7F)) != 0)
         {
             tempVals[i][0] = mask | temp;
@@ -137,7 +137,7 @@ inline element * ber_uid_encode(char * ptr, int len)
             sizes[i] = 1;
         }
 
-        printf("sizeof %s is %d -> %x\n", idPtr[i], sizes[i], tempVals[i][0]);
+        //printf("sizeof %s is %d -> %x\n", idPtr[i], sizes[i], tempVals[i][0]);
         totalSize += sizes[i];
     }
 
@@ -149,7 +149,7 @@ inline element * ber_uid_encode(char * ptr, int len)
     //ret->data = (uint8_t *)malloc(sizeof(uint8_t)*totalSize+2);
 
     //header and size
-    ret->data[0] = 0x80;
+    ret->data[0] = tag;
     ret->data[1] = totalSize;
     //totalSize cannot exceed 127 bytes
     for(int i = 0; i < count; i++)
@@ -160,7 +160,10 @@ inline element * ber_uid_encode(char * ptr, int len)
             memcpy(ret->data + 2 + (i*sizes[i-1]), tempVals[i], sizes[i]);
         free(tempVals[i]);
     }
-
+    printf("Final encoded: ");
+    for(int i = 0; i < ret->size; ++i)
+        printf("0x%x ", ret->data[i]);
+    puts("");
     return ret;
 }
 
