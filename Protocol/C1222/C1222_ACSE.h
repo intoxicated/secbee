@@ -25,7 +25,7 @@ class C1222_ACSE : public C1222 {
                 uint8_t * called_title, uint8_t * called_id, int usrlen);
         ~C1222_ACSE();
                 
-        void * build();
+        uint8_t * build();
         void clear();
 
         void parse(void * data);

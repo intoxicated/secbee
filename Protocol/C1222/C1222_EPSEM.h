@@ -1,8 +1,8 @@
-/* ========================================================================= *
- *                                                                           *
- *                                EPSEM class                                *  
- *                                                                           *
- * ========================================================================= */
+/* ==================================================================== *
+ *                                                                      *
+ *                           EPSEM class                                *  
+ *                                                                      *
+ * ==================================================================== */
 
 #ifndef __C1222_EPSEM_H__
 #define __C1222_EPSEM_H__
@@ -25,25 +25,23 @@ class C1222_EPSEM : public C1222{
         C1222_EPSEM(const C1222_EPSEM& other);
         ~C1222_EPSEM();
 
-        int get_type();
+        uint8_t * build();
+        void parse(void * data);
+        
+        uint8_t * get_epsem_data();
         void set_data(void * data, long len);
+        long get_length();
         long get_data_len();
         uint8_t get_flag(int tag);
         void set_flags(uint8_t flag);
-        void * build();
-        void parse(void * data);
-        
-        uint8_t * get_userinfo();
-    private:
-        //uint8_t * e_data; 
-        //int e_data_len;
-        
+    
+    private:    
         element e_data;
 
-        int data_len;
         uint8_t control;
         long  ed_class;
-        long  epsem_len; 
+        long  length; 
+        long  encoded_size;
         uint8_t security_mode, response_mode;
         bool reserve, recovery, proxy_service;
 

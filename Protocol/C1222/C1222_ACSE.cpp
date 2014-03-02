@@ -52,7 +52,7 @@ C1222_ACSE::clear()
 
 }
 
-void *
+uint8_t *
 C1222_ACSE::build()
 {
     return NULL;
@@ -65,48 +65,36 @@ C1222_ACSE::build()
  * ===================================================================== */
 
 uint8_t *
-calling_id_parse(void * data, long * size)
-{
-    return NULL;
-}
-
-uint8_t *
 ap_title_parse(void * data, long * datalen, long * berlen)
 {
     uint8_t * ptr = (uint8_t *)data;
-    ptr++;
     int ber_size;
 
-    *datalen = ber_len_decode(ptr, &ber_size);
+    *datalen = ber_len_decode(ptr + 1, &ber_size);
     *berlen = ber_size;
-    ptr = ptr  + *berlen; 
+    ptr = ptr + 1 + *berlen; 
    
-    return (*ptr == 0x80 || *ptr == 0x02) ? (uint8_t *)ber_uid_decode(ptr) : NULL;
+    return (*ptr == 0x80 || *ptr == 0x02) ?
+        (uint8_t *)ber_uid_decode(ptr+1) : NULL;
     
-}
-
-uint8_t *
-called_id_parse(void * data, long * datalen, long * berlen)
-{
-    return NULL;
 }
 
 uint8_t *
 usrinfo_parse(void * data, long * datalen, long * berlen)
 {
-    uint8_t * ptr = (uint8_t *)data + 1;
+    uint8_t * ptr = (uint8_t *)data;
     int ber_size;
 
-    *datalen = ber_len_decode(ptr, &ber_size);
-    ptr = ptr +  ber_size; //point user_info_external
-
+    *datalen = ber_len_decode(ptr + 1, &ber_size);
+    ptr = ptr + 1 + ber_size; //point user_info_external
+    printf(" [--->] userinfo element size : 0x%lx\n", *datalen);
     //check header for user-info external
     if(*ptr == 0x28)
     {
         printf("[--->] check user info external \n");
         *datalen = ber_len_decode(ptr+1, &ber_size);
         ptr = ptr + 1 + ber_size;
-        printf(" [--->] external size : %ld\n", *datalen);
+        printf(" [--->] external size : 0x%lx\n", *datalen);
     }
 
     //check header for user info octet string
@@ -115,7 +103,7 @@ usrinfo_parse(void * data, long * datalen, long * berlen)
         printf("[--->] check user info octet string ..\n");
         *datalen = ber_len_decode(ptr+1, &ber_size);
         ptr = ptr + 1 + ber_size;
-        printf(" [--->] octet size : %ld\n", *datalen);
+        printf(" [--->] octet size : 0x%lx\n", *datalen);
     }
 
     //now ptr points epsem section
@@ -162,7 +150,7 @@ C1222_ACSE::parse(void * data)
    
         //check first
         if(*ptr == 0xA4){
-            this->called_id.data = called_id_parse(ptr, &datalen, &berlen);
+            this->called_id.data = ap_title_parse(ptr, &datalen, &berlen);
             this->called_id.size = datalen;
             ptr = ptr + 1 + berlen + datalen;
         }
@@ -193,7 +181,7 @@ C1222_ACSE::parse(void * data)
             this->userinfo.data = usrinfo_parse(ptr, &datalen, &berlen);
             this->userinfo.size = datalen;
             ptr = ptr + 1 + berlen + datalen;
-            printf("[!] userinfo data start with : 0x%x and length %ld\n", *(this->userinfo.data)
+            printf("[!] userinfo data start with : 0x%x and length 0x%lx\n", *(this->userinfo.data)
                     , datalen);
         }
         
