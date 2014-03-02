@@ -1,5 +1,6 @@
 #include "../C1222_ACSE.h"
 #include "../C1222_EPSEM.h"
+#include "../C1222_Request.h"
 
 #include <string>
 #include <stdlib.h>
@@ -21,7 +22,6 @@ int main (int argc, char ** argv)
     C1222_EPSEM epsem;
 
     epsem.parse(acse.get_epsem());
-
 
     return 0;
 }
