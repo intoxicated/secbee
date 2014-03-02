@@ -13,20 +13,29 @@
 
 C1222_EPSEM::C1222_EPSEM()
 {
-
+    e_data.size = 0;
+    raw_data = NULL;
 }
 
 C1222_EPSEM::C1222_EPSEM(void * data, uint8_t flag, 
                         int e_class, int datalen)
 {
-    this->control = flag;
-    this->ed_class = e_class;
-    this->e_data.data = new uint8_t[datalen];
+    control = flag;
+    ed_class = e_class;
+    e_data.size = datalen;
+    e_data.data = new uint8_t[datalen];
+    raw_data = NULL;
     memcpy(e_data.data, data, datalen);
+
 
     //parse out flags
     this->set_flags(flag);
-    this->encoded_size = ber_len_encode(&this->length, datalen, 4);
+    encoded_size = ber_len_encode(&service_len, datalen, 4);
+
+    if(e_class != 0)
+        length = this->encoded_size + 1 + 4 + datalen;
+    else
+        length = this->encoded_size + 1 + datalen;
 }
 
 C1222_EPSEM::C1222_EPSEM(const C1222_EPSEM& other)
@@ -38,7 +47,10 @@ C1222_EPSEM::C1222_EPSEM(const C1222_EPSEM& other)
 
 C1222_EPSEM::~C1222_EPSEM()
 {
-    delete this->e_data.data;
+    if(e_data.size != 0)
+        delete this->e_data.data;
+    if(raw_data != NULL)
+        delete raw_data;
 }
 
 void
@@ -60,18 +72,23 @@ C1222_EPSEM::set_flags(uint8_t flag)
 uint8_t * 
 C1222_EPSEM::build()
 {
-    //determine total size of epsem 
-    int size = 1 + this->encoded_size + this->e_data.size;
-    if(this->ed_class != 0x0)
-        size += 4;
-
-    uint8_t * builder = new uint8_t[size]; 
-    //header
+    raw_data = new uint8_t[length]; 
+    //control byte
+    printf( "building data...\n");
+    raw_data[0] = control;
+    //class
+    if(ed_class != 0x0){
+        memcpy(raw_data+1, &ed_class, 4);
+    }
+    else{
+        printf("build length and data\n");
     //encode size
-    //class?
+        memcpy(raw_data + 1, &service_len, this->encoded_size);
     //epsem data
-
-    return NULL;
+        memcpy(raw_data + 1 + encoded_size, 
+            e_data.data, e_data.size);
+    }
+    return raw_data;
 }
 
 void
