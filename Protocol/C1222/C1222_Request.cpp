@@ -173,6 +173,8 @@ C1222_Request_Logon::get_username()
 uint8_t *
 C1222_Request_Logon::build()
 {
+    unsigned short uid, tout;
+
     raw_data = new uint8_t[15];
 
     //validation of input
@@ -186,7 +188,10 @@ C1222_Request_Logon::build()
     //std::stringstream sstream;
     //sstream << std::hex << user_id;
     //std::string ustr = sstream.str();
-    memcpy(raw_data + 1, &user_id, 2);
+    uid = user_id >> 8 | user_id << 8;
+    tout = timeout >> 8 | timeout << 8;
+    
+    memcpy(raw_data + 1, &uid, 2);
 
     char uname[10];
     memcpy(uname, username, strlen(username));
@@ -199,7 +204,7 @@ C1222_Request_Logon::build()
     memcpy(raw_data + 3, uname, 10);
 
     //add timeout
-    memcpy(raw_data + 13, &timeout, 2);
+    memcpy(raw_data + 13, &tout, 2);
 
     build_size = 15;
 
