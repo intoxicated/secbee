@@ -23,6 +23,8 @@ class C1222_Request : public C1222 {
         uint8_t       get_request_num();
         unsigned long get_build_size();
 
+        void parse(uint8_t * data);
+
     protected:
         uint8_t         request_num;
         uint8_t *       raw_data;
@@ -114,7 +116,7 @@ class C1222_Request_Read : public C1222_Request
         unsigned short    get_tableid();
         unsigned short    get_e_count();
 
-        friend C1222_Request_Read read_parse(uint8_t * data);
+        static C1222_Request_Read parse(uint8_t * data);
 
     private:
         unsigned short      tableid;

@@ -303,6 +303,7 @@ C1222_Request_Read::build()
         build_size = 3;
         raw_data = new uint8_t[build_size];
         raw_data[0] = request_num;
+        tableid = tableid >> 8 | tableid << 8;
         memcpy(raw_data + 1, &tableid, 2);
        
     }
@@ -330,14 +331,14 @@ C1222_Request_Read::build()
 }
 
 C1222_Request_Read 
-read_parse(uint8_t * data)
+C1222_Request_Read::parse(uint8_t * data)
 {
     uint8_t req = *data;
     unsigned short tableid = 0, size = 0, e_count = 0;
     //full
     if(0x30 == req)
     {
-        memcpy(&tableid, data, 2);
+        memcpy(&tableid, data+1, 2);
     }
     //default
     else if (0x3E == req)
