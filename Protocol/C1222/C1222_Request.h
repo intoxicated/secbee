@@ -23,8 +23,6 @@ class C1222_Request : public C1222 {
         uint8_t       get_request_num();
         unsigned long get_build_size();
 
-        void parse(uint8_t * data);
-
     protected:
         uint8_t         request_num;
         uint8_t *       raw_data;
@@ -68,7 +66,7 @@ class C1222_Request_Logon : public C1222_Request
         unsigned short get_timeout();
         char *         get_username();
 
-        friend C1222_Request_Logon logon_parse(uint8_t * data);
+        static C1222_Request_Logon * parse(uint8_t * data);
 
     private:
         unsigned short user_id;
@@ -91,7 +89,7 @@ class C1222_Request_Write : public C1222_Request
         unsigned short      get_tableid();
         unsigned short      get_count();
 
-        friend C1222_Request_Write write_parse(uint8_t * data);
+        static C1222_Request_Write * parse(uint8_t * data);
 
     private:
         unsigned short      tableid;
@@ -116,7 +114,7 @@ class C1222_Request_Read : public C1222_Request
         unsigned short    get_tableid();
         unsigned short    get_e_count();
 
-        static C1222_Request_Read parse(uint8_t * data);
+        static C1222_Request_Read * parse(uint8_t * data);
 
     private:
         unsigned short      tableid;
@@ -141,7 +139,7 @@ class C1222_Request_Wait : public C1222_Request
         uint8_t *      build();
         uint8_t        get_interval();
 
-    friend C1222_Request_Wait wait_parse(uint8_t * data);
+        static C1222_Request_Wait * parse(uint8_t * data);
 
     private:
         uint8_t interval;
@@ -157,7 +155,7 @@ class C1222_Request_Resolve : public C1222_Request
         uint8_t *      build();
         char *         get_ap_title();
 
-        friend C1222_Request_Resolve resolve_parse(uint8_t * data);
+        static C1222_Request_Resolve * parse(uint8_t * data);
 
     private:
         char * ap_title;
@@ -173,7 +171,7 @@ class C1222_Request_Trace : public C1222_Request
         uint8_t *       build();
         char *          get_ap_title();
 
-        friend C1222_Request_Trace trace_parse(uint8_t * data);
+        static C1222_Request_Trace * parse(uint8_t * data);
 
     private:
         char * ap_title;
@@ -189,7 +187,7 @@ class C1222_Request_Security : public C1222_Request
         char *          get_passwd();
         unsigned short  get_user_id();
 
-        friend C1222_Request_Security security_parse(uint8_t * data);
+        static C1222_Request_Security * parse(uint8_t * data);
 
     private:
         char *         passwd;
@@ -204,6 +202,8 @@ class C1222_Request_Registration : public C1222_Request
             uint8_t * device_class, const char * ap_title, 
             uint8_t * serial_num,  uint8_t addr_len, 
             uint8_t * native_addr, uint8_t * reg_period);
+
+        static C1222_Request_Registration * parse(uint8_t * data);
 
     private:
         uint8_t     node_type;
@@ -224,8 +224,20 @@ class C1222_Request_Deregistration : public C1222_Request
 
         char *  get_ap_title();
 
+        static C1222_Request_Deregistration * parse(uint8_t * data);
+
     private:
         char * ap_title;
+};
+
+class C1222_Request_Parser {
+    public:
+        uint8_t req;
+
+        static void * parse(uint8_t * data)
+        {
+            return C1222_Request_Read::parse(data);
+        }
 };
 
 #endif

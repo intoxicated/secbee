@@ -211,8 +211,8 @@ C1222_Request_Logon::build()
     return raw_data;
 }
 
-C1222_Request_Logon 
-logon_parse(uint8_t * data)
+C1222_Request_Logon *
+C1222_Request_Logon::parse(uint8_t * data)
 {
     uint8_t req;
     unsigned short userid, timeout;
@@ -225,9 +225,7 @@ logon_parse(uint8_t * data)
     memcpy(&timeout, data + 13, 2);
     username[10] = '\0';
 
-    C1222_Request_Logon logon(userid, username, timeout);
-
-    return logon;
+    return new C1222_Request_Logon (userid, username, timeout);
 }
 
 
@@ -330,7 +328,7 @@ C1222_Request_Read::build()
     return raw_data;
 }
 
-C1222_Request_Read 
+C1222_Request_Read * 
 C1222_Request_Read::parse(uint8_t * data)
 {
     uint8_t req = *data;
@@ -358,9 +356,9 @@ C1222_Request_Read::parse(uint8_t * data)
     else
         ; //error
 
-    C1222_Request_Read readObj(req, tableid, NULL, 0, 0);
+    return new C1222_Request_Read(req, tableid, NULL, 0, 0);
 
-    return readObj;
+    //return readObj;
 }
 
 /**
@@ -480,8 +478,8 @@ C1222_Request_Write::build()
     return raw_data;
 }
 
-C1222_Request_Write
-write_parse(uint8_t * data)
+C1222_Request_Write *
+C1222_Request_Write::parse(uint8_t * data)
 {
     uint8_t req = *data;
 
@@ -501,9 +499,8 @@ write_parse(uint8_t * data)
     else
         ; //error
 
-    C1222_Request_Write writeObj;
 
-    return writeObj;
+    return new C1222_Request_Write(0x40, 0, NULL, 0, 0, NULL);;
 }
 
 
@@ -566,10 +563,10 @@ C1222_Request_Wait::build()
     return raw_data;
 }
 
-C1222_Request_Wait
-wait_parse(uint * data)
+C1222_Request_Wait *
+C1222_Request_Wait::parse(uint8_t * data)
 {
-
+    return new C1222_Request_Wait(0);
 }
 /**
  * Resolve request
@@ -619,10 +616,10 @@ C1222_Request_Resolve::build()
     return raw_data;
 }
 
-C1222_Request_Resolve
-resolve_parse(uint8_t * data)
+C1222_Request_Resolve *
+C1222_Request_Resolve::parse(uint8_t * data)
 {
-
+    return new C1222_Request_Resolve("");
 }
 
 /**
@@ -672,10 +669,10 @@ C1222_Request_Trace::build()
     return raw_data;
 }
 
-C1222_Request_Trace 
-trace_parse(uint8_t * data)
+C1222_Request_Trace * 
+C1222_Request_Trace::parse(uint8_t * data)
 {
-
+    return new C1222_Request_Trace("");
 }
 
 /**
@@ -734,13 +731,13 @@ C1222_Request_Security::build()
     //sstream << std::hex << user_id;
     //std::string ustr = sstream.str();
     //memcpy(this->raw + 21, ustr.c_str(), 2);
-
+    return raw_data;
 }
 
-C1222_Request_Security 
-security_parse(uint8_t * data)
+C1222_Request_Security *
+C1222_Request_Security::parse(uint8_t * data)
 {
-
+    return new C1222_Request_Security("passwd", 0);
 }
 
 /**
