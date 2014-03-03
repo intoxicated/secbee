@@ -84,7 +84,9 @@ gtest_main.a : gtest-all.o gtest_main.o
 #	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
 Request_test.o : $(USER_DIR)/Request_test.cpp $(GTEST_HEADERS)
-		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/Request_test.cpp 
+		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/Request_test.cpp \
+			$(PROTO_DIR)/C1222_ACSE.cpp $(PROTO_DIR)/C1222_EPSEM.cpp \
+			$(PROTO_DIR)/C1222_Request.cpp
 
 Response_test.o : $(USER_DIR)/Response_test.cpp $(GTEST_HEADERS)
 	    $(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/Response_test.cpp

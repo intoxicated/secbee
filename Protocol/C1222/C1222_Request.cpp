@@ -16,7 +16,6 @@ using namespace std;
 
 /**
  *  Super class Request
- *
  */
 
 C1222_Request::C1222_Request()
