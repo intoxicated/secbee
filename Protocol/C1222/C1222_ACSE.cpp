@@ -116,7 +116,7 @@ C1222_ACSE::clear()
  * @param name name of ap element (debug)
  */
 void
-cleanup(element * ptr, char * name)
+cleanup(element * ptr, const char * name)
 {
     if(ptr != NULL)
     {
@@ -255,7 +255,7 @@ C1222_ACSE::build()
     }
     
     printf("berlen %x %x %x", calling_t_blen, calling_id_blen, called_t_blen);
-    printf("USER INFO LEN : 0x%x\ncin %x cid %x ced %x\n", usrinfo_len
+    printf("USER INFO LEN : 0x%x\ncin %lx cid %lx ced %lx\n", usrinfo_len
         ,calling_t_len, calling_id_len, called_t_len);
 
     //add up all length of title/id 
