@@ -21,16 +21,16 @@ int main (int argc, char ** argv)
 \xa4\x03\xa6\x05\x80\x03\x7b\xc1\x75\xa8\x03\x02\x01\x07\
 \xbe\x09\x28\x07\x81\x05\x80\x03\x00\x00\x3c";
 
-    C1222_Request_Logon logon (2, "USER NAME", 60);
-    uint8_t * d = logon.build(); // build data;
+    C1222_Request_Read read(0x30, 5, NULL, 0,0);
+    uint8_t * d = read.build(); // build data;
 
-    for(int i = 0; i < logon.get_build_size(); i++)
+    for(int i = 0; i < read.get_build_size(); i++)
         printf("0x%02x ", d[i]);
 
-    printf("\nrequest data length : %lx\n", logon.get_build_size());
+    printf("\nrequest data length : %lx\n", read.get_build_size());
 
     puts("");
-    C1222_EPSEM epsem (d, 0x80, 0, logon.get_build_size());
+    C1222_EPSEM epsem (d, 0x80, 0, read.get_build_size());
     d = epsem.build();
     for(int i = 0; i < epsem.get_length(); ++i)
         printf("0x%02x ", d[i]);
@@ -44,6 +44,12 @@ int main (int argc, char ** argv)
     printf("FINAL\n");
     for(int i = 0; i < acse.get_data_len(); ++i)
         printf("0x%02x ", d[i]);
+    puts("");
 
+
+    printf("Parse..\n");
+
+    C1222_Request_Read p = C1222_Request_Read::parse(read.build());
+    printf("req: 0x%02x tableid: 0x%02x\n", p.get_request_num(), p.get_tableid());
     return 0;
 }
