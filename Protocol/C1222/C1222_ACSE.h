@@ -39,6 +39,7 @@ class C1222_ACSE : public C1222 {
         long get_data_len();
         
         void set_epsem(void * data, long size);
+
     private:
         element calling_title, calling_id;
         element called_title, called_id;
@@ -46,6 +47,7 @@ class C1222_ACSE : public C1222 {
 
         uint8_t * raw_data;
         long acse_len;
+
 };
 
 #endif
