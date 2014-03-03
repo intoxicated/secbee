@@ -72,9 +72,9 @@ inline element * ber_uid_encode(char * ptr, int len, int tag)
     char * idPtr[512];
     int count = 0;
     
-    char dup[strlen(ptr)+1];
+    char dup[len];
     strcpy(dup, ptr);
-    dup[strlen(ptr)] = '\0';
+    dup[len] = '\0';
 
     idPtr[count] = strtok(dup, ".");
 
@@ -192,7 +192,6 @@ inline char * ber_uid_decode(void * data)
     int innerCount = 3, bcount = 0;;
     //temporary holder for value
     unsigned int temp = 0;
-    uint8_t val  = 0;
 
     //max 127 bytes of data (defined in c1222 doc)
     //char * ret = (char *)malloc(512);
@@ -263,7 +262,6 @@ inline int ber_len_size(int n)
 inline int ber_len_encode(void * ptr, int len, int mx)
 {
     int berlen = ber_len_size(len);
-    int ret = 0; 
     uint8_t * bptr = (uint8_t *)ptr;
     
     if(berlen > mx) //berlen exceed max
