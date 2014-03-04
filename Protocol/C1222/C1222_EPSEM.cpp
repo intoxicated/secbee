@@ -98,7 +98,7 @@ C1222_EPSEM::parse(void * data)
     //first byte should be flag 
     uint8_t flag = *ptr;
     int eclass = 0;
-    int ber_size, datalen, e_len;
+    int ber_size, e_len;
 
     printf("[!!] EPSEM Parsing start... \n");
     //empty 

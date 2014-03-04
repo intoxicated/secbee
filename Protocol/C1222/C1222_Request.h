@@ -29,8 +29,6 @@ class C1222_Request : public C1222 {
         unsigned long   build_size;
 };
 
-
-
 class C1222_Request_Ident : public C1222_Request
 {
     public: 

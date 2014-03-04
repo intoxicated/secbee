@@ -31,7 +31,6 @@ C1222_ACSE::C1222_ACSE()
  * @param usrlen (require) length of user information section 
  *
  */
-
 C1222_ACSE::C1222_ACSE(void * usrinfo, const char * calling_title, 
         const char * calling_id, const char * called_title, 
         const char * called_id, int usrlen)
@@ -39,7 +38,8 @@ C1222_ACSE::C1222_ACSE(void * usrinfo, const char * calling_title,
 
     if(calling_title != NULL){
         this->calling_title.size = strlen(calling_title);
-        this->calling_title.data = new uint8_t[this->calling_title.size];
+        this->calling_title.data = 
+                new uint8_t[this->calling_title.size];
         this->calling_title.data[this->calling_title.size] = '\0';
 
         memcpy(this->calling_title.data, calling_title, 
@@ -48,7 +48,8 @@ C1222_ACSE::C1222_ACSE(void * usrinfo, const char * calling_title,
     }
     if(called_title != NULL){
         this->called_title.size = strlen(called_title);
-        this->called_title.data = new uint8_t[this->called_title.size];
+        this->called_title.data = 
+                new uint8_t[this->called_title.size];
         this->called_title.data[this->called_title.size] = '\0';
 
         memcpy(this->called_title.data, called_title, 
@@ -95,12 +96,6 @@ C1222_ACSE::~C1222_ACSE()
         delete raw_data;
 }
 
-
-void 
-C1222_ACSE::clear()
-{
-
-}
 
 /* ================================================================ *
  *                                                                  *
@@ -254,9 +249,10 @@ C1222_ACSE::build()
         pdusize++;
     }
     
-    printf("berlen %x %x %x", calling_t_blen, calling_id_blen, called_t_blen);
-    printf("USER INFO LEN : 0x%x\ncin %lx cid %lx ced %lx\n", usrinfo_len
-        ,calling_t_len, calling_id_len, called_t_len);
+    printf("berlen %x %x %x", 
+        calling_t_blen, calling_id_blen, called_t_blen);
+    printf("USER INFO LEN : 0x%x\ncin %lx cid %lx ced %lx\n", 
+        usrinfo_len ,calling_t_len, calling_id_len, called_t_len);
 
     //add up all length of title/id 
     pdusize += calling_t_len + calling_id_len 
@@ -435,17 +431,20 @@ C1222_ACSE::parse(void * data)
         //parse called
         if(*ptr == 0xA2){
             printf("[*] Parsing called title... \n");
-            this->called_title.data = ap_title_parse(ptr, &datalen, &berlen);
+            this->called_title.data = 
+                    ap_title_parse(ptr, &datalen, &berlen);
             this->called_title.size = datalen;
             ptr = ptr + 1 + berlen + datalen;
             pdusize += 1 + berlen + datalen;
         }
 
-        printf("[---->] Called ap title is : %s\n", this->called_title.data);
+        printf("[---->] Called ap title is : %s\n", 
+            this->called_title.data);
    
         //check first
         if(*ptr == 0xA4){
-            this->called_id.data = ap_title_parse(ptr, &datalen, &berlen);
+            this->called_id.data = 
+                    ap_title_parse(ptr, &datalen, &berlen);
             this->called_id.size = datalen;
             ptr = ptr + 1 + berlen + datalen;
             pdusize += 1 + berlen + datalen;
@@ -454,23 +453,27 @@ C1222_ACSE::parse(void * data)
         //parse calling
         if(*ptr == 0xA6){
             printf("[*] Parsing calling title... \n");
-            this->calling_title.data = ap_title_parse(ptr, &datalen, &berlen);
+            this->calling_title.data = 
+                    ap_title_parse(ptr, &datalen, &berlen);
             this->calling_title.size = datalen;
             ptr = ptr + 1 + berlen + datalen;
             pdusize += 1 + berlen + datalen;
         }
         
-        printf("[---->] Calling ap title is : %s\n", this->calling_title.data);
+        printf("[---->] Calling ap title is : %s\n", 
+                this->calling_title.data);
          
         if(*ptr == 0xA8){
             printf("[*] Parsing calling invo id... \n");
-            this->calling_id.data = ap_title_parse(ptr, &datalen, &berlen);
+            this->calling_id.data = 
+                    ap_title_parse(ptr, &datalen, &berlen);
             this->calling_id.size = datalen;
             ptr = ptr + 1 + berlen + datalen;
             pdusize += 1 + berlen + datalen;
         }
         
-        printf("[---->] Calling invo id is : %s\n", this->calling_id.data);
+        printf("[---->] Calling invo id is : %s\n",
+                 this->calling_id.data);
          
         //parse user information
         if(*ptr == 0xBE){
@@ -479,7 +482,8 @@ C1222_ACSE::parse(void * data)
             this->userinfo.data = usrinfo_parse(ptr, &datalen, &berlen);
             this->userinfo.size = datalen;
             ptr = ptr + 1 + berlen + datalen;
-            printf("[!] userinfo data start with : 0x%x and length 0x%lx\n",
+            printf("[!] userinfo data start with\
+             : 0x%x and length 0x%lx\n",
              *(this->userinfo.data), datalen);
             pdusize += 1 + berlen + datalen;
         }

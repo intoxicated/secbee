@@ -39,14 +39,9 @@ class C1222_EPSEM : public C1222{
         element e_data;
 
         uint8_t * raw_data;
-        uint8_t control;
-        long  ed_class;
-        long  length; 
-        long  encoded_size;
-        long  service_len;
-        uint8_t security_mode, response_mode;
+        long  ed_class, length, encoded_size, service_len;
+        uint8_t control, security_mode, response_mode;
         bool reserve, recovery, proxy_service;
-
 };
 
 #endif
