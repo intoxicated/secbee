@@ -24,44 +24,53 @@
 
 class C1222_Response : public C1222 {
     public:
-        void * build(void);
-        void clear(void);
+        C1222_Response(uint8_t res);
+        ~C1222_Response();
+
+        uint8_t * build(void);
         long get_data_len();
 
-        //feature excluded but necessary to add..
-        void identify(const uint8_t res, const uint8_t std, const uint8_t ver, 
-                const uint8_t rev);  
-
-        void read(const uint8_t res, const uint8_t * count, const uint8_t * data,
-                const uint8_t chksum);
-
-        void write(const uint8_t res);
-
-        void logon(const uint8_t res, const uint8_t * timeout);
-
-        void security(const uint8_t res);
-
-        void logoff(const uint8_t res);
-
-        void terminate(const uint8_t res);
-
-        void disconnect(const uint8_t res);
-
-        void wait(const uint8_t res);
-
-        void registration(const uint8_t res, const uint8_t * ap_title, 
-                const uint8_t * delay, const uint8_t * period, const uint8_t info);
-
-        void deregistration(const uint8_t res);
-
-        void resolve(const uint8_t res, const uint8_t addr_len, const uint8_t * addr);
-
-        void trace(const uint8_t res, const uint8_t ** aptitles);
-
-        static void parse_response(void * data);
-    private:
-        uint8_t * raw; 
+        static void parse_response(void * data, uint8_t req);
+    
+    protected:
+        uint8_t * raw_data; 
         long datalen;
 };
+
+class C1222_Response_Ident : C1222_Response {
+    public:
+        C1222_Response_Ident(uint8_t res,  uint8_t std,  
+            uint8_t ver, uint8_t rev);
+};
+
+class C1222_Response_Read : C1222_Response {
+    public:
+        C1222_Response_Read(uint8_t res,  uint8_t * count,  
+            uint8_t * data, const uint8_t chksum);       
+};
+
+class C1222_Response_Logon : C1222_Response {
+    public:
+        C1222_Response_Logon(uint8_t res, short timeout);
+};
+
+class C1222_Response_Resolve : C1222_Response {
+    public:
+        C1222_Response_Resolve(uint8_t res,  uint8_t addr_len, 
+                                             uint8_t * addr);
+};
+
+class C1222_Response_Trace : C1222_Response {
+    public:
+        C1222_Response_Trace(uint8_t res,  char ** aptitles)
+};
+
+class C1222_Response_Reg : C1222_Response {
+    public:
+        C1222_Response_Reg(uint8_t res, char * aptitle, 
+                 short delay,  long period, uint8_t info)
+};
+
+
 
 #endif

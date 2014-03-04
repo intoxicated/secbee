@@ -8,17 +8,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-    
-void *
+
+uint8_t *
 C1222_Response::build(void)
 {
-    return raw;
-}
-
-void 
-C1222_Response::clear(void)
-{
-    delete raw;
+    return raw_data;
 }
 
 long
@@ -40,8 +34,7 @@ C1222_Response::get_data_len()
  * @param rev binary representation of standard version right of decimal pts
  */
 void
-C1222_Response::identify(const uint8_t res, const uint8_t std, const uint8_t ver,
-        const uint8_t rev)
+C1222_Response::identify(uint8_t res, uint8_t std, uint8_t ver, uint8_t rev)
 {
     if(res != RES_OK)
     {
@@ -63,7 +56,7 @@ C1222_Response::identify(const uint8_t res, const uint8_t std, const uint8_t ver
  *
  */
 void 
-C1222_Response::read(const uint8_t res, const uint8_t * count, const uint8_t * data,
+C1222_Response::read(uint8_t res, uint8_t * count, uint8_t * data,
         const uint8_t chksum)
 {
 
@@ -74,7 +67,7 @@ C1222_Response::read(const uint8_t res, const uint8_t * count, const uint8_t * d
  *
  */
 void
-C1222_Response::write(const uint8_t res)
+C1222_Response::write(uint8_t res)
 {
 
 }
@@ -86,7 +79,7 @@ C1222_Response::write(const uint8_t res)
  * @param timeout   seconds to be idle before termination (word16)
  */
 void
-C1222_Response::logon(const uint8_t res, const uint8_t * timeout)
+C1222_Response::logon(uint8_t res, uint8_t * timeout)
 {
     if(res != RES_OK)
     {
@@ -107,7 +100,7 @@ C1222_Response::logon(const uint8_t res, const uint8_t * timeout)
  * @param res       Response state
  */
 void
-C1222_Response::security(const uint8_t res)
+C1222_Response::security(uint8_t res)
 {
     this->raw = new uint8_t[1];
     this->raw[0] = res;
@@ -119,7 +112,7 @@ C1222_Response::security(const uint8_t res)
  * @param res       Response state
  */
 void
-C1222_Response::logoff(const uint8_t res)
+C1222_Response::logoff(uint8_t res)
 {
     this->raw = new uint8_t[1];
     this->raw[0] = res;
@@ -131,7 +124,7 @@ C1222_Response::logoff(const uint8_t res)
  * @param res       Response state
  */
 void
-C1222_Response::terminate(const uint8_t res)
+C1222_Response::terminate(uint8_t res)
 {
     this->raw = new uint8_t[1];
     this->raw[0] = res;
@@ -143,7 +136,7 @@ C1222_Response::terminate(const uint8_t res)
  * @param res       Response state
  */
 void
-C1222_Response::disconnect(const uint8_t res)
+C1222_Response::disconnect(uint8_t res)
 {
     this->raw = new uint8_t[1];
     this->raw[0] = res;
@@ -155,7 +148,7 @@ C1222_Response::disconnect(const uint8_t res)
  * @param res       Response state
  */
 void
-C1222_Response::wait(const uint8_t res)
+C1222_Response::wait(uint8_t res)
 {
     this->raw = new uint8_t[1];
     this->raw[0] = res;
@@ -171,8 +164,8 @@ C1222_Response::wait(const uint8_t res)
  * @param info      Node info about connection type (see Reg. request)
  */
 void
-C1222_Response::registration(const uint8_t res, const uint8_t * ap_title,
-        const uint8_t * delay, const uint8_t * period, const uint8_t info)
+C1222_Response::registration(uint8_t res, const uint8_t * ap_title,
+         uint8_t * delay,  uint8_t * period,  uint8_t info)
 {
 
 }
@@ -183,7 +176,7 @@ C1222_Response::registration(const uint8_t res, const uint8_t * ap_title,
  * @param res       Response state
  */
 void
-C1222_Response::deregistration(const uint8_t res)
+C1222_Response::deregistration(uint8_t res)
 {
     this->raw = new uint8_t[1];
     this->raw[0] = res;
@@ -197,8 +190,7 @@ C1222_Response::deregistration(const uint8_t res)
  * @param addr      local address of requested aptitle
  */
 void
-C1222_Response::resolve(const uint8_t res, const uint8_t addr_len, 
-        const uint8_t * addr)
+C1222_Response::resolve(uint8_t res, uint8_t addr_len, uint8_t * addr)
 {
 
 }
@@ -210,13 +202,19 @@ C1222_Response::resolve(const uint8_t res, const uint8_t addr_len,
  * @param ap_titles aptitle of c12.22 relays used to forward this request
  */
 void
-C1222_Response::trace(const uint8_t res, const uint8_t ** aptitles)
+C1222_Response::trace( uint8_t res, uint8_t ** aptitles)
 {
 
 }
 
+/**
+ * parse response data and convert to human readable format
+ * 
+ * @param data response data
+ * @param req request has been submitted
+ */
 void
-C1222_Response::parse_response(void * data)
+C1222_Response::parse_response(void * data, uint8_t req)
 {
 
 
