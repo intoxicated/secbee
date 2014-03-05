@@ -134,7 +134,7 @@ C1222_EPSEM::parse(void * data)
 
     
 uint8_t * 
-C1222_EPSEM::get_epsem_data()
+C1222_EPSEM::get_data()
 {
     return this->e_data.data;
 }

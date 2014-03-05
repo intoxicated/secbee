@@ -27,7 +27,7 @@ class C1222_Response : public C1222 {
         C1222_Response();
         ~C1222_Response();
 
-        uint8_t * build(void);
+        uint8_t * build();
         uint8_t   get_response_num();
         long      get_build_size();
 
@@ -42,6 +42,7 @@ class C1222_Response : public C1222 {
 class C1222_Response_General : C1222_Response {
     public:
         C1222_Response_General(uint8_t res);
+        uint8_t * build();
 };
 
 class C1222_Response_Ident : C1222_Response {
@@ -49,9 +50,10 @@ class C1222_Response_Ident : C1222_Response {
         C1222_Response_Ident(uint8_t res,  uint8_t std,  
             uint8_t ver, uint8_t rev);
 
-        uint8_t get_std();
-        uint8_t get_ver();
-        uint8_t get_rev();
+        uint8_t *   build();
+        uint8_t     get_std();
+        uint8_t     get_ver();
+        uint8_t     get_rev();
     private:
         uint8_t std, ver, rev;
 };
@@ -61,14 +63,15 @@ class C1222_Response_Read : C1222_Response {
         C1222_Response_Read(uint8_t res, short count,  
             uint8_t * data, const uint8_t chksum); 
 
+        uint8_t * build();
         uint8_t * get_data();
         uint8_t   get_chksum();
-        short get_count();
+        short     get_count();
 
     private:
         uint8_t * data;
-        uint8_t chksum;
-        short count;
+        uint8_t   chksum;
+        short     count;
 
 };
 
@@ -77,6 +80,7 @@ class C1222_Response_Logon : C1222_Response {
         C1222_Response_Logon(uint8_t res, short timeout);
     
         short get_timeout();
+        uint8_t * build();
 
     private:
         short timeout;
@@ -89,6 +93,7 @@ class C1222_Response_Resolve : C1222_Response {
 
         uint8_t   get_addrlen();
         uint8_t * get_addr();
+        uint8_t * build();
 
     private:
         uint8_t   addr_len;
@@ -99,17 +104,18 @@ class C1222_Response_Trace : C1222_Response {
     public:
         C1222_Response_Trace(uint8_t res,  char ** aptitles);
 
-        char ** get_aptitles();
-
+        char **     get_aptitles();
+        uint8_t *   build();
     private:
         char ** aptitles;
 };
 
-class C1222_Response_Reg : C1222_Response {
+class C1222_Response_Registration : C1222_Response {
     public:
-        C1222_Response_Reg(uint8_t res, char * aptitle, 
-              short delay, long period, uint8_t info);
+        C1222_Response_Registration(uint8_t res, char * aptitle, 
+                        short delay, long period, uint8_t info);
 
+        uint8_t * build();
         char *   get_aptitle();
         long     get_period();
         uint8_t  get_info();

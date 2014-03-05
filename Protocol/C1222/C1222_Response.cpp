@@ -5,6 +5,8 @@
  * =================================================================== */
 
 #include "C1222_Response.h"
+#include "Utils.hpp"
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -39,6 +41,12 @@ C1222_Response::get_build_size()
     return buildsize;
 }
 
+/**
+ * parse response data and convert to human readable format
+ * 
+ * @param data response data
+ * @param req request has been submitted
+ */
 void
 C1222_Response::parse(void * data, uint8_t req)
 {
@@ -82,7 +90,7 @@ C1222_Response_General::build()
  * @param ver   standard version left of decimal pts 
  * @param rev   standard version right of decimal pts
  */
-void
+
 C1222_Response_Ident::C1222_Response_Ident(uint8_t res, uint8_t std,
                           uint8_t ver, uint8_t rev):C1222_Response()
 {
@@ -140,7 +148,7 @@ C1222_Response_Ident::get_rev()
 C1222_Response_Read::C1222_Response_Read(uint8_t res, short count,
             uint8_t * data, const uint8_t chksum):C1222_Response()
 {
-    request_num = res;
+    response_num = res;
     this->count = count;
     this->data = data;
     this->chksum = chksum;
@@ -209,7 +217,6 @@ C1222_Response_Logon::build()
  * @param addr_len  address length 
  * @param addr      local address of requested aptitle
  */
-void
 C1222_Response_Resolve::C1222_Response_Resolve(uint8_t res, 
             uint8_t addr_len, uint8_t * addr):C1222_Response()
 {
@@ -229,7 +236,7 @@ C1222_Response_Resolve::build()
         memcpy(raw_data + 2, addr, addr_len);
     }
     else {
-        raw_data = new unsigned[1];
+        raw_data = new uint8_t[1];
         raw_data[0] = response_num;
     }
 
@@ -255,9 +262,8 @@ C1222_Response_Resolve::get_addr()
  * @param res       Response state
  * @param ap_titles aptitle of c12.22 relays used to forward this request
  */
-
 C1222_Response_Trace::C1222_Response_Trace(uint8_t res, 
-                    uint8_t ** aptitles):C1222_Response()
+                                        char ** aptitles):C1222_Response()
 {
     response_num = res;
     this->aptitles = aptitles;
@@ -269,6 +275,12 @@ C1222_Response_Trace::get_aptitles()
     return aptitles;
 }
 
+uint8_t *
+C1222_Response_Trace::build()
+{
+    return raw_data;
+}
+
 /**
  * Registration Response
  *
@@ -278,9 +290,8 @@ C1222_Response_Trace::get_aptitles()
  * @param period    maximum period in seconds allowed to elapse re-reg
  * @param info      Node info about connection type (see Reg. request)
  */
-void
 C1222_Response_Registration::C1222_Response_Registration(uint8_t res, 
-                            uint8_t * ap_title, short delay, 
+                            char * ap_title, short delay, 
                             long period, uint8_t info):C1222_Response()
 {
     response_num = res;
@@ -296,13 +307,13 @@ C1222_Response_Registration::build()
     element * encoded_ap = 
         ber_uid_encode(ap_title, strlen(ap_title), 0x80);
 
-    raw_data = new uint8_t[encoded_ap.size + 2 + 4 + 1 + 1];
+    raw_data = new uint8_t[encoded_ap->size + 2 + 4 + 1 + 1];
 
     raw_data[0] = response_num;
     int offset = 1;
     //copy ap element
-    memcpy(raw_data + offset, encoded_ap.data, encoded_ap.size);
-    offset += encoded_ap.size;
+    memcpy(raw_data + offset, encoded_ap->data, encoded_ap->size);
+    offset += encoded_ap->size;
 
     short temp_delay, temp_period;
 
@@ -319,7 +330,7 @@ C1222_Response_Registration::build()
 
     raw_data[offset] = info;
 
-    delete encoded_ap.data;
+    delete encoded_ap->data;
     delete encoded_ap;
 
     return raw_data;
@@ -349,16 +360,5 @@ C1222_Response_Registration::get_delay()
     return delay;
 }
 
-/**
- * parse response data and convert to human readable format
- * 
- * @param data response data
- * @param req request has been submitted
- */
-void
-C1222_Response::parse_response(void * data, uint8_t req)
-{
 
-
-}
 

@@ -192,6 +192,8 @@ class C1222_Request_Security : public C1222_Request
         short   userid;
 };
 
+/** TBD **/
+
 class C1222_Request_Registration : public C1222_Request
 {
     public:

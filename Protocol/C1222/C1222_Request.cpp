@@ -15,7 +15,7 @@
 using namespace std;
 
 /**
- *  Super class Request
+ *  Base class Request
  */
 
 C1222_Request::C1222_Request()
@@ -48,12 +48,6 @@ C1222_Request::get_build_size()
 {
     return build_size;
 }
-
-/**
- * free allocated memory for raw array
- * this function has to be called after usage of built data
- * in order to prevent memory leak
- */
 
 /**
  * Identity request 
@@ -793,12 +787,15 @@ C1222_Request_Registration::C1222_Request_Registration(
 {
     this->node_type = node_type;
     this->conn_type = conn_type;
-    this->addr_len = add_len;
+    this->addr_len = addr_len;
     this->device_class = device_class;
-    this->ap_title = ap_title;
+
     this->native_addr = native_addr;
     this->reg_period = reg_period;
     this->serial_num = serial_num;
+
+    this->ap_title = new char[strlen(ap_title)+1];
+    strcpy(this->ap_title, ap_title);
 }
 
 C1222_Request_Registration * 

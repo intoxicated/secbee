@@ -66,6 +66,7 @@ signal_handler(int signum)
     }
 }
 
+
 void 
 myCB(struct xbee * xbee, struct xbee_con * con,
         struct xbee_pkt ** pkt, void ** data)
@@ -85,7 +86,7 @@ myCB(struct xbee * xbee, struct xbee_con * con,
     //parse epsem
     epsem.parse(acse.get_epsem());
     //parse and print response part 
-    C1222_Response::parse_response(epsem.get_userinfo());
+    C1222_Response::parse(epsem.get_data(), 0x30);
     //parse
     printf("Receive: [%s]\n", (*pkt)->data);
 }
@@ -162,17 +163,6 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    //setting up log
-    //if(!setupLog(log, xbee))
-    //{
-    //    printf("[!] Error occurred while setting up log\n");
-    //    return -1;
-    //}
-
-    //double check xbee mode
-    //char * mode;
-    //xbee_modeGet(xbee, &mode);
-    //printf("[*] Xbee is running in %s mode\n", mode);
 
     //create connection
     struct xbee_conAddress target_addr;
@@ -204,14 +194,27 @@ int main(int argc, char ** argv)
     settings.catchAll = 1;
     xbee_conSettings(con, &settings, NULL);
 
+ 
+    //construct packet
+
+    C1222_Request_Read read(0x30, 5, NULL, 0,0);
+    uint8_t * d = read.build(); // build data;
+
+    C1222_EPSEM epsem (d, 0x80, 0, read.get_build_size());
+    d = epsem.build();
+
+    C1222_ACSE acse ( d, "123.4", "7", "123.8437", NULL, epsem.get_length());
+    d = acse.build();
+
+
     //sending phase
-    ret = xbee_conTx(con, NULL, "HIGH\r\n");
+    ret = xbee_conTx(con, NULL, (const char *)d);
     printf("Ret: %d\n", ret);
     usleep(3000000);
 
-    ret = xbee_conTx(con, NULL, "LOW\r\n");
-    printf("Ret: %d\n", ret);
-    usleep(3000000);
+    //ret = xbee_conTx(con, NULL, "LOW\r\n");
+    //printf("Ret: %d\n", ret);
+    //usleep(3000000);
 
     //clearing up
     if((ret = xbee_conEnd(con)) != XBEE_ENONE){

@@ -28,7 +28,7 @@ class C1222_EPSEM : public C1222{
         uint8_t * build();
         void parse(void * data);
         
-        uint8_t * get_epsem_data();
+        uint8_t * get_data();
         void set_data(void * data, long len);
         long get_length();
         long get_data_len();
