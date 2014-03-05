@@ -1,8 +1,8 @@
-/* ======================================================================== *
- *                                                                          *
- *                        C1222 Response Implementation                     *  
- *                                                                          *
- * ======================================================================== */
+/* =================================================================== *
+ *                                                                     *
+ *                     C1222 Response Implementation                   *  
+ *                                                                     *
+ * =================================================================== */
 
 #include "C1222_Response.h"
 #include <stdlib.h>
@@ -13,7 +13,6 @@ C1222_Response::C1222_Response()
 {
     buildsize = 0;
     raw_data = NULL;
-    response_num = 0;
 }
 
 C1222_Response::~C1222_Response()
@@ -55,6 +54,7 @@ C1222_Response::parse(void * data, uint8_t req)
  *
  */
 C1222_Response_General::C1222_Response_General(uint8_t res)
+                                          :C1222_Response()
 {
     response_num = res;
 }
@@ -79,12 +79,12 @@ C1222_Response_General::build()
  *              0x02 : ANSI C12.21
  *              0x03 : ANSI C12.22
  *              0x04 - 0xFF : Reserve
- * @param ver a byte representation of standard version left of decimal pts 
- * @param rev a byte representation of standard version right of decimal pts
+ * @param ver   standard version left of decimal pts 
+ * @param rev   standard version right of decimal pts
  */
 void
 C1222_Response_Ident::C1222_Response_Ident(uint8_t res, uint8_t std,
-                                           uint8_t ver, uint8_t rev)
+                          uint8_t ver, uint8_t rev):C1222_Response()
 {
     response_num = res;
     this->std = std;
@@ -137,8 +137,8 @@ C1222_Response_Ident::get_rev()
  * @param chksum 2's compl check sum (add all byte values in data) 
  *
  */
-C1222_Response_Read::C1222_Response_Read(uint8_t res, 
-     unsigned short count,  uint8_t * data, const uint8_t chksum)
+C1222_Response_Read::C1222_Response_Read(uint8_t res, short count,
+            uint8_t * data, const uint8_t chksum):C1222_Response()
 {
     request_num = res;
     this->count = count;
@@ -164,7 +164,7 @@ C1222_Response_Read::get_chksum()
     return chksum;
 }
 
-unsigned short
+short
 C1222_Response_Read::get_count()
 {
     return count;
@@ -178,7 +178,7 @@ C1222_Response_Read::get_count()
  * @param timeout   seconds to be idle before termination (2bytes)
  */
 C1222_Response_Logon::C1222_Response_Logon(uint8_t res, 
-                                unsigned short timeout)
+                                        short timeout):C1222_Response()
 {
     response_num = res;
     this->timeout = timeout;
@@ -211,7 +211,7 @@ C1222_Response_Logon::build()
  */
 void
 C1222_Response_Resolve::C1222_Response_Resolve(uint8_t res, 
-                            uint8_t addr_len, uint8_t * addr)
+            uint8_t addr_len, uint8_t * addr):C1222_Response()
 {
     response_num = res;
     this->addr_len = addr_len;
@@ -257,7 +257,7 @@ C1222_Response_Resolve::get_addr()
  */
 
 C1222_Response_Trace::C1222_Response_Trace(uint8_t res, 
-                                    uint8_t ** aptitles)
+                    uint8_t ** aptitles):C1222_Response()
 {
     response_num = res;
     this->aptitles = aptitles;
@@ -280,7 +280,8 @@ C1222_Response_Trace::get_aptitles()
  */
 void
 C1222_Response_Registration::C1222_Response_Registration(uint8_t res, 
-    uint8_t * ap_title, unsigned short delay, long period, uint8_t info)
+                            uint8_t * ap_title, short delay, 
+                            long period, uint8_t info):C1222_Response()
 {
     response_num = res;
     this->ap_title = ap_title;
@@ -342,7 +343,7 @@ C1222_Response_Registration::get_info()
     return info;
 }
 
-unsigned short
+short
 C1222_Response_Registration::get_delay()
 {
     return delay;

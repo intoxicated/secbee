@@ -1,8 +1,8 @@
-/* ========================================================================= *
- *                                                                           *
- *                        C1222 Request Implementation                       *  
- *                                                                           *
- * ========================================================================= */
+/* ==================================================================== *
+ *                                                                      *
+ *                      C1222 Request Implementation                    *  
+ *                                                                      *
+ * ==================================================================== */
 
 
 #include "C1222_Request.h"
@@ -84,15 +84,15 @@ C1222_Request_Ident::build()
  */
 C1222_Request_Logoff::C1222_Request_Logoff():C1222_Request()
 {
-    this->request_num = 0x52;
+    request_num = 0x52;
     build_size = 0;
 }
 
 uint8_t *
 C1222_Request_Logoff::build()
 {
-    this->raw_data = new uint8_t[1];
-    this->raw_data[0] = this->request_num;
+    raw_data = new uint8_t[1];
+    raw_data[0] = request_num;
     build_size = 1;
 
     return raw_data;
@@ -108,15 +108,15 @@ C1222_Request_Logoff::build()
  */
 C1222_Request_Disconnect::C1222_Request_Disconnect():C1222_Request()
 {
-    this->request_num = 0x22;
+    request_num = 0x22;
     build_size = 0;
 }
 
 uint8_t *
 C1222_Request_Disconnect::build()
 {
-    this->raw_data = new uint8_t[1];
-    this->raw_data[0] = this->request_num;
+    raw_data = new uint8_t[1];
+    raw_data[0] = request_num;
     build_size = 1;
 
     return raw_data;
@@ -130,7 +130,7 @@ C1222_Request_Disconnect::build()
  *
  * @param user_id          user identification code  (2 bytes)
  * @aaram usernmae         user identification (10 bytes)
- * @param timeout          request session idle timeout (0 is forever) (2 bytes)
+ * @param timeout          request session idle timeout (0 is forever)
  */
 C1222_Request_Logon::C1222_Request_Logon():C1222_Request()
 {
@@ -567,6 +567,7 @@ C1222_Request_Wait::parse(uint8_t * data)
 {
     return new C1222_Request_Wait(0);
 }
+
 /**
  * Resolve request
  * Detail : retrieve the native address of C1222 node, this address is used

@@ -58,28 +58,28 @@ class C1222_Response_Ident : C1222_Response {
 
 class C1222_Response_Read : C1222_Response {
     public:
-        C1222_Response_Read(uint8_t res,  unsigned short count,  
+        C1222_Response_Read(uint8_t res, short count,  
             uint8_t * data, const uint8_t chksum); 
 
         uint8_t * get_data();
         uint8_t   get_chksum();
-        unsigned short get_count();
+        short get_count();
 
     private:
         uint8_t * data;
         uint8_t chksum;
-        unsigned short count;
+        short count;
 
 };
 
 class C1222_Response_Logon : C1222_Response {
     public:
-        C1222_Response_Logon(uint8_t res, unsigned short timeout);
+        C1222_Response_Logon(uint8_t res, short timeout);
     
-        unsigned short get_timeout();
+        short get_timeout();
 
     private:
-        unsigned short timeout;
+        short timeout;
 };
 
 class C1222_Response_Resolve : C1222_Response {
@@ -108,18 +108,18 @@ class C1222_Response_Trace : C1222_Response {
 class C1222_Response_Reg : C1222_Response {
     public:
         C1222_Response_Reg(uint8_t res, char * aptitle, 
-           unsigned short delay, long period, uint8_t info);
+              short delay, long period, uint8_t info);
 
-        char *         get_aptitle();
-        long           get_period();
-        uint8_t        get_info();
-        unsigned short get_delay();
+        char *   get_aptitle();
+        long     get_period();
+        uint8_t  get_info();
+        short    get_delay();
 
     private:
-        char *         ap_title;
-        long           period;
-        uint8_t        info;
-        unsigned short delay;
+        char *   ap_title;
+        long     period;
+        uint8_t  info;
+        short    delay;
 };
 
 
