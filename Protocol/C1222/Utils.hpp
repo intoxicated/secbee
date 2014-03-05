@@ -50,11 +50,6 @@ extern "C" {
  */
 
 /**
- * TODO: write unittest for functions to make sure it returns correct values
- *       refactor uid_encoded
- */
-
-/**
  * Encode data into Universal identifier 
  * Relative **
  *
@@ -72,7 +67,7 @@ inline element * ber_uid_encode(char * ptr, int len, int tag)
     char * idPtr[512];
     int count = 0;
     
-    char dup[len];
+    char dup[len+1];
     strcpy(dup, ptr);
     dup[len] = '\0';
 
@@ -93,12 +88,9 @@ inline element * ber_uid_encode(char * ptr, int len, int tag)
     int totalSize = 0;    
     for(int i =0; i< count; i++)
     {
-        //printf("to be encoded : %s\n", idPtr[i]);
         intVal = atoi(idPtr[i]);
         //for each value
-        //
-        //encode
-        //tempVals[i] = (uint8_t *)malloc(sizeof(uint8_t)*5);
+
         tempVals[i] = new uint8_t[5];
         temp = (intVal >> 28) & 0x0F; //last 4 bits
 
@@ -137,16 +129,13 @@ inline element * ber_uid_encode(char * ptr, int len, int tag)
             sizes[i] = 1;
         }
 
-        //printf("sizeof %s is %d -> %x\n", idPtr[i], sizes[i], tempVals[i][0]);
         totalSize += sizes[i];
     }
 
     element * ret = new element();
-    //element * ret = (element *)malloc(sizeof(element));
     
     ret->size = totalSize + 2;
     ret->data = new uint8_t[totalSize + 2];
-    //ret->data = (uint8_t *)malloc(sizeof(uint8_t)*totalSize+2);
 
     //header and size
     ret->data[0] = tag;
@@ -160,10 +149,7 @@ inline element * ber_uid_encode(char * ptr, int len, int tag)
             memcpy(ret->data + 2 + (i*sizes[i-1]), tempVals[i], sizes[i]);
         free(tempVals[i]);
     }
-    printf("Final encoded: ");
-    for(int i = 0; i < ret->size; ++i)
-        printf("0x%x ", ret->data[i]);
-    puts("");
+    
     return ret;
 }
 
@@ -192,9 +178,9 @@ inline char * ber_uid_decode(void * data)
     int innerCount = 3, bcount = 0;;
     //temporary holder for value
     unsigned int temp = 0;
+    uint8_t val  = 0;
 
     //max 127 bytes of data (defined in c1222 doc)
-    //char * ret = (char *)malloc(512);
     char * ret = new char[512];
     memset(ret, 0x0, 512);
 
@@ -262,6 +248,7 @@ inline int ber_len_size(int n)
 inline int ber_len_encode(void * ptr, int len, int mx)
 {
     int berlen = ber_len_size(len);
+    int ret = 0; 
     uint8_t * bptr = (uint8_t *)ptr;
     
     if(berlen > mx) //berlen exceed max

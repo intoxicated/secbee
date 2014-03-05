@@ -370,6 +370,8 @@ usrinfo_parse(void * data, long * datalen, long * berlen)
     int ber_size;
 
     *datalen = ber_len_decode(ptr + 1, &ber_size);
+    *berlen = ber_size;
+
     ptr = ptr + 1 + ber_size; //point user_info_external
     printf(" [--->] userinfo element size : 0x%lx\n", *datalen);
     //check header for user-info external
@@ -483,8 +485,7 @@ C1222_ACSE::parse(void * data)
             this->userinfo.size = datalen;
             ptr = ptr + 1 + berlen + datalen;
             printf("[!] userinfo data start with\
-             : 0x%x and length 0x%lx\n",
-             *(this->userinfo.data), datalen);
+             : 0x%x and length 0x%lx\n", *(this->userinfo.data), datalen);
             pdusize += 1 + berlen + datalen;
         }
         
@@ -502,25 +503,25 @@ C1222_ACSE::parse(void * data)
 char * 
 C1222_ACSE::get_calling_title()
 {
-    return NULL;
+    return (char *)this->calling_title.data;
 }
 
 char * 
 C1222_ACSE::get_calling_id()
 {
-    return NULL;
+    return (char *)this->calling_id.data;;
 }
      
 char * 
 C1222_ACSE::get_called_title()
 {
-    return NULL;
+    return (char *)this->called_title.data;;
 }
                 
 char * 
 C1222_ACSE::get_called_id()
 {
-    return NULL;
+    return (char *)this->called_id.data;;
 }
  
 uint8_t * 

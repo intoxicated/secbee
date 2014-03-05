@@ -89,13 +89,19 @@ Request_test.o : $(USER_DIR)/Request_test.cpp $(GTEST_HEADERS)
 			$(PROTO_DIR)/C1222_Request.cpp
 
 Response_test.o : $(USER_DIR)/Response_test.cpp $(GTEST_HEADERS)
-	    $(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/Response_test.cpp
+	    $(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/Response_test.cpp \
+			$(PROTO_DIR)/C1222_ACSE.cpp $(PROTO_DIR)/C1222_EPSEM.cpp \
+			$(PROTO_DIR)/C1222_Request.cpp
 
 ACSE_test.o : $(USER_DIR)/ACSE_test.cpp $(GTEST_HEADERS)
-		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/ACSE_test.cpp
+		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/ACSE_test.cpp \
+			$(PROTO_DIR)/C1222_ACSE.cpp $(PROTO_DIR)/C1222_EPSEM.cpp \
+			$(PROTO_DIR)/C1222_Request.cpp
 
 EPSEM_test.o : $(USER_DIR)/EPSEM_test.cpp $(GTEST_HEADERS)
-		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/EPSEM_test.cpp
+		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/EPSEM_test.cpp \
+			$(PROTO_DIR)/C1222_ACSE.cpp $(PROTO_DIR)/C1222_EPSEM.cpp \
+			$(PROTO_DIR)/C1222_Request.cpp
 
 acse_unittest: ACSE_test.o gtest_main.a
 		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
