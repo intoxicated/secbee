@@ -54,21 +54,21 @@ class C1222_Request_Logon : public C1222_Request
 {
     public: 
         C1222_Request_Logon();
-        C1222_Request_Logon(unsigned short user_id, 
+        C1222_Request_Logon(short user_id, 
                         const  char *  username, 
-                        unsigned short timeout);
+                        short timeout);
 
-        uint8_t *      build();
+        uint8_t *   build();
 
-        unsigned short get_user_id();
-        unsigned short get_timeout();
-        char *         get_username();
+        short       get_user_id();
+        short       get_timeout();
+        char *      get_username();
 
         static C1222_Request_Logon * parse(uint8_t * data);
 
     private:
-        unsigned short user_id;
-        unsigned short timeout;
+        short user_id;
+        short timeout;
         char username[11];
 };
 
@@ -77,24 +77,24 @@ class C1222_Request_Write : public C1222_Request
     public: 
         C1222_Request_Write();
         ~C1222_Request_Write();
-        C1222_Request_Write(uint8_t req, unsigned short tabldid, 
-               unsigned short * index, unsigned short index_size,
-               unsigned short count, uint8_t * data);
+        C1222_Request_Write(uint8_t req, short tabldid, 
+                short * index,  short index_size,
+                short count, uint8_t * data);
 
-        uint8_t *           build();
-        uint8_t *           get_data();
-        uint8_t *           get_index();
-        unsigned short      get_tableid();
-        unsigned short      get_count();
+        uint8_t *  build();
+        uint8_t *  get_data();
+        uint8_t *  get_index();
+        short      get_tableid();
+        short      get_count();
 
         static C1222_Request_Write * parse(uint8_t * data);
 
     private:
-        unsigned short      tableid;
-        unsigned short      index_size;
-        unsigned short      count;
-        uint8_t *           index;
-        uint8_t *           data;
+        short      tableid;
+        short      index_size;
+        short      count;
+        uint8_t *  index;
+        uint8_t *  data;
 
 };
 
@@ -103,22 +103,22 @@ class C1222_Request_Read : public C1222_Request
     public:
         C1222_Request_Read();
         ~C1222_Request_Read();
-        C1222_Request_Read(uint8_t req, unsigned short tableid,
-                uint8_t * index, unsigned short index_size, 
-                unsigned short e_count);
+        C1222_Request_Read(uint8_t req,  short tableid,
+                uint8_t * index,  short index_size, 
+                short e_count);
 
-        uint8_t *         build();
-        uint8_t *         get_index();
-        unsigned short    get_tableid();
-        unsigned short    get_e_count();
+        uint8_t *  build();
+        uint8_t *  get_index();
+        short      get_tableid();
+        short      get_e_count();
 
         static C1222_Request_Read * parse(uint8_t * data);
 
     private:
-        unsigned short      tableid;
-        uint8_t *           index;
-        unsigned short      index_size;
-        unsigned short      e_count;
+        uint8_t *  index;
+        short      tableid;
+        short      index_size;
+        short      e_count;
 };
 
 class C1222_Request_Terminate : public C1222_Request
@@ -179,17 +179,17 @@ class C1222_Request_Security : public C1222_Request
 {
     public:
         C1222_Request_Security();
-        C1222_Request_Security(const char * passwd, unsigned short user_id);
+        C1222_Request_Security(const char * passwd, short user_id);
 
-        uint8_t *       build();
-        char *          get_passwd();
-        unsigned short  get_user_id();
+        uint8_t *  build();
+        char *     get_passwd();
+        short      get_user_id();
 
         static C1222_Request_Security * parse(uint8_t * data);
 
     private:
-        char *         passwd;
-        unsigned short userid;
+        char *  passwd;
+        short   userid;
 };
 
 class C1222_Request_Registration : public C1222_Request

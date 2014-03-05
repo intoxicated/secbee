@@ -140,9 +140,9 @@ C1222_Request_Logon::C1222_Request_Logon():C1222_Request()
     build_size = 0;
 }
 
-C1222_Request_Logon::C1222_Request_Logon(unsigned short user_id, 
-                                          const char * username, 
-                                         unsigned short timeout)
+C1222_Request_Logon::C1222_Request_Logon( short user_id, 
+                                  const char * username, 
+                                          short timeout)
 {
     request_num = 0x50;
     this->user_id = user_id;
@@ -151,13 +151,13 @@ C1222_Request_Logon::C1222_Request_Logon(unsigned short user_id,
     strcpy(this->username, username);
 }
 
-unsigned short
+short
 C1222_Request_Logon::get_user_id()
 {
     return user_id;
 }
     
-unsigned short 
+short 
 C1222_Request_Logon::get_timeout()
 {
     return timeout;
@@ -172,7 +172,7 @@ C1222_Request_Logon::get_username()
 uint8_t *
 C1222_Request_Logon::build()
 {
-    unsigned short uid, tout;
+    short uid, tout;
 
     raw_data = new uint8_t[15];
 
@@ -183,10 +183,6 @@ C1222_Request_Logon::build()
     //add header
     raw_data[0] = this->request_num;
     
-    //add userid //need to change in c style
-    //std::stringstream sstream;
-    //sstream << std::hex << user_id;
-    //std::string ustr = sstream.str();
     uid = user_id >> 8 | user_id << 8;
     tout = timeout >> 8 | timeout << 8;
     
@@ -214,7 +210,7 @@ C1222_Request_Logon *
 C1222_Request_Logon::parse(uint8_t * data)
 {
     uint8_t req;
-    unsigned short userid, timeout;
+    short userid, timeout;
     char username[11];
 
     req = *data; //first byte is header
@@ -257,9 +253,9 @@ C1222_Request_Read::~C1222_Request_Read()
         delete this->index;
 }
 
-C1222_Request_Read::C1222_Request_Read(uint8_t req, unsigned short tableid,
-                                 uint8_t * index, unsigned short index_size, 
-                                 unsigned short e_count)
+C1222_Request_Read::C1222_Request_Read(uint8_t req, short tableid,
+                                 uint8_t * index,  short index_size, 
+                                 short e_count)
 {
     request_num = req;
     this->tableid = tableid;
@@ -279,13 +275,13 @@ C1222_Request_Read::get_index()
     return index;
 }
 
-unsigned short
+short
 C1222_Request_Read::get_tableid()
 {
     return tableid;
 }
 
-unsigned short
+short
 C1222_Request_Read::get_e_count()
 {
     return e_count;
@@ -331,7 +327,7 @@ C1222_Request_Read *
 C1222_Request_Read::parse(uint8_t * data)
 {
     uint8_t req = *data;
-    unsigned short tableid = 0, size = 0, e_count = 0;
+    short tableid = 0, size = 0, e_count = 0;
     //full
     if(0x30 == req)
     {
@@ -392,9 +388,9 @@ C1222_Request_Write::~C1222_Request_Write()
         delete index;
 }
 
-C1222_Request_Write::C1222_Request_Write(uint8_t req, unsigned short tableid, 
-               unsigned short * index, unsigned short index_size,
-               unsigned short count, uint8_t * data)
+C1222_Request_Write::C1222_Request_Write(uint8_t req, short tableid, 
+                                    short * index, short index_size,
+                                        short count, uint8_t * data)
 {
     request_num = req;
     this->tableid = tableid;
@@ -414,13 +410,13 @@ C1222_Request_Write::C1222_Request_Write(uint8_t req, unsigned short tableid,
     }
 }
 
-unsigned short 
+short 
 C1222_Request_Write::get_tableid()
 {
     return tableid;
 }
 
-unsigned short
+short
 C1222_Request_Write::get_count()
 {
     return count;
@@ -690,7 +686,7 @@ C1222_Request_Security::C1222_Request_Security():C1222_Request()
 }
 
 C1222_Request_Security::C1222_Request_Security(const char * passwd, 
-                                            unsigned short user_id)
+                                                    short user_id)
 {
 
 }
@@ -701,7 +697,7 @@ C1222_Request_Security::get_passwd()
     return passwd;
 }
 
-unsigned short 
+short 
 C1222_Request_Security::get_user_id()
 {
     return userid;
@@ -795,7 +791,20 @@ C1222_Request_Registration::C1222_Request_Registration(
          uint8_t * serial_num,  uint8_t addr_len, 
          uint8_t * native_addr, uint8_t * reg_period)
 {
+    this->node_type = node_type;
+    this->conn_type = conn_type;
+    this->addr_len = add_len;
+    this->device_class = device_class;
+    this->ap_title = ap_title;
+    this->native_addr = native_addr;
+    this->reg_period = reg_period;
+    this->serial_num = serial_num;
+}
 
+C1222_Request_Registration * 
+C1222_Request_Registration::parse(uint8_t * data)
+{
+    return new C1222_Request_Registration(0,0, NULL, "", NULL, 0, NULL, NULL);
 }
 
 /**
@@ -818,5 +827,10 @@ C1222_Request_Deregistration::C1222_Request_Deregistration(
 
 }
 
+C1222_Request_Deregistration * 
+C1222_Request_Deregistration::parse(uint8_t * data)
+{
+    return new C1222_Request_Deregistration("");
+}
 
 
