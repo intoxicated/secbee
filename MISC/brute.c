@@ -9,13 +9,14 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdint.h>
+#include <netinet/in.h>
 
 #include <xbee.h>
 
 #define ID_REQUEST 0x4449
 
 int didFound = 0;    
-    
+
 void
 callback(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt,
         void ** data)
@@ -31,9 +32,13 @@ callback(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt,
         uint16_t temp = (panid & 0xFF00) >> 8;
         uint16_t temp2 = (panid & 0xFF) << 8;
         panid = temp | temp2;    
-        printf("rx: 0x%hx\n", panid);
+        printf("id rx: 0x%hx\n", panid);
     }
 
+    else{
+        ;
+    }
+    /*
     //actual ATND result parsing
     else if((*pkt)->dataLen >= 20){
         unsigned short my;
@@ -71,7 +76,7 @@ callback(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt,
                 \nPROFILE: 0x%02x  MANU: 0x%02x\n", my, sh, sl,
                 ni, parent, device_type, status, profile_id, manu_id);
         didFound = 1;
-    }
+    }*/
 }
 
 int
@@ -90,8 +95,8 @@ main (int argc, char ** argv)
 
     FILE * log;
     log = fopen("libxbee.log", "w+");
-    xbee_logTargetSet(xbee, log);
-    xbee_logLevelSet(xbee, 100);
+    //xbee_logTargetSet(xbee, log);
+    //xbee_logLevelSet(xbee, 100);
 
     if((ret = xbee_conNew(xbee, &con, "Local AT", NULL)) != XBEE_ENONE)
     {
@@ -106,29 +111,43 @@ main (int argc, char ** argv)
     }
     
     unsigned int pan_request = 0x4449;
-    unsigned int pan_force = 0x0;
+    unsigned short pan_force = 0x0;
     char req_ptr[5];
     unsigned char ret_ptr[1024];
-    for(; pan_force < 0xFFFF0000; pan_force = pan_force + 0x10000)
+    for(; pan_force < 0xFFFF; pan_force++)
     {
         //init id request
-        pan_request = ID_REQUEST | pan_force;
+        unsigned short temp = htons(pan_force);
+        printf("temp %hx pan %hx \n", temp, pan_force);
+        pan_request = ID_REQUEST | (pan_force << 16);
 
+        
         //create char * request with right byte order
         memset(req_ptr, 0x0, 5);
         memcpy(req_ptr, &pan_request, 4);
         req_ptr[4] = '\0';
+        int i;
+        for (i = 0; i < 4; i++)
+            printf(" %02x ", req_ptr[i]);
+        puts("");
 
         //change pan id 
-        ret = xbee_conTx(con, NULL, req_ptr);
+      //  ret = xbee_conTx(con, NULL, "ID1234");
+      //  usleep(1000000);
+        ret = xbee_conTx(con, NULL, "ID");
         usleep(1000000);
-
         //neighbor discovery
-        ret = xbee_conTx(con, ret_ptr, "ND");
+//        ret = xbee_conTx(con, NULL, "\x49\x44\x11\x11");
+//        usleep(4000000);
+       ret = xbee_conTx(con, NULL, "AS");
+        usleep(4000000);
+
+       ret = xbee_conTx(con, NULL, "ND");
         usleep(4000000);
 
         if(didFound)
             break;
+        break;
     }
 
     if((ret = xbee_conEnd(con)) != XBEE_ENONE)
@@ -140,3 +159,22 @@ main (int argc, char ** argv)
 
     return 0;
 }
+/*typedef PACKED_STRUCT {
+ *  uint8_t as_type;
+ * 
+ * uint8_t channel;
+ * 
+ * uint16_t    pan_be;
+ * 
+ * addr64  extended_pan_be;
+ * 
+ * uint8_t allow_join;
+ * 
+ * uint8_t stack_profile;
+ * 
+ * uint8_t lqi;
+ * 
+ * int8_t  rssi;
+ * 
+ * } xbee_atas_response_t;
+ */
