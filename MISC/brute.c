@@ -88,6 +88,15 @@ main (int argc, char ** argv)
     struct xbee_con *con;
     xbee_err ret;
 
+    FILE * fd;
+    unsigned int pan_request = 0x49440000;
+    unsigned short pan_force = 0x0;
+    unsigned char req_ptr[5];
+    unsigned char ret_ptr[1024];
+    FILE * log;
+
+restart:
+    fd = fopen("scan.log", "w+");
     if((ret = xbee_setup(&xbee, "xbee2", "/dev/cu.usbserial-AD025EOA", 9600))
             != XBEE_ENONE)
     {
@@ -95,11 +104,10 @@ main (int argc, char ** argv)
         return ret;
     }
 
-    FILE * log;
     log = fopen("libxbee.log", "w+");
     xbee_logTargetSet(xbee, log);
     xbee_logLevelSet(xbee, 100);
-
+    
     if((ret = xbee_conNew(xbee, &con, "Local AT", NULL)) != XBEE_ENONE)
     {
         printf("conNew error\n");
@@ -112,13 +120,6 @@ main (int argc, char ** argv)
         return ret;
     }
 
-    FILE * fd = fopen("scan.log", "w+");
-
-    unsigned int pan_request = 0x49440000;
-    unsigned short pan_force = 0x0;
-    unsigned char req_ptr[5];
-    unsigned char ret_ptr[1024];
-    
     printf("Check current PAN ID ..\n");
     xbee_conTx(con, NULL, "ID");
     usleep(1000000);
@@ -126,12 +127,14 @@ main (int argc, char ** argv)
 
     printf("Active Scanning ..\n");
     xbee_conTx(con, NULL, "AS");
-    usleep(5000000);
-    for(; pan_force < 0xFFFF; pan_force++)
+    usleep(3000000);
+
+    while(1)
     {
         //init id request
-        fprintf(fd, "[*] Testing pan id 0x%02x\n", pan_force); 
-        printf("\rAttempting 0x%02x\n", pan_force);
+        fprintf(fd, "[*] Testing pan id 0x%02x :", pan_force); 
+        printf("\rAttempting 0x%02x", pan_force);
+        fflush(stdout);
         pan_request = ID_REQUEST | (pan_force);
         pan_request = htonl(pan_request);
         //create char * request with right byte order
@@ -149,8 +152,11 @@ main (int argc, char ** argv)
         if(didFound)
             break;
         else {
-            fprintf(fd, " -- [*] did not found neighbor\n");
+            fprintf(fd, " Did not find a neighbor..\n");
+            fflush(fd);
         }
+        //increment pan id 
+        pan_force++;
     }
 
     fclose(fd);
@@ -162,8 +168,16 @@ main (int argc, char ** argv)
 
     xbee_shutdown(xbee);
 
+    usleep(2000000);
+
+    //alternative solution for frame ID incrementation
+    if(pan_force < 0xFFFF)
+        goto restart;
+    
     return 0;
 }
+
+//active scan result
 /*typedef PACKED_STRUCT {
  *  uint8_t as_type;
  * 
