@@ -1,8 +1,8 @@
-/* ========================================================================= *
- *                                                                           *
- *                            C1222 Request class                            *  
- *                                                                           *
- * ========================================================================= */
+/* =================================================================== *
+ *                                                                     *
+ *                            C1222 Request class                      *  
+ *                                                                     *
+ * =================================================================== */
 
 #ifndef __C1222_REQUEST_H__
 #define __C1222_REQUEST_H__
@@ -19,9 +19,9 @@ class C1222_Request : public C1222 {
         C1222_Request();
         ~C1222_Request();
 
-        uint8_t *     build();
-        uint8_t       get_request_num();
-        unsigned long get_build_size();
+        uint8_t               get_request_num();
+        unsigned long         get_build_size();
+        virtual uint8_t *     build();
 
     protected:
         uint8_t         request_num;
@@ -203,6 +203,8 @@ class C1222_Request_Registration : public C1222_Request
             uint8_t * serial_num,  uint8_t addr_len, 
             uint8_t * native_addr, uint8_t * reg_period);
 
+        //uint8_t * build();
+
         static C1222_Request_Registration * parse(uint8_t * data);
 
     private:
@@ -220,9 +222,11 @@ class C1222_Request_Deregistration : public C1222_Request
 {
     public:
         C1222_Request_Deregistration();
+        ~C1222_Request_Deregistration();
         C1222_Request_Deregistration(const char * ap_title);
 
-        char *  get_ap_title();
+        char *      get_ap_title();
+        uint8_t *   build();
 
         static C1222_Request_Deregistration * parse(uint8_t * data);
 
@@ -236,7 +240,9 @@ class C1222_Request_Parser {
 
         static void * parse(uint8_t * data)
         {
-            return C1222_Request_Read::parse(data);
+            if(*data == 0x30 || (*data > 0x31 && *data <= 0x3F))
+                return C1222_Request_Read::parse(data);
+            return C1222_Request_Logon::parse(data);
         }
 };
 

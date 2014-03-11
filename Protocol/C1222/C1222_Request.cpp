@@ -6,6 +6,7 @@
 
 
 #include "C1222_Request.h"
+#include "Utils.hpp"
 
 #include <iostream>
 #include <stdio.h>
@@ -63,6 +64,7 @@ C1222_Request_Ident::C1222_Request_Ident():C1222_Request()
 uint8_t *
 C1222_Request_Ident::build()
 {
+    printf("[*] Building identity data...\n");
     raw_data = new uint8_t[1];
     raw_data[0] = request_num;
     build_size = 1;
@@ -85,6 +87,7 @@ C1222_Request_Logoff::C1222_Request_Logoff():C1222_Request()
 uint8_t *
 C1222_Request_Logoff::build()
 {
+    printf("[*] Building logoff data...\n");
     raw_data = new uint8_t[1];
     raw_data[0] = request_num;
     build_size = 1;
@@ -109,6 +112,7 @@ C1222_Request_Disconnect::C1222_Request_Disconnect():C1222_Request()
 uint8_t *
 C1222_Request_Disconnect::build()
 {
+    printf("[*] Building disconnect data...\n");
     raw_data = new uint8_t[1];
     raw_data[0] = request_num;
     build_size = 1;
@@ -137,6 +141,7 @@ C1222_Request_Logon::C1222_Request_Logon():C1222_Request()
 C1222_Request_Logon::C1222_Request_Logon( short user_id, 
                                   const char * username, 
                                           short timeout)
+                                        :C1222_Request()
 {
     request_num = 0x50;
     this->user_id = user_id;
@@ -167,7 +172,7 @@ uint8_t *
 C1222_Request_Logon::build()
 {
     short uid, tout;
-
+    printf("[*] Building logon data...\n");
     raw_data = new uint8_t[15];
 
     //validation of input
@@ -177,8 +182,8 @@ C1222_Request_Logon::build()
     //add header
     raw_data[0] = this->request_num;
     
-    uid = user_id >> 8 | user_id << 8;
-    tout = timeout >> 8 | timeout << 8;
+    uid = htons(this->user_id);
+    tout = htons(this->timeout);
     
     memcpy(raw_data + 1, &uid, 2);
 
@@ -209,10 +214,13 @@ C1222_Request_Logon::parse(uint8_t * data)
 
     req = *data; //first byte is header
     
-    memcpy(&userid, data + 1, 2); //byte swap?
+    memcpy(&userid, data + 1, 2); 
     memcpy(username, data + 3, 10);
     memcpy(&timeout, data + 13, 2);
     username[10] = '\0';
+
+    userid = ntohs(userid);
+    timeout = ntohs(timeout);
 
     return new C1222_Request_Logon (userid, username, timeout);
 }
@@ -249,7 +257,7 @@ C1222_Request_Read::~C1222_Request_Read()
 
 C1222_Request_Read::C1222_Request_Read(uint8_t req, short tableid,
                                  uint8_t * index,  short index_size, 
-                                 short e_count)
+                                 short e_count):C1222_Request()
 {
     request_num = req;
     this->tableid = tableid;
@@ -285,12 +293,13 @@ uint8_t *
 C1222_Request_Read::build()
 {
     //full read
+    printf("[*] Building read data...\n");
     if(0x30 == request_num)
     {
         build_size = 3;
         raw_data = new uint8_t[build_size];
         raw_data[0] = request_num;
-        tableid = tableid >> 8 | tableid << 8;
+        tableid = htons(tableid);
         memcpy(raw_data + 1, &tableid, 2);
        
     }
@@ -385,6 +394,7 @@ C1222_Request_Write::~C1222_Request_Write()
 C1222_Request_Write::C1222_Request_Write(uint8_t req, short tableid, 
                                     short * index, short index_size,
                                         short count, uint8_t * data)
+                                                    :C1222_Request()
 {
     request_num = req;
     this->tableid = tableid;
@@ -431,15 +441,19 @@ C1222_Request_Write::get_index()
 uint8_t *
 C1222_Request_Write::build()
 {
+    printf("[*] Building write data...\n");
     //full write
     if(0x40 == request_num)
     {
         build_size = 1+2+2+count+1;
         raw_data = new uint8_t[build_size];
         
+        tableid = htons(tableid);
+        int rcount = htons(count);
+
         raw_data[0] = request_num;
         memcpy(raw_data + 1, &tableid, 2);
-        memcpy(raw_data + 3, &count, 2);
+        memcpy(raw_data + 3, &rcount, 2);
         memcpy(raw_data + 5, data, count);
 
         //add checksum byte
@@ -448,6 +462,7 @@ C1222_Request_Write::build()
     {
         build_size = 1+2+index_size+2+count+1;
         raw_data = new uint8_t[build_size];
+        tableid = htons(tableid);
 
         raw_data[0] = request_num;
         memcpy(raw_data + 1, &tableid, 2);
@@ -509,6 +524,7 @@ C1222_Request_Terminate::C1222_Request_Terminate():C1222_Request()
 uint8_t *
 C1222_Request_Terminate::build()
 {
+    printf("[*] Building terminate data...\n");
     raw_data = new uint8_t[1];
     raw_data[0] = request_num;
     build_size = 1;
@@ -544,6 +560,7 @@ C1222_Request_Wait::get_interval()
 uint8_t *
 C1222_Request_Wait::build()
 {
+    printf("[*] Building wait data...\n");
     build_size = 2;
     raw_data = new uint8_t[build_size];
     raw_data[0] = request_num;
@@ -555,7 +572,10 @@ C1222_Request_Wait::build()
 C1222_Request_Wait *
 C1222_Request_Wait::parse(uint8_t * data)
 {
-    return new C1222_Request_Wait(0);
+    uint8_t interval = 0;
+    memcpy(&interval, data + 1, 1);
+
+    return new C1222_Request_Wait(interval);
 }
 
 /**
@@ -577,6 +597,7 @@ C1222_Request_Resolve::C1222_Request_Resolve():C1222_Request()
 }
 
 C1222_Request_Resolve::C1222_Request_Resolve(const char * ap_title)
+                                                    :C1222_Request()
 {
     request_num = 0x25;
     this->ap_title = new char[strlen(ap_title)+1];
@@ -598,6 +619,7 @@ C1222_Request_Resolve::get_ap_title()
 uint8_t *
 C1222_Request_Resolve::build()
 {
+    printf("[*] Building resolve data...\n");
     build_size = 1 + strlen(ap_title);
     raw_data = new uint8_t[build_size];
     raw_data[0] = request_num;
@@ -609,7 +631,11 @@ C1222_Request_Resolve::build()
 C1222_Request_Resolve *
 C1222_Request_Resolve::parse(uint8_t * data)
 {
-    return new C1222_Request_Resolve("");
+    //assume data contains null terminator
+    char aptitle[512];
+    strcpy(aptitle, (const char *)(data+1));
+
+    return new C1222_Request_Resolve(aptitle);
 }
 
 /**
@@ -630,6 +656,7 @@ C1222_Request_Trace::C1222_Request_Trace():C1222_Request()
 }
 
 C1222_Request_Trace::C1222_Request_Trace(const char * ap_title)
+                                                :C1222_Request()
 {
     request_num = 0x26;
     this->ap_title = new char[strlen(ap_title)+1];
@@ -651,18 +678,33 @@ C1222_Request_Trace::get_ap_title()
 uint8_t *
 C1222_Request_Trace::build()
 {
-    build_size = 1 + strlen(ap_title);
+    printf("[*] Building Trace data...\n");
+    //encode aptitle
+    element * title = ber_uid_encode(ap_title, strlen(ap_title), 0x80);
+
+    build_size = 1 + title->size;
+
     raw_data = new uint8_t[build_size];
     raw_data[0] = request_num;
-    memcpy(raw_data + 1, ap_title, strlen(ap_title));
-    
+    memcpy(raw_data + 1, title->data, title->size);
+
+    //free allocation
+    delete title->data;
+    delete title;
+
     return raw_data;
 }
 
 C1222_Request_Trace * 
 C1222_Request_Trace::parse(uint8_t * data)
 {
-    return new C1222_Request_Trace("");
+    char aptitle[512];
+    char * ptr = ber_uid_decode(data+1);
+    strcpy(aptitle, ptr);
+
+    delete ptr;
+
+    return new C1222_Request_Trace(aptitle);
 }
 
 /**
@@ -671,7 +713,7 @@ C1222_Request_Trace::parse(uint8_t * data)
  * Note   : this request is not security mechanism for C1222 protocol 
  * Header : 0x51
  *
- * @param passwd        password (20uint8_ts fixed)
+ * @param passwd        password (20bytes fixed)
  * @param user_id_code  user identification code
  */
 C1222_Request_Security::C1222_Request_Security():C1222_Request()
@@ -681,8 +723,13 @@ C1222_Request_Security::C1222_Request_Security():C1222_Request()
 
 C1222_Request_Security::C1222_Request_Security(const char * passwd, 
                                                     short user_id)
+                                                    :C1222_Request()
 {
+    this->request_num = 0x51;
+    this->passwd = new char[20];
+    strcpy(this->passwd, passwd);
 
+    this->userid = user_id;
 }
 
 char *
@@ -700,34 +747,40 @@ C1222_Request_Security::get_user_id()
 uint8_t * 
 C1222_Request_Security::build()
 {
-    //int pwlen = strlen(passwd);
-    //if(pwlen> 20)
-    //    throw std::out_of_range("Request(security): passwd out of range");
+    printf("[*] Building security data...\n");
 
-    //char pw[20];
-    //this->request_num = '\x51';
-    //his->raw = new uint8_t[23];
+    char pw[20];
+    raw_data = new uint8_t[23];
 
     //add header
-    //this->raw[0] = this->request_num;
+    raw_data[0] = request_num;
 
     //add password
-    //memcpy(pw, passwd, pwlen);
-    //for(int i = 0; i < (20 - pwlen); i++)
-    //    memcpy(pw+pwlen, "\x20", 1);
-   
+    int pwlen = strlen(passwd);
+    memcpy(pw, passwd, pwlen);
+    //padding
+    for(int i = 0; i < (20 - pwlen); i++)
+        memcpy(pw+pwlen, "\x20", 1);
+    memcpy(raw_data+1, pw, 20);
+
     //add userid
-    //std::stringstream sstream;
-    //sstream << std::hex << user_id;
-    //std::string ustr = sstream.str();
-    //memcpy(this->raw + 21, ustr.c_str(), 2);
+    short uid = htons(userid);
+    memcpy(raw_data + 21, &uid, 2);
+
     return raw_data;
 }
 
 C1222_Request_Security *
 C1222_Request_Security::parse(uint8_t * data)
 {
-    return new C1222_Request_Security("passwd", 0);
+    short uid;
+    char pw[20];
+
+    memcpy(pw, data+1, 20);
+    memcpy(&uid, data+21, 2);
+    uid = ntohs(uid);
+
+    return new C1222_Request_Security(pw, uid);
 }
 
 /**
@@ -813,21 +866,54 @@ C1222_Request_Registration::parse(uint8_t * data)
  *
  * @param ap_title aptitle of deregister device 
  */
-C1222_Request_Deregistration::C1222_Request_Deregistration():C1222_Request()
+C1222_Request_Deregistration::C1222_Request_Deregistration()
+                                            :C1222_Request()
 {
 
 }
 
 C1222_Request_Deregistration::C1222_Request_Deregistration(
-                                        const char * ap_title)
+                      const char * ap_title):C1222_Request()
 {
+    this->ap_title = new char[strlen(ap_title)];
+    strcpy(this->ap_title, ap_title);
+}
 
+C1222_Request_Deregistration::~C1222_Request_Deregistration()
+{
+    if(ap_title != NULL)
+        delete ap_title;
 }
 
 C1222_Request_Deregistration * 
 C1222_Request_Deregistration::parse(uint8_t * data)
 {
-    return new C1222_Request_Deregistration("");
+    char aptitle[512];
+    char * ptr = ber_uid_decode(data+1);
+    strcpy(aptitle, ptr);
+
+    delete ptr;
+
+    return new C1222_Request_Deregistration(aptitle);
+}
+
+uint8_t *
+C1222_Request_Deregistration::build()
+{
+    //encode aptitle
+    element * title = ber_uid_encode(ap_title, strlen(ap_title), 0x80);
+
+    build_size = 1 + title->size;
+
+    raw_data = new uint8_t[build_size];
+    raw_data[0] = request_num;
+    memcpy(raw_data + 1, title->data, title->size);
+
+    //free allocation
+    delete title->data;
+    delete title;
+
+    return raw_data;
 }
 
 
