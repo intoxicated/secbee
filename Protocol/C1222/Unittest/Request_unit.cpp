@@ -49,6 +49,7 @@ int main (int argc, char ** argv)
     std::cout << "User id: " << p->get_user_id() << endl;
     std::cout << "Timeout: " << p->get_timeout() << endl;
     std::cout << "Username " << p->get_username() << endl;
+    
     delete p;
 
     return 0;
