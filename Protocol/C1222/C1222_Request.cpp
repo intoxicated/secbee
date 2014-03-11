@@ -620,21 +620,32 @@ uint8_t *
 C1222_Request_Resolve::build()
 {
     printf("[*] Building resolve data...\n");
-    build_size = 1 + strlen(ap_title);
+    
+     //encode aptitle
+    element * title = ber_uid_encode(ap_title, strlen(ap_title), 0x80);
+
+    build_size = 1 + title->size;
+
     raw_data = new uint8_t[build_size];
     raw_data[0] = request_num;
-    memcpy(raw_data + 1, ap_title, strlen(ap_title));
-    
+    memcpy(raw_data + 1, title->data, title->size);
+
+    //free allocation
+    delete title->data;
+    delete title;
+
     return raw_data;
 }
 
 C1222_Request_Resolve *
 C1222_Request_Resolve::parse(uint8_t * data)
 {
-    //assume data contains null terminator
     char aptitle[512];
-    strcpy(aptitle, (const char *)(data+1));
+    char * ptr = ber_uid_decode(data+1);
+    strcpy(aptitle, ptr);
 
+    delete ptr;
+    
     return new C1222_Request_Resolve(aptitle);
 }
 
