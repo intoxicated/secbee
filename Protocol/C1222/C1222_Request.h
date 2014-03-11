@@ -203,7 +203,7 @@ class C1222_Request_Registration : public C1222_Request
             uint8_t * serial_num,  uint8_t addr_len, 
             uint8_t * native_addr, uint8_t * reg_period);
 
-        //uint8_t * build();
+        uint8_t * build();
 
         static C1222_Request_Registration * parse(uint8_t * data);
 
@@ -240,9 +240,24 @@ class C1222_Request_Parser {
 
         static void * parse(uint8_t * data)
         {
-            if(*data == 0x30 || (*data > 0x31 && *data <= 0x3F))
+            if(*data == 0x30 || (*data > 0x30 && *data <= 0x3F))
                 return C1222_Request_Read::parse(data);
-            return C1222_Request_Logon::parse(data);
+            else if(*data == 0x40 || (*data > 0x30 && *data <= 0x4F))
+                return C1222_Request_Write::parse(data);
+            else if(*data == 0x50)
+                return C1222_Request_Logon::parse(data);
+            else if(*data == 0x51)
+                return C1222_Request_Security::parse(data);
+            else if(*data == 0x70)
+                return C1222_Request_Wait::parse(data);
+            else if(*data == 0x25)
+                return C1222_Request_Resolve::parse(data);
+            else if(*data == 0x26)
+                return C1222_Request_Trace::parse(data);
+            else if(*data == 0x27)
+                return C1222_Request_Registration::parse(data);
+            else
+                return NULL;
         }
 };
 

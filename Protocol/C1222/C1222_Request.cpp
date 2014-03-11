@@ -645,7 +645,7 @@ C1222_Request_Resolve::parse(uint8_t * data)
     strcpy(aptitle, ptr);
 
     delete ptr;
-    
+
     return new C1222_Request_Resolve(aptitle);
 }
 
@@ -860,6 +860,12 @@ C1222_Request_Registration::C1222_Request_Registration(
 
     this->ap_title = new char[strlen(ap_title)+1];
     strcpy(this->ap_title, ap_title);
+}
+
+uint8_t *
+C1222_Request_Registration::build()
+{
+    return raw_data;
 }
 
 C1222_Request_Registration * 
