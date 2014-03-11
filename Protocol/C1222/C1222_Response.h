@@ -54,6 +54,9 @@ class C1222_Response_Ident : C1222_Response {
         uint8_t     get_std();
         uint8_t     get_ver();
         uint8_t     get_rev();
+
+        static C1222_Response_Ident * parse(uint8_t * data);
+
     private:
         uint8_t std, ver, rev;
 };
@@ -67,6 +70,8 @@ class C1222_Response_Read : C1222_Response {
         uint8_t * get_data();
         uint8_t   get_chksum();
         short     get_count();
+
+        static C1222_Response_Read * parse(uint8_t * data);
 
     private:
         uint8_t * data;
@@ -82,6 +87,8 @@ class C1222_Response_Logon : C1222_Response {
         short get_timeout();
         uint8_t * build();
 
+        static C1222_Response_Logon * parse(uint8_t * data);
+
     private:
         short timeout;
 };
@@ -95,6 +102,8 @@ class C1222_Response_Resolve : C1222_Response {
         uint8_t * get_addr();
         uint8_t * build();
 
+        static C1222_Response_Resolve * parse(uint8_t * data);
+
     private:
         uint8_t   addr_len;
         uint8_t * addr;
@@ -106,6 +115,9 @@ class C1222_Response_Trace : C1222_Response {
 
         char **     get_aptitles();
         uint8_t *   build();
+
+        static C1222_Response_Trace * parse(uint8_t * data);
+
     private:
         char ** aptitles;
 };
@@ -121,13 +133,13 @@ class C1222_Response_Registration : C1222_Response {
         uint8_t  get_info();
         short    get_delay();
 
+        static C1222_Response_Registration * parse(uint8_t * data);
+
     private:
         char *   ap_title;
         long     period;
         uint8_t  info;
         short    delay;
 };
-
-
 
 #endif

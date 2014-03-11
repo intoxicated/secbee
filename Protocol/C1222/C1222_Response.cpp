@@ -136,6 +136,12 @@ C1222_Response_Ident::get_rev()
     return rev;
 }
 
+C1222_Response_Ident *
+C1222_Response_Ident::parse(uint8_t * data)
+{
+    return new C1222_Response_Ident(0,0,0,0);
+}
+
 /**
  * Read Response 
  * 
@@ -178,6 +184,11 @@ C1222_Response_Read::get_count()
     return count;
 }
 
+C1222_Response_Read *
+C1222_Response_Read::parse(uint8_t * data)
+{
+    return C1222_Response_Read(0,0, NULL, 0);
+}
 
 /**
  * Logon Response
@@ -210,6 +221,11 @@ C1222_Response_Logon::build()
     return raw_data;
 }
 
+C1222_Response_Logon *
+C1222_Response_Logon::parse(uint8_t * data)
+{
+    return new C1222_Response_Logon(0, 0);
+}
 /**
  * Resolve Response
  *
@@ -255,6 +271,11 @@ C1222_Response_Resolve::get_addr()
     return addr;
 }
 
+C1222_Response_Resolve *
+C1222_Response_Resolve::parse(uint8_t * data)
+{
+    return new C1222_Response_Resolve(0, 0, NULL);
+}
 
 /**
  * Trace  Response
@@ -279,6 +300,12 @@ uint8_t *
 C1222_Response_Trace::build()
 {
     return raw_data;
+}
+
+C1222_Response_Trace *
+C1222_Response_Trace::parse(uint8_t * data)
+{
+    return new C1222_Response_Trace(0, NULL);
 }
 
 /**
@@ -318,9 +345,8 @@ C1222_Response_Registration::build()
     short temp_delay, temp_period;
 
     //byte ordering
-    temp_delay = delay >> 8 | delay << 8;
-    temp_period = (period >> 24) | (period >> 8 & 0xFF00) | 
-        ((period & 0xFF00) << 8)| ((period & 0xFF) << 24);
+    temp_delay = htons(delay);
+    temp_period = htonl(period);
 
     memcpy(raw_data + offset, &temp_delay, 2);
     offset += 2;
@@ -360,5 +386,10 @@ C1222_Response_Registration::get_delay()
     return delay;
 }
 
+C1222_Response_Registration *
+C1222_Response_Registration::parse(uint8_t * data)
+{
+    return C1222_Response_Registration(0, NULL, 0, 0, 0);
+}
 
 
