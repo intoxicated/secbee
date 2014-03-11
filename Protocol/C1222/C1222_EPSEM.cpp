@@ -74,17 +74,17 @@ C1222_EPSEM::build()
 {
     raw_data = new uint8_t[length]; 
     //control byte
-    printf( "building data...\n");
+    printf( "[*] Building EPSEM data...\n");
     raw_data[0] = control;
     //class
     if(ed_class != 0x0){
         memcpy(raw_data+1, &ed_class, 4);
     }
     else{
-        printf("build length and data\n");
-    //encode size
+        printf("    [!] eclass is not present\n");
+        //encode size
         memcpy(raw_data + 1, &service_len, this->encoded_size);
-    //epsem data
+        //epsem data
         memcpy(raw_data + 1 + encoded_size, 
             e_data.data, e_data.size);
     }

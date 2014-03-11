@@ -181,7 +181,8 @@ C1222_ACSE::build()
     ///////////////////////////////////////////////////////////////
 
     //calculate user info section 
-    printf("User info size : 0x%x\n", userinfo.size);
+    printf("[*] Building ACSE data ...\n");
+    printf("    [*] User info size : 0x%x\n", userinfo.size);
     long str_len = 0, ext_len = 0, ele_len = 0;
     int str_blen, ublen, eblen;
 
@@ -197,11 +198,11 @@ C1222_ACSE::build()
     element * e_called_id = NULL, * e_called_title = NULL;
 
     //validate presense of optional 
-    if(calling_title.data != NULL)
-    {
-        printf("CT: %s\n CID: %s\n CllT: %s\n", calling_title.data, 
-            calling_id.data, called_title.data);
-    }
+    //if(calling_title.data != NULL)
+    //{
+    //    printf("CT: %s\n CID: %s\n CllT: %s\n", calling_title.data, 
+    //        calling_id.data, called_title.data);
+    //}
     
     //variables for encoded length 
     long calling_t_len = 0, calling_id_len = 0;
@@ -249,10 +250,10 @@ C1222_ACSE::build()
         pdusize++;
     }
     
-    printf("berlen %x %x %x", 
-        calling_t_blen, calling_id_blen, called_t_blen);
-    printf("USER INFO LEN : 0x%x\ncin %lx cid %lx ced %lx\n", 
-        usrinfo_len ,calling_t_len, calling_id_len, called_t_len);
+    //printf("berlen %x %x %x", 
+    //    calling_t_blen, calling_id_blen, called_t_blen);
+    //printf("USER INFO LEN : 0x%x\ncin %lx cid %lx ced %lx\n", 
+    //    usrinfo_len ,calling_t_len, calling_id_len, called_t_len);
 
     //add up all length of title/id 
     pdusize += calling_t_len + calling_id_len 
@@ -260,14 +261,14 @@ C1222_ACSE::build()
             + calling_t_blen + called_t_blen 
             + called_id_blen + calling_id_blen;
 
-    printf("PDU SIZE 0x%x\n", pdusize);
+    //printf("PDU SIZE 0x%x\n", pdusize);
 
     int pdulen = 0; long pdublen = 0;
     pdublen = ber_len_encode(&pdulen, pdusize, 4);
 
     pdusize = 1 + pdublen + pdulen;
 
-    printf("Totalsize is 0x%x\n", pdusize);
+    printf("    [*] Total PDU size is 0x%x\n", pdusize);
 
     ///////////////////////////////////////////////////////////////
     //                                                           //
@@ -286,7 +287,7 @@ C1222_ACSE::build()
 
     //set offset to next position 
     cum_offset = 1 + pdublen;
-    printf("Before offset %d\n", cum_offset);
+    //printf("Before offset %d\n", cum_offset);
 
     addAPtoRawData(raw_data, 0xA2, called_t_len, 
         called_t_blen, e_called_title, cum_offset);
