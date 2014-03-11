@@ -23,27 +23,33 @@ int main (int argc, char ** argv)
 
     C1222_Request_Logon logon (2, "USER NAME", 60);
     uint8_t * d = logon.build(); // build data;
-
-    for(int i = 0; i < logon.get_build_size(); i++)
-        printf("0x%02x ", d[i]);
-
-    printf("\nrequest data length : %lx\n", logon.get_build_size());
+    uint8_t * logonData = d;
+    printf("    [*] request data length : %lx\n", logon.get_build_size());
 
     puts("");
     C1222_EPSEM epsem (d, 0x80, 0, logon.get_build_size());
     d = epsem.build();
-    for(int i = 0; i < epsem.get_length(); ++i)
-        printf("0x%02x ", d[i]);
 
-    printf("\nepsem length : %lx\n", epsem.get_length());
+    printf("    [*] epsem length : %lx\n", epsem.get_length());
     puts("");
 
     C1222_ACSE acse ( d, "123.4", "7", "123.8437", NULL, epsem.get_length());
     d = acse.build();
 
-    printf("FINAL\n");
+    puts("");
+    printf("[!] FINAL\n");
     for(int i = 0; i < acse.get_data_len(); ++i)
         printf("0x%02x ", d[i]);
+
+    puts("");
+
+    C1222_Request_Logon * p = 
+        (C1222_Request_Logon*)C1222_Request_Parser::parse(logonData);
+
+    std::cout << "User id: " << p->get_user_id() << endl;
+    std::cout << "Timeout: " << p->get_timeout() << endl;
+    std::cout << "Username " << p->get_username() << endl;
+    delete p;
 
     return 0;
 }

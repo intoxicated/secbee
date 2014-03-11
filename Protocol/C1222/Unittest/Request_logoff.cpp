@@ -23,27 +23,31 @@ int main (int argc, char ** argv)
 
     C1222_Request_Logoff read;
     uint8_t * d = read.build(); // build data;
-
-    for(int i = 0; i < read.get_build_size(); i++)
-        printf("0x%02x ", d[i]);
-
-    printf("\nrequest data length : %lx\n", read.get_build_size());
+    uint8_t * data = d;
+    printf("    [*] request data length : %lx\n", read.get_build_size());
 
     puts("");
     C1222_EPSEM epsem (d, 0x80, 0, read.get_build_size());
     d = epsem.build();
-    for(int i = 0; i < epsem.get_length(); ++i)
-        printf("0x%02x ", d[i]);
+    
+    //for(int i = 0; i < epsem.get_length(); ++i)
+    //    printf("0x%02x ", d[i]);
 
-    printf("\nepsem length : %lx\n", epsem.get_length());
+    printf("    [*] EPSEM length : %lx\n", epsem.get_length());
     puts("");
 
     C1222_ACSE acse ( d, "123.4", "7", "123.8437", NULL, epsem.get_length());
     d = acse.build();
+    puts("");
 
-    printf("FINAL\n");
+    printf("[!] FINAL\n");
     for(int i = 0; i < acse.get_data_len(); ++i)
         printf("0x%02x ", d[i]);
 
+    puts("");
+
+    C1222_Request_Logoff parsed;
+    parsed = C1222_Request_Logoff::parse(data);
+    
     return 0;
 }
