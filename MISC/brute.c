@@ -119,7 +119,12 @@ restart:
         printf("xbee_conCallbackSet error\n");
         return ret;
     }
-
+    
+    struct xbee_conSettings settings;
+    xbee_conSettings(con, NULL, &settings);  
+    settings.extendTimeout = 1;
+    xbee_conSettings(con, &settings, NULL);
+    
     printf("Check current PAN ID ..\n");
     xbee_conTx(con, NULL, "ID");
     usleep(1000000);
@@ -148,7 +153,7 @@ restart:
 
         //neighbor discovery
         ret = xbee_conTx(con, ret_ptr, "ND");
-        usleep(4000000);
+        usleep(6000000);
         if(didFound)
             break;
         else {
