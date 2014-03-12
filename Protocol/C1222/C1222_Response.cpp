@@ -59,7 +59,6 @@ C1222_Response::parse(void * data, uint8_t req)
  * Write/Security/Logoff/Terminate/Disconnect
  * Wait/Deregistration/
  *
- *
  */
 C1222_Response_General::C1222_Response_General(uint8_t res)
                                           :C1222_Response()
@@ -139,7 +138,14 @@ C1222_Response_Ident::get_rev()
 C1222_Response_Ident *
 C1222_Response_Ident::parse(uint8_t * data)
 {
-    return new C1222_Response_Ident(0,0,0,0);
+    uint8_t res, std, ver, rev;
+
+    memcpy(&res, data, 1);
+    memcpy(&std, data+1, 1);
+    memcpy(&ver, data+2, 1);
+    memcpy(&rev, data+3, 1);
+
+    return new C1222_Response_Ident(res,std,ver,rev);
 }
 
 /**
@@ -187,7 +193,7 @@ C1222_Response_Read::get_count()
 C1222_Response_Read *
 C1222_Response_Read::parse(uint8_t * data)
 {
-    return C1222_Response_Read(0,0, NULL, 0);
+    return new C1222_Response_Read(0,0, NULL, 0);
 }
 
 /**
@@ -210,7 +216,7 @@ C1222_Response_Logon::build()
         raw_data = new uint8_t[3];
         raw_data[0] = response_num;
     
-        unsigned short temp = timeout >> 8 | timeout << 8;
+        unsigned short temp = htons(timeout);
         memcpy(raw_data + 1, &temp, 2);
     }
     else {
@@ -224,7 +230,15 @@ C1222_Response_Logon::build()
 C1222_Response_Logon *
 C1222_Response_Logon::parse(uint8_t * data)
 {
-    return new C1222_Response_Logon(0, 0);
+    uint8_t res;
+    short timeout;
+
+    memcpy(&res, data, 1);
+    memcpy(&timeout, data+1, 2);
+
+    timeout = ntohs(timeout);
+
+    return new C1222_Response_Logon(res, timeout);
 }
 /**
  * Resolve Response
@@ -238,7 +252,13 @@ C1222_Response_Resolve::C1222_Response_Resolve(uint8_t res,
 {
     response_num = res;
     this->addr_len = addr_len;
-    this->addr = addr;
+    this->addr = new uint8_t[addr_len];
+    memcpy(this->addr, addr, addr_len);
+}
+
+C1222_Response_Resolve::~C1222_Response_Resolve()
+{
+    delete this->addr;
 }
 
 uint8_t *
@@ -274,7 +294,15 @@ C1222_Response_Resolve::get_addr()
 C1222_Response_Resolve *
 C1222_Response_Resolve::parse(uint8_t * data)
 {
-    return new C1222_Response_Resolve(0, 0, NULL);
+    uint8_t res, len;
+    
+    memcpy(&res, data, 1);
+    memcpy(&len, data+1, 1);
+
+    uint8_t addr[len];
+    memcpy(addr, data+2, len);
+
+    return new C1222_Response_Resolve(res, len, addr);
 }
 
 /**
@@ -322,10 +350,16 @@ C1222_Response_Registration::C1222_Response_Registration(uint8_t res,
                             long period, uint8_t info):C1222_Response()
 {
     response_num = res;
-    this->ap_title = ap_title;
     this->delay = delay;
     this->period = period;
     this->info = info;
+    this->ap_title = new char[strlen(ap_title)+1];
+    strcpy(this->ap_title, ap_title);
+}
+
+C1222_Response_Registration::~C1222_Response_Registration()
+{
+    delete this->ap_title;
 }
 
 uint8_t *
@@ -342,7 +376,8 @@ C1222_Response_Registration::build()
     memcpy(raw_data + offset, encoded_ap->data, encoded_ap->size);
     offset += encoded_ap->size;
 
-    short temp_delay, temp_period;
+    short temp_delay;
+    long temp_period;
 
     //byte ordering
     temp_delay = htons(delay);
@@ -389,7 +424,38 @@ C1222_Response_Registration::get_delay()
 C1222_Response_Registration *
 C1222_Response_Registration::parse(uint8_t * data)
 {
-    return C1222_Response_Registration(0, NULL, 0, 0, 0);
+    uint8_t res, info, gap;
+    short delay;
+    long period;
+    int offset = 0;
+
+    memcpy(&res, data, 1);
+    offset += 2;
+    //encoded uid
+    char * aptitle = ber_uid_decode(data+offset);
+    offset += 1;
+    //one byte represent encoded uid length
+    memcpy(&gap, data+offset, 1);
+    offset += gap;
+
+    memcpy(&delay, data+offset, 2);
+    offset += 2;
+
+    memcpy(&period, data+offset, 4);
+    offset += 4;
+
+    memcpy(&info, data+offset, 1);
+
+    delay = ntohs(delay);
+    period = ntohl(period);
+
+    C1222_Response_Registration * ret = new 
+        C1222_Response_Registration(res, aptitle, delay, 
+                                    period, info);
+
+    delete aptitle;
+
+    return ret;
 }
 
 

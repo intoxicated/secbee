@@ -27,9 +27,9 @@ class C1222_Response : public C1222 {
         C1222_Response();
         ~C1222_Response();
 
-        uint8_t * build();
         uint8_t   get_response_num();
         long      get_build_size();
+        virtual uint8_t * build();
 
         static void parse(void * data, uint8_t req);
     
@@ -97,6 +97,7 @@ class C1222_Response_Resolve : C1222_Response {
     public:
         C1222_Response_Resolve(uint8_t res,  uint8_t addr_len, 
                                              uint8_t * addr);
+        ~C1222_Response_Resolve();
 
         uint8_t   get_addrlen();
         uint8_t * get_addr();
@@ -126,6 +127,7 @@ class C1222_Response_Registration : C1222_Response {
     public:
         C1222_Response_Registration(uint8_t res, char * aptitle, 
                         short delay, long period, uint8_t info);
+        ~C1222_Response_Registration();
 
         uint8_t * build();
         char *   get_aptitle();
