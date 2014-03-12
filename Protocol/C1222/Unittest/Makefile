@@ -43,7 +43,7 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
 all : $(TESTS)
 
 clean :
-	rm -f $(TESTS) gtest.a gtest_main.a *.o *.gcov *.gcno *.gcda
+	rm -rf $(TESTS) *.dSYM gtest.a gtest_main.a *.o *.gcov *.gcno *.gcda
 
 # Builds gtest.a and gtest_main.a.
 
