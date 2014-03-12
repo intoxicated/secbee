@@ -110,7 +110,8 @@ epsem_unittest: EPSEM_test.o gtest_main.a
 		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
 Request_unittest : Request_test.o gtest_main.a
-		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ \
+			$(PROTO_DIR)/C1222_Request.cpp
 
 Response_unittest : Response_test.o gtest_main.a
 	    $(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
