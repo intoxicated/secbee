@@ -21,6 +21,7 @@ class C1222_Request : public C1222 {
 
         uint8_t               get_request_num();
         unsigned long         get_build_size();
+        uint8_t *             get_build_data();
         virtual uint8_t *     build();
 
     protected:

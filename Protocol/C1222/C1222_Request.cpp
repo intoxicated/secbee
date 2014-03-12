@@ -38,6 +38,12 @@ C1222_Request::build()
     return raw_data;
 }
 
+uint8_t *
+C1222_Request::get_build_data()
+{
+    return raw_data;
+}
+
 uint8_t
 C1222_Request::get_request_num()
 {
@@ -113,6 +119,9 @@ uint8_t *
 C1222_Request_Disconnect::build()
 {
     printf("[*] Building disconnect data...\n");
+    if(raw_data != NULL)
+        delete raw_data;
+
     raw_data = new uint8_t[1];
     raw_data[0] = request_num;
     build_size = 1;
@@ -173,6 +182,9 @@ C1222_Request_Logon::build()
 {
     short uid, tout;
     printf("[*] Building logon data...\n");
+    if(raw_data != NULL)
+        delete raw_data;
+
     raw_data = new uint8_t[15];
 
     //validation of input
@@ -294,6 +306,9 @@ C1222_Request_Read::build()
 {
     //full read
     printf("[*] Building read data...\n");
+    if(raw_data != NULL)
+        delete raw_data;
+
     if(0x30 == request_num)
     {
         build_size = 3;
@@ -442,7 +457,10 @@ uint8_t *
 C1222_Request_Write::build()
 {
     printf("[*] Building write data...\n");
-    //full write
+    
+    if(raw_data != NULL)
+        delete raw_data;
+    
     if(0x40 == request_num)
     {
         build_size = 1+2+2+count+1;
@@ -561,6 +579,10 @@ uint8_t *
 C1222_Request_Wait::build()
 {
     printf("[*] Building wait data...\n");
+    
+    if(raw_data != NULL)
+        delete raw_data;
+
     build_size = 2;
     raw_data = new uint8_t[build_size];
     raw_data[0] = request_num;
@@ -621,6 +643,9 @@ C1222_Request_Resolve::build()
 {
     printf("[*] Building resolve data...\n");
     
+    if(raw_data != NULL)
+        delete raw_data;
+
      //encode aptitle
     element * title = ber_uid_encode(ap_title, strlen(ap_title), 0x80);
 
@@ -690,6 +715,10 @@ uint8_t *
 C1222_Request_Trace::build()
 {
     printf("[*] Building Trace data...\n");
+
+    if(raw_data != NULL)
+        delete raw_data;
+
     //encode aptitle
     element * title = ber_uid_encode(ap_title, strlen(ap_title), 0x80);
 
@@ -759,6 +788,9 @@ uint8_t *
 C1222_Request_Security::build()
 {
     printf("[*] Building security data...\n");
+    
+    if(raw_data != NULL)
+        delete raw_data;
 
     char pw[20];
     raw_data = new uint8_t[23];
@@ -917,6 +949,10 @@ C1222_Request_Deregistration::parse(uint8_t * data)
 uint8_t *
 C1222_Request_Deregistration::build()
 {
+    printf("[*] Building deregistration data...\n");
+
+    if(raw_data != NULL)
+        delete raw_data;
     //encode aptitle
     element * title = ber_uid_encode(ap_title, strlen(ap_title), 0x80);
 
