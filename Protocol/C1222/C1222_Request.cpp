@@ -641,7 +641,7 @@ C1222_Request_Resolve *
 C1222_Request_Resolve::parse(uint8_t * data)
 {
     char aptitle[512];
-    char * ptr = ber_uid_decode(data+1);
+    char * ptr = ber_uid_decode(data+2);
     strcpy(aptitle, ptr);
 
     delete ptr;
@@ -710,7 +710,7 @@ C1222_Request_Trace *
 C1222_Request_Trace::parse(uint8_t * data)
 {
     char aptitle[512];
-    char * ptr = ber_uid_decode(data+1);
+    char * ptr = ber_uid_decode(data+2);
     strcpy(aptitle, ptr);
 
     delete ptr;
@@ -906,7 +906,7 @@ C1222_Request_Deregistration *
 C1222_Request_Deregistration::parse(uint8_t * data)
 {
     char aptitle[512];
-    char * ptr = ber_uid_decode(data+1);
+    char * ptr = ber_uid_decode(data+2);
     strcpy(aptitle, ptr);
 
     delete ptr;
