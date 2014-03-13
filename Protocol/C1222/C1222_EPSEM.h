@@ -21,25 +21,28 @@
 class C1222_EPSEM : public C1222{
     public:
         C1222_EPSEM();
-        C1222_EPSEM(void * data, uint8_t flag, int ed_class, int datalen);
+        C1222_EPSEM(uint8_t * data, uint8_t flag, int ed_class, int datalen);
         C1222_EPSEM(const C1222_EPSEM& other);
         ~C1222_EPSEM();
-
-        uint8_t * build();
-        void parse(void * data);
+  
+        uint8_t     get_flags();
+        long        get_class();
+        long        get_service_len();
         
-        uint8_t * get_data();
-        void set_data(void * data, long len);
-        long get_length();
-        long get_data_len();
-        uint8_t get_flag(int tag);
-        void set_flags(uint8_t flag);
+        uint8_t     get_flag(int tag);
+        uint8_t *   get_data();
+        long        get_build_size();
+        long        get_data_len();
+        void        set_flags(uint8_t flag);
+
+        uint8_t *            build();
+        static C1222_EPSEM * parse(uint8_t * data);
     
     private:    
         element e_data;
 
         uint8_t * raw_data;
-        long  ed_class, length, encoded_size, service_len;
+        long  ed_class, build_size, encoded_size, service_len;
         uint8_t control, security_mode, response_mode;
         bool reserve, recovery, proxy_service;
 };
