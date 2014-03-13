@@ -23,3 +23,65 @@ class Response_Parse : public ::testing::Test {
 
 };
 
+TEST_F(Response_Build, test_Ident)
+{
+	C1222_Response_Ident ident(0x0, 0x3, 0x1, 0x0);
+    
+    uint8_t * d = ident.build();
+
+    uint8_t res, std, ver, rev;
+
+    memcpy(&res, d, 1);
+    memcpy(&std, (d+1), 1);
+    memcpy(&ver, (d+2), 1);
+    memcpy(&rev, (d+3), 1);
+
+    EXPECT_EQ(0x0, res);
+    EXPECT_EQ(0x3, std);
+    EXPECT_EQ(0x1, ver);
+    EXPECT_EQ(0x0, rev);
+}
+
+TEST_F(Response_Build, test_Logon)
+{
+    C1222_Response_Logon logon(0x0, 0x3C);
+    uint8_t * d = logon.build();
+    short timeout;
+
+    memcpy(&timeout, d+1, 2);
+    timeout = ntohs(timeout);
+
+    EXPECT_EQ(0x3C, timeout);
+    EXPECT_EQ(0x0, *d);
+}
+
+TEST_F(Response_Build, test_Resolve)
+{
+    C1222_Response_Resolve resolve(0x0, 0x4, 
+                (uint8_t*)"\x01\x02\x03\x04");
+
+    uint8_t * d = resolve.build();
+    uint8_t addr[5];
+    memcpy(addr, d+2, *(d+1));
+    addr[*(d+1)] = '\0';
+
+    EXPECT_EQ(0x0, *d);
+    EXPECT_EQ(0x4, *(d+1));
+    EXPECT_STREQ("\x01\x02\x03\x04", (char *)addr); 
+}
+
+TEST_F(Response_Build, test_Read)
+{
+    //C1219 table .. TBD
+}
+
+TEST_F(Response_Build, test_General)
+{
+    C1222_Response_General general(0x0);
+
+    uint8_t * d = general.build();
+
+    EXPECT_EQ(0x0, *d);
+}
+
+
