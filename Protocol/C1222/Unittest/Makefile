@@ -26,7 +26,7 @@ PROTO_DIR = ../
 CPPFLAGS += -isystem $(GTEST_DIR)/include -ftemplate-depth-750
 
 # Flags passed to the C++ compiler.
-CXXFLAGS += -g -std=c++0x -Wall -Wextra -Wno-unknown-pragmas -pthread -fprofile-arcs -ftest-coverage
+CXXFLAGS += -ggdb -std=c++0x -Wall -Wextra -Wno-unknown-pragmas -pthread -fprofile-arcs -ftest-coverage
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
@@ -84,14 +84,12 @@ gtest_main.a : gtest-all.o gtest_main.o
 #	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
 Request_test.o : $(USER_DIR)/Request_test.cpp $(GTEST_HEADERS)
-		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/Request_test.cpp \
-			$(PROTO_DIR)/C1222_ACSE.cpp $(PROTO_DIR)/C1222_EPSEM.cpp \
-			$(PROTO_DIR)/C1222_Request.cpp
+		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/Request_test.cpp 
+
 
 Response_test.o : $(USER_DIR)/Response_test.cpp $(GTEST_HEADERS)
-	    $(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/Response_test.cpp \
-			$(PROTO_DIR)/C1222_ACSE.cpp $(PROTO_DIR)/C1222_EPSEM.cpp \
-			$(PROTO_DIR)/C1222_Request.cpp
+	    $(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/Response_test.cpp 
+
 
 ACSE_test.o : $(USER_DIR)/ACSE_test.cpp $(GTEST_HEADERS)
 		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/ACSE_test.cpp \
@@ -104,14 +102,21 @@ EPSEM_test.o : $(USER_DIR)/EPSEM_test.cpp $(GTEST_HEADERS)
 			$(PROTO_DIR)/C1222_Request.cpp
 
 acse_unittest: ACSE_test.o gtest_main.a
-		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ \
+			$(PROTO_DIR)/C1222_ACSE.cpp $(PROTO_DIR)/C1222_EPSEM.cpp \
+			$(PROTO_DIR)/C1222_Request.cpp
 
 epsem_unittest: EPSEM_test.o gtest_main.a
-		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ \
+			$(PROTO_DIR)/C1222_ACSE.cpp $(PROTO_DIR)/C1222_EPSEM.cpp \
+			$(PROTO_DIR)/C1222_Request.cpp
 
 Request_unittest : Request_test.o gtest_main.a
 		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ \
+			$(PROTO_DIR)/C1222_ACSE.cpp $(PROTO_DIR)/C1222_EPSEM.cpp \
 			$(PROTO_DIR)/C1222_Request.cpp
 
 Response_unittest : Response_test.o gtest_main.a
-	    $(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+	    $(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ \
+	    	$(PROTO_DIR)/C1222_ACSE.cpp $(PROTO_DIR)/C1222_EPSEM.cpp \
+			$(PROTO_DIR)/C1222_Response.cpp
