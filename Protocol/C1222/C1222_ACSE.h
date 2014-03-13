@@ -65,7 +65,7 @@ class C1222_ACSE : public C1222 {
         char * get_called_id();
 
         uint8_t * get_epsem();
-        long get_data_len();
+        long get_build_size();
         
         void set_epsem(void * data, long size);
 

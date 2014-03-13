@@ -45,7 +45,11 @@ C1222_ACSE::C1222_ACSE(void * usrinfo, const char * calling_title,
         memcpy(this->calling_title.data, calling_title, 
             this->calling_title.size);
 
+    } else {
+        this->calling_title.data = NULL;
+        this->calling_title.size = 0;
     }
+
     if(called_title != NULL){
         this->called_title.size = strlen(called_title);
         this->called_title.data = 
@@ -55,7 +59,11 @@ C1222_ACSE::C1222_ACSE(void * usrinfo, const char * calling_title,
         memcpy(this->called_title.data, called_title, 
             this->called_title.size);
 
+    } else {
+        this->called_title.data = NULL;
+        this->called_title.size = 0;
     }
+
     if(called_id != NULL){
         this->called_id.size = strlen(called_id);
         this->called_id.data = new uint8_t[strlen(called_id)+1];
@@ -63,6 +71,9 @@ C1222_ACSE::C1222_ACSE(void * usrinfo, const char * calling_title,
 
         memcpy(this->called_id.data, called_id, this->called_id.size);
 
+    } else {
+        this->called_id.data = NULL;
+        this->called_id.size = 0;
     }
 
     this->calling_id.size = strlen(calling_id);
@@ -190,7 +201,7 @@ C1222_ACSE::build()
     ublen = ber_len_encode(&ext_len, userinfo.size + str_blen + 1, 4);
     eblen = ber_len_encode(&ele_len, userinfo.size + str_blen
                         + 1 + ublen + 1, 4);
-
+    printf("    [!] calculated userinfo fields\n");
     int usrinfo_len = 1 + ele_len; //total user info length 
 
     //encode uid variables
@@ -212,6 +223,7 @@ C1222_ACSE::build()
     int calling_t_blen = 0, calling_id_blen = 0;
     int called_t_blen = 0, called_id_blen = 0;
 
+    printf("    [!] calculating id/title fields\n");
     //TODO: refactor this part 
     //0x02 is tag for id 0x80 is tag for title 
     e_calling_id = ber_uid_encode((char *)calling_id.data, 
@@ -250,6 +262,7 @@ C1222_ACSE::build()
         pdusize++;
     }
     
+    printf("    [!] finish id/title fields\n");
     //printf("berlen %x %x %x", 
     //    calling_t_blen, calling_id_blen, called_t_blen);
     //printf("USER INFO LEN : 0x%x\ncin %lx cid %lx ced %lx\n", 
@@ -337,7 +350,7 @@ C1222_ACSE::build()
     cleanup(e_called_id, "c id");
     cleanup(e_calling_title, "ced t");
     cleanup(e_calling_id, "ced id");
-
+    printf("    [!!] Finish clean up memory\n");
     this->acse_len = pdusize;
 
     return raw_data;
@@ -532,7 +545,7 @@ C1222_ACSE::get_epsem()
 }
 
 long
-C1222_ACSE::get_data_len()
+C1222_ACSE::get_build_size()
 {
     return this->acse_len;
 }
