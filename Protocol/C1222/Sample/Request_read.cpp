@@ -47,14 +47,11 @@ int main (int argc, char ** argv)
         printf("0x%02x ", d[i]);
     puts("");
 
-
-    printf("Parse..\n");
-
     //C1222_Request_Read p = C1222_Request::parse(read.build());
-    void * p = C1222_Request_Parser::parse(read.build());
+    //void * p = C1222_Request_Parser::parse(read.build());
     //C1222_Request * p = new C1222_Request_Read();
     //C1222_Request_Read * r = C1222_Request::parse(read.build());
-    C1222_Request_Read * rp = (C1222_Request_Read *)p;
-    printf("req: 0x%02x tableid: 0x%02x\n", rp->get_request_num(), rp->get_tableid());
+    //C1222_Request_Read * rp = (C1222_Request_Read *)p;
+    //printf("req: 0x%02x tableid: 0x%02x\n", rp->get_request_num(), rp->get_tableid());
     return 0;
 }

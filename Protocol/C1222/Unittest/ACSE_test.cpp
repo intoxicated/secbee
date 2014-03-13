@@ -22,3 +22,33 @@ class ACSE_Build : public ::testing::Test {
 class ACSE_Parse : public ::testing::Test {
 
 };
+
+//check building down to top a
+TEST_F(ACSE_Build, test_build)
+{
+    C1222_Request_Logon logon (2, "USER NAME", 60);
+    uint8_t * d = logon.build(); // build data;
+    uint8_t * logonData = d;
+    printf("    [*] request data length : %lx\n", logon.get_build_size());
+
+    puts("");
+    C1222_EPSEM epsem (d, 0x80, 0, logon.get_build_size());
+    d = epsem.build();
+
+    printf("    [*] epsem length : %lx\n", epsem.get_build_size());
+    puts("");
+
+    C1222_ACSE acse ( d, "123.4", "7", "123.8437", NULL, epsem.get_build_size());
+    
+    d = acse.build();      
+
+    for(int i = 0; i < acse.get_build_size(); ++i)
+        EXPECT_EQ(data[i], d[i]);
+}
+
+//check parsing top to down
+TEST_F(ACSE_Parse, test_parse)
+{
+
+	
+}

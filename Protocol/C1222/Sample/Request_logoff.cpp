@@ -45,9 +45,6 @@ int main (int argc, char ** argv)
         printf("0x%02x ", d[i]);
 
     puts("");
-
-    C1222_Request_Logoff parsed;
-    parsed = C1222_Request_Logoff::parse(data);
     
     return 0;
 }

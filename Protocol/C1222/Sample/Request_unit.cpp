@@ -25,16 +25,19 @@ int main (int argc, char ** argv)
     uint8_t * d = logon.build(); // build data;
     uint8_t * logonData = d;
     printf("    [*] request data length : %lx\n", logon.get_build_size());
-
+    for(int i = 0; i < logon.get_build_size(); ++i)
+        printf("0x%02x ", d[i]);
     puts("");
     C1222_EPSEM epsem (d, 0x80, 0, logon.get_build_size());
     d = epsem.build();
-
-    printf("    [*] epsem length : %lx\n", epsem.get_length());
+    for(int i = 0; i < epsem.get_build_size(); ++i)
+        printf("0x%02x ", d[i]);
+    puts("");
+    printf("    [*] epsem length : %lx\n", epsem.get_build_size());
     puts("");
 
-    C1222_ACSE acse ( d, "123.4", "7", "123.8437", NULL, epsem.get_length());
-    d = acse.build();
+    C1222_ACSE acse ( d, "123.4", "7", "123.8437", NULL, epsem.get_build_size());
+    d = acse.build();       
 
     puts("");
     printf("[!] FINAL\n");
