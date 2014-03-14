@@ -9,7 +9,7 @@
 
 #include <string>
 #include <stdint.h>
-
+#include <cstddef>
 #include "C1222.h"
 
 using namespace std;

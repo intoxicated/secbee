@@ -36,16 +36,16 @@ class C1222_Response : public C1222 {
     protected:
         uint8_t response_num;
         uint8_t * raw_data; 
-        long    buildsize;
+        long    build_size;
 };
 
-class C1222_Response_General : C1222_Response {
+class C1222_Response_General : public C1222_Response {
     public:
         C1222_Response_General(uint8_t res);
         uint8_t * build();
 };
 
-class C1222_Response_Ident : C1222_Response {
+class C1222_Response_Ident : public C1222_Response {
     public:
         C1222_Response_Ident(uint8_t res,  uint8_t std,  
             uint8_t ver, uint8_t rev);
@@ -61,7 +61,7 @@ class C1222_Response_Ident : C1222_Response {
         uint8_t std, ver, rev;
 };
 
-class C1222_Response_Read : C1222_Response {
+class C1222_Response_Read : public C1222_Response {
     public:
         C1222_Response_Read(uint8_t res, short count,  
             uint8_t * data, const uint8_t chksum); 
@@ -80,7 +80,7 @@ class C1222_Response_Read : C1222_Response {
 
 };
 
-class C1222_Response_Logon : C1222_Response {
+class C1222_Response_Logon : public C1222_Response {
     public:
         C1222_Response_Logon(uint8_t res, short timeout);
     
@@ -93,7 +93,7 @@ class C1222_Response_Logon : C1222_Response {
         short timeout;
 };
 
-class C1222_Response_Resolve : C1222_Response {
+class C1222_Response_Resolve : public C1222_Response {
     public:
         C1222_Response_Resolve(uint8_t res,  uint8_t addr_len, 
                                              uint8_t * addr);
@@ -110,7 +110,7 @@ class C1222_Response_Resolve : C1222_Response {
         uint8_t * addr;
 };
 
-class C1222_Response_Trace : C1222_Response {
+class C1222_Response_Trace : public C1222_Response {
     public:
         C1222_Response_Trace(uint8_t res,  char ** aptitles);
 
@@ -123,7 +123,7 @@ class C1222_Response_Trace : C1222_Response {
         char ** aptitles;
 };
 
-class C1222_Response_Registration : C1222_Response {
+class C1222_Response_Registration : public C1222_Response {
     public:
         C1222_Response_Registration(uint8_t res, char * aptitle, 
                         short delay, long period, uint8_t info);

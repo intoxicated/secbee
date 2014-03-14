@@ -28,7 +28,7 @@ C1222_Request::C1222_Request()
 
 C1222_Request::~C1222_Request()
 {
-    if(build_size > 0 && raw_data != NULL)
+    if(raw_data != NULL)
         delete raw_data;
 }
 
@@ -181,7 +181,7 @@ uint8_t *
 C1222_Request_Logon::build()
 {
     short uid, tout;
-    printf("[*] Building logon data...\n");
+    //printf("[*] Building logon data...\n");
     if(raw_data != NULL)
         delete raw_data;
 
