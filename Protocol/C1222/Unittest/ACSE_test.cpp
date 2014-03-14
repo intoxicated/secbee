@@ -4,7 +4,7 @@
 #include "../C1222_Request.h"
 #include "../C1222_EPSEM.h"
 #include "../C1222_ACSE.h"
-
+#include "../C1222_Response.h"
 //TODO
 uint8_t data[] = "\x60\x29\xA2\x05\x80\x03\x7B\xC1\x75\
 \xA6\x04\x80\x02\x7B\x04\xA8\x03\x02\x01\x07\
@@ -26,24 +26,27 @@ class ACSE_Parse : public ::testing::Test {
 //check building down to top a
 TEST_F(ACSE_Build, test_build)
 {
-    C1222_Request_Logon logon (2, "USER NAME", 60);
+    C1222_Request_Logon logon (2,"USER NAME", 60);
     uint8_t * d = logon.build(); // build data;
     uint8_t * logonData = d;
     printf("    [*] request data length : %lx\n", logon.get_build_size());
 
     puts("");
-    C1222_EPSEM epsem (d, 0x80, 0, logon.get_build_size());
-    d = epsem.build();
+    C1222_EPSEM * epsem = new C1222_EPSEM(d, 0x80, 0, logon.get_build_size());
+    d = epsem->build();
 
-    printf("    [*] epsem length : %lx\n", epsem.get_build_size());
+    printf("    [*] epsem length : %lx\n", epsem->get_build_size());
     puts("");
 
-    C1222_ACSE acse ( d, "123.4", "7", "123.8437", NULL, epsem.get_build_size());
+    C1222_ACSE * acse = new C1222_ACSE( d, "123.4", "7", "123.8437", NULL, epsem->get_build_size());
     
-    d = acse.build();      
+    d = acse->build();      
 
-    for(int i = 0; i < acse.get_build_size(); ++i)
+    for(int i = 0; i < acse->get_build_size(); ++i)
         EXPECT_EQ(data[i], d[i]);
+
+    delete epsem;
+    delete acse;
 }
 
 //check parsing top to down

@@ -41,7 +41,7 @@ int main (int argc, char ** argv)
 
     puts("");
     printf("[!] FINAL\n");
-    for(int i = 0; i < acse.get_data_len(); ++i)
+    for(int i = 0; i < acse.get_build_size(); ++i)
         printf("0x%02x ", d[i]);
 
     puts("");

@@ -104,7 +104,7 @@ EPSEM_test.o : $(USER_DIR)/EPSEM_test.cpp $(GTEST_HEADERS)
 acse_unittest: ACSE_test.o gtest_main.a
 		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ \
 			$(PROTO_DIR)/C1222_ACSE.cpp $(PROTO_DIR)/C1222_EPSEM.cpp \
-			$(PROTO_DIR)/C1222_Request.cpp
+			$(PROTO_DIR)/C1222_Request.cpp $(PROTO_DIR)/C1222_Response.cpp
 
 epsem_unittest: EPSEM_test.o gtest_main.a
 		$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@ \

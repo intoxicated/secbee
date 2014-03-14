@@ -47,7 +47,7 @@ TEST_F(Response_Build, test_Logon)
     C1222_Response_Logon logon(0x0, 0x3C);
     uint8_t * d = logon.build();
     short timeout;
-
+    logon.get_build_size();
     memcpy(&timeout, d+1, 2);
     timeout = ntohs(timeout);
 
