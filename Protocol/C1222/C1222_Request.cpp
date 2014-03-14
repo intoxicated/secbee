@@ -18,7 +18,6 @@ using namespace std;
 /**
  *  Base class Request
  */
-
 C1222_Request::C1222_Request()
 {
     build_size = 0;
@@ -70,7 +69,9 @@ C1222_Request_Ident::C1222_Request_Ident():C1222_Request()
 uint8_t *
 C1222_Request_Ident::build()
 {
+#ifdef DEBUG
     printf("[*] Building identity data...\n");
+#endif
     raw_data = new uint8_t[1];
     raw_data[0] = request_num;
     build_size = 1;
@@ -93,7 +94,9 @@ C1222_Request_Logoff::C1222_Request_Logoff():C1222_Request()
 uint8_t *
 C1222_Request_Logoff::build()
 {
+#ifdef DEBUG
     printf("[*] Building logoff data...\n");
+#endif
     raw_data = new uint8_t[1];
     raw_data[0] = request_num;
     build_size = 1;
@@ -118,7 +121,9 @@ C1222_Request_Disconnect::C1222_Request_Disconnect():C1222_Request()
 uint8_t *
 C1222_Request_Disconnect::build()
 {
+#ifdef DEBUG
     printf("[*] Building disconnect data...\n");
+#endif
     if(raw_data != NULL)
         delete raw_data;
 
@@ -181,7 +186,9 @@ uint8_t *
 C1222_Request_Logon::build()
 {
     short uid, tout;
-    //printf("[*] Building logon data...\n");
+#ifdef DEBUG
+    printf("[*] Building logon data...\n");
+#endif
     if(raw_data != NULL)
         delete raw_data;
 
@@ -305,7 +312,9 @@ uint8_t *
 C1222_Request_Read::build()
 {
     //full read
+#ifdef DEBUG
     printf("[*] Building read data...\n");
+#endif
     if(raw_data != NULL)
         delete raw_data;
 
@@ -456,8 +465,9 @@ C1222_Request_Write::get_index()
 uint8_t *
 C1222_Request_Write::build()
 {
+#ifdef DEBUG
     printf("[*] Building write data...\n");
-    
+#endif
     if(raw_data != NULL)
         delete raw_data;
     
@@ -542,7 +552,9 @@ C1222_Request_Terminate::C1222_Request_Terminate():C1222_Request()
 uint8_t *
 C1222_Request_Terminate::build()
 {
+#ifdef DEBUG
     printf("[*] Building terminate data...\n");
+#endif
     raw_data = new uint8_t[1];
     raw_data[0] = request_num;
     build_size = 1;
@@ -578,8 +590,9 @@ C1222_Request_Wait::get_interval()
 uint8_t *
 C1222_Request_Wait::build()
 {
+#ifdef DEBUG
     printf("[*] Building wait data...\n");
-    
+#endif 
     if(raw_data != NULL)
         delete raw_data;
 
@@ -641,8 +654,9 @@ C1222_Request_Resolve::get_ap_title()
 uint8_t *
 C1222_Request_Resolve::build()
 {
+#ifdef DEBUG
     printf("[*] Building resolve data...\n");
-    
+#endif
     if(raw_data != NULL)
         delete raw_data;
 
@@ -714,8 +728,9 @@ C1222_Request_Trace::get_ap_title()
 uint8_t *
 C1222_Request_Trace::build()
 {
+#ifdef DEBUG
     printf("[*] Building Trace data...\n");
-
+#endif
     if(raw_data != NULL)
         delete raw_data;
 
@@ -758,7 +773,8 @@ C1222_Request_Trace::parse(uint8_t * data)
  */
 C1222_Request_Security::C1222_Request_Security():C1222_Request()
 {
-
+    this->request_num = 0x51;
+    this->passwd = NULL;
 }
 
 C1222_Request_Security::C1222_Request_Security(const char * passwd, 
@@ -787,8 +803,9 @@ C1222_Request_Security::get_user_id()
 uint8_t * 
 C1222_Request_Security::build()
 {
+#ifdef DEBUG
     printf("[*] Building security data...\n");
-    
+#endif
     if(raw_data != NULL)
         delete raw_data;
 
@@ -897,13 +914,17 @@ C1222_Request_Registration::C1222_Request_Registration(
 uint8_t *
 C1222_Request_Registration::build()
 {
+#ifdef DEBUG
+    printf("[*] Building Registration data...\n");
+#endif
     return raw_data;
 }
 
 C1222_Request_Registration * 
 C1222_Request_Registration::parse(uint8_t * data)
 {
-    return new C1222_Request_Registration(0,0, NULL, "", NULL, 0, NULL, NULL);
+    return new C1222_Request_Registration(0,0, NULL, "", 
+                                    NULL, 0, NULL, NULL);
 }
 
 /**
@@ -949,8 +970,9 @@ C1222_Request_Deregistration::parse(uint8_t * data)
 uint8_t *
 C1222_Request_Deregistration::build()
 {
+#ifdef DEBUG
     printf("[*] Building deregistration data...\n");
-
+#endif
     if(raw_data != NULL)
         delete raw_data;
     //encode aptitle

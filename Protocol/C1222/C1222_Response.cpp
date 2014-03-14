@@ -19,8 +19,8 @@ C1222_Response::C1222_Response()
 
 C1222_Response::~C1222_Response()
 {
-    //if(raw_data != NULL)
-    //    delete raw_data;
+    if(raw_data != NULL)
+        delete raw_data;
 }
 
 uint8_t *

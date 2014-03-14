@@ -11,6 +11,10 @@
 #include "C1222_EPSEM.h"
 #include "Utils.hpp"
 
+/**
+ * Default constructor
+ *
+ */
 C1222_EPSEM::C1222_EPSEM()
 {
     build_size = 0;
@@ -18,6 +22,14 @@ C1222_EPSEM::C1222_EPSEM()
     raw_data = NULL;
 }
 
+/**
+ * Parameter constructor
+ *
+ * @param data response/request data section 
+ * @param flag control flags 
+ * @param e_class epsem class (optional)
+ * @param datalen length of parameter data
+ */
 C1222_EPSEM::C1222_EPSEM(uint8_t * data, uint8_t flag, 
                         int e_class, int datalen)
 {
@@ -34,13 +46,10 @@ C1222_EPSEM::C1222_EPSEM(uint8_t * data, uint8_t flag,
     this->set_flags(flag);
 }
 
-C1222_EPSEM::C1222_EPSEM(const C1222_EPSEM& other)
-{
-    this->control = other.control;
-    this->e_data = other.e_data;
-
-}
-
+/**
+ * Destructor 
+ *
+ */
 C1222_EPSEM::~C1222_EPSEM()
 {
     if(e_data.size != 0)
@@ -49,6 +58,11 @@ C1222_EPSEM::~C1222_EPSEM()
         delete raw_data;
 }
 
+/**
+ * wrapper for set flag
+ *
+ * @param flag (byte)
+ */
 void
 C1222_EPSEM::set_flags(uint8_t flag)
 {
@@ -61,15 +75,15 @@ C1222_EPSEM::set_flags(uint8_t flag)
 
 /**
  * Build EPSEM portion of data 
- * Caller responsible to free the memory after used of pointer
  * 
  * @return pointer that contains EPSEM 
  */
 uint8_t * 
 C1222_EPSEM::build()
 {
+#ifdef DEBUG
     printf( "[*] Building EPSEM data...\n");
-    
+#endif
     if(raw_data != NULL)
         delete raw_data;
 
@@ -91,10 +105,7 @@ C1222_EPSEM::build()
         memcpy(raw_data+1, &ed_class, 4);
         offset += 4;
     }
-    else{
-        printf("    [!] eclass is not present\n");
-    }
-        
+    
     //encode size
     memcpy(raw_data + offset, &service_len, encoded_size);
     offset += encoded_size;
@@ -104,6 +115,11 @@ C1222_EPSEM::build()
     return raw_data;
 }
 
+/**
+ * Parse EPSEM data into class 
+ *
+ * @param data EPSEM data
+ */
 C1222_EPSEM *
 C1222_EPSEM::parse(uint8_t * data)
 {
@@ -112,34 +128,47 @@ C1222_EPSEM::parse(uint8_t * data)
     uint8_t flag = *ptr;
     int eclass = 0;
     int ber_size = 0, serv_len = 0;
-
+#ifdef DEBUG
     printf("[!!] EPSEM Parsing start... \n");
-    //empty 
+#endif
     
     if(*ptr == 0x0)
+    {
+#ifdef DEBUG
+        printf("Empty EPSEM, still valid\n");
+#endif
         return NULL;
-    
+    }
+
     if((flag >> 4) & 0x1) //if eclass flag is on
     {
+#ifdef DEBUG
         printf("[*] eclass flag copy... \n");
+#endif
         copy_to(&eclass, ptr+1, 4); 
+#ifdef DEBUG
         printf("[*] get data part... \n");
+#endif
         serv_len = ber_len_decode(ptr+5, &ber_size);
         ptr = ptr + 1 + 4 + ber_size;
     }
     else //if e_class is not present
     {
+#ifdef DEBUG
         printf("[*] get data part... \n");
+#endif
         serv_len = ber_len_decode(ptr+1, &ber_size);
         ptr = ptr + 1 + ber_size;
     }
-    printf("[*] data part start as:0x%x and \
-            length 0x%x\n", *ptr, serv_len);
-
+#ifdef DEBUG
+    printf("[*] data header :0x%x and length 0x%x\n", *ptr, serv_len);
+#endif
     return new C1222_EPSEM(ptr, *data, eclass, serv_len);
 }
 
-
+/**
+ * Getters 
+ */
 long
 C1222_EPSEM::get_service_len()
 {

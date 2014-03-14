@@ -21,8 +21,8 @@
 class C1222_EPSEM : public C1222{
     public:
         C1222_EPSEM();
-        C1222_EPSEM(uint8_t * data, uint8_t flag, int ed_class, int datalen);
-        C1222_EPSEM(const C1222_EPSEM& other);
+        C1222_EPSEM(uint8_t * data, uint8_t flag, 
+                       int ed_class, int datalen);
         ~C1222_EPSEM();
   
         uint8_t     get_flags();

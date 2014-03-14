@@ -72,8 +72,9 @@ inline element * ber_uid_encode(char * ptr, int len, int tag)
     dup[len] = '\0';
 
     idPtr[count] = strtok(dup, ".");
-    printf("    [-] Start encoding tag 0x%02x with %s\n",
-        tag, ptr);
+#ifdef DEBUG
+    printf("    [-] Start encoding tag 0x%02x with %s\n", tag, ptr);
+#endif
     //store pointer to each value
     while(idPtr[count] != NULL)
     {
@@ -150,8 +151,9 @@ inline element * ber_uid_encode(char * ptr, int len, int tag)
             memcpy(ret->data + 2 + (i*sizes[i-1]), tempVals[i], sizes[i]);
         free(tempVals[i]);
     }
-    
+#ifdef DEBUG
     printf("    [-] Finish encoding %s\n", ptr);
+#endif
     return ret;
 }
 
@@ -249,7 +251,9 @@ inline int ber_len_size(int n)
 inline int ber_len_encode(void * ptr, int len, int mx)
 {
     int berlen = ber_len_size(len);
+#ifdef DEBUG
     printf("    [-] Start encoding %d \n", len);
+#endif
     uint8_t * bptr = (uint8_t *)ptr;
     
     if(berlen > mx) //berlen exceed max
@@ -264,7 +268,9 @@ inline int ber_len_encode(void * ptr, int len, int mx)
         for(int i = berlen - 2; i >= 0; i--)
             *bptr++ = (len >> (i*8)) & 0xFF;
     }
+#ifdef DEBUG
     printf("    [-] Encoding %d Done\n", len);
+#endif
     return berlen;
 }
 

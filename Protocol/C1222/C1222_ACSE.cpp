@@ -12,6 +12,9 @@
 #include "C1222_ACSE.h"
 #include "Utils.hpp"
 
+/**
+ * Default constructor
+ */
 C1222_ACSE::C1222_ACSE()
 {
     this->calling_id.size = 0;
@@ -21,7 +24,7 @@ C1222_ACSE::C1222_ACSE()
 }
 
 /**
- * parameter constructor
+ * Parameter constructor
  * 
  * @param usrinfo (require) pointer to user information section
  * @param calling_title (optional) string of calling title (decoded) 
@@ -82,11 +85,13 @@ C1222_ACSE::C1222_ACSE(void * usrinfo, const char * calling_title,
 
     memcpy(this->calling_id.data, calling_id, this->calling_id.size);
     
-    //this->calling_title.size = 0;
     this->userinfo.data = (uint8_t *)usrinfo;
     this->userinfo.size = usrlen;
 }
 
+/**
+ * Destructor
+ */
 C1222_ACSE::~C1222_ACSE()
 {
     if(this->calling_id.size != 0)
@@ -156,7 +161,6 @@ addAPtoRawData(uint8_t * buf, uint8_t header,
  * add user information element to the buffer
  *
  */
-
 void
 addUserInfoToRawData(void * data, long size)
 {
@@ -171,8 +175,7 @@ addUserInfoToRawData(void * data, long size)
 
 
 /**
- * Build ACSE Packet 
- * ToDo: byte ordering...
+ * Build ACSE frame
  *
  * @return raw_data buffer that contains ACSE data
  */
@@ -187,8 +190,10 @@ C1222_ACSE::build()
     ///////////////////////////////////////////////////////////////
 
     //calculate user info section 
+#ifdef DEBUG
     printf("[*] Building ACSE data ...\n");
     printf("    [*] User info size : 0x%x\n", userinfo.size);
+#endif
     long str_len = 0, ext_len = 0, ele_len = 0;
     int str_blen, ublen, eblen;
 
@@ -196,7 +201,9 @@ C1222_ACSE::build()
     ublen = ber_len_encode(&ext_len, userinfo.size + str_blen + 1, 4);
     eblen = ber_len_encode(&ele_len, userinfo.size + str_blen
                         + 1 + ublen + 1, 4);
+#ifdef DEBUG
     printf("    [!] calculated userinfo fields\n");
+#endif
     int usrinfo_len = 1 + ele_len; //total user info length 
 
     //encode uid variables
@@ -217,8 +224,9 @@ C1222_ACSE::build()
     //variables for size of encoded length 
     int calling_t_blen = 0, calling_id_blen = 0;
     int called_t_blen = 0, called_id_blen = 0;
-
+#ifdef DEBUG
     printf("    [!] calculating id/title fields\n");
+#endif
     //TODO: refactor this part 
     //0x02 is tag for id 0x80 is tag for title 
     e_calling_id = ber_uid_encode((char *)calling_id.data, 
@@ -256,28 +264,26 @@ C1222_ACSE::build()
                                 e_called_id->size, 4);
         pdusize++;
     }
-    
+#ifdef DEBUG
     printf("    [!] finish id/title fields\n");
     //printf("berlen %x %x %x", 
     //    calling_t_blen, calling_id_blen, called_t_blen);
-    //printf("USER INFO LEN : 0x%x\ncin %lx cid %lx ced %lx\n", 
-    //    usrinfo_len ,calling_t_len, calling_id_len, called_t_len);
-
+    printf("    [!] USER INFO LEN : 0x%x\ncin %lx cid %lx ced %lx\n", 
+        usrinfo_len ,calling_t_len, calling_id_len, called_t_len);
+#endif
     //add up all length of title/id 
     pdusize += calling_t_len + calling_id_len 
             + called_t_len + called_id_len 
             + calling_t_blen + called_t_blen 
             + called_id_blen + calling_id_blen;
 
-    //printf("PDU SIZE 0x%x\n", pdusize);
-
     int pdulen = 0; long pdublen = 0;
     pdublen = ber_len_encode(&pdulen, pdusize, 4);
 
     pdusize = 1 + pdublen + pdulen;
-
+#ifdef DEBUG
     printf("    [*] Total PDU size is 0x%x\n", pdusize);
-
+#endif
     ///////////////////////////////////////////////////////////////
     //                                                           //
     //          start to build actual raw data (top down)        //
@@ -297,6 +303,8 @@ C1222_ACSE::build()
     cum_offset = 1 + pdublen;
     //printf("Before offset %d\n", cum_offset);
 
+    //add ap element to buffer
+    //if pointer is null, it won't add anything
     addAPtoRawData(raw_data, 0xA2, called_t_len, 
         called_t_blen, e_called_title, cum_offset);
     addAPtoRawData(raw_data, 0xA4, called_id_len, 
@@ -305,19 +313,8 @@ C1222_ACSE::build()
         calling_t_blen, e_calling_title, cum_offset);
     addAPtoRawData(raw_data, 0xA8, calling_id_len, 
         calling_id_blen, e_calling_id, cum_offset);
- 
-    /*
-    if(e_called_title != NULL){
-        raw_data[cum_offset++] = 0xA2;
-        memcpy(raw_data + cum_offset, &called_t_len, called_t_blen);
 
-        cum_offset += called_t_blen;
-        memcpy(raw_data + cum_offset, e_called_title->data, 
-            e_called_title->size);
-        cum_offset += e_called_title->size;
-    }
-    */
-
+    //adding user info section
     raw_data[cum_offset++] = 0xBE;
     memcpy(raw_data + cum_offset, &ele_len, eblen);
     cum_offset += eblen;
@@ -333,11 +330,13 @@ C1222_ACSE::build()
     //copy userinfo data
     memcpy(raw_data + cum_offset, userinfo.data, userinfo.size);
     cum_offset += userinfo.size;
-    //printf("Final acse\n");
-    //for(int i = 0; i < cum_offset; i++)
-    //    printf("0x%02x ", raw_data[i]);
-    //puts("");
     
+#ifdef DEBUG
+    printf("    [!] Final acse\n");
+    for(int i = 0; i < cum_offset; i++)
+        printf("0x%02x ", raw_data[i]);
+    puts("");
+#endif
     //free up memory....... better manangement needs
     //TO do
 
@@ -345,7 +344,9 @@ C1222_ACSE::build()
     cleanup(e_called_id, "c id");
     cleanup(e_calling_title, "ced t");
     cleanup(e_calling_id, "ced id");
+#ifdef DEBUG
     printf("    [!!] Finish clean up memory\n");
+#endif
     this->acse_len = pdusize;
 
     return raw_data;
@@ -357,6 +358,15 @@ C1222_ACSE::build()
  *                                                                  *
  * ================================================================ */
 
+/**
+ * Parse ap element 
+ *
+ * @param data pointer that start of ap element
+ * @param datalen ap element length (outbound)
+ * @param berlen encoded length of size (outbound)
+ *
+ * @return ap element data 
+ */
 uint8_t *
 ap_title_parse(void * data, long * datalen, long * berlen)
 {
@@ -372,6 +382,15 @@ ap_title_parse(void * data, long * datalen, long * berlen)
     
 }
 
+/**
+ * Parse user information 
+ *
+ * @param data pointer that start of user information
+ * @param datalen user infomation length (outbound)
+ * @param berlen size of encoded length (outbound)
+ *
+ * @return ptr pointer that start of req/res section
+ */
 uint8_t *
 usrinfo_parse(void * data, long * datalen, long * berlen)
 {
@@ -382,23 +401,27 @@ usrinfo_parse(void * data, long * datalen, long * berlen)
     *berlen = ber_size;
 
     ptr = ptr + 1 + ber_size; //point user_info_external
-    printf(" [--->] userinfo element size : 0x%lx\n", *datalen);
+#ifdef DEBUG
+    printf("    [!] userinfo element size : 0x%lx\n", *datalen);
+#endif
     //check header for user-info external
     if(*ptr == 0x28)
     {
-        printf("[--->] check user info external \n");
         *datalen = ber_len_decode(ptr+1, &ber_size);
         ptr = ptr + 1 + ber_size;
-        printf(" [--->] external size : 0x%lx\n", *datalen);
+#ifdef DEBUG
+        printf("    [-] external size : 0x%lx\n", *datalen);
+#endif
     }
 
     //check header for user info octet string
     if(*ptr == 0x81)
     {
-        printf("[--->] check user info octet string ..\n");
         *datalen = ber_len_decode(ptr+1, &ber_size);
         ptr = ptr + 1 + ber_size;
-        printf(" [--->] octet size : 0x%lx\n", *datalen);
+#ifdef DEBUG
+        printf("    [-] octet size : 0x%lx\n", *datalen);
+#endif
     }
 
     //now ptr points epsem section
@@ -412,9 +435,9 @@ usrinfo_parse(void * data, long * datalen, long * berlen)
  * ================================================================ */
 
 /**
- *
- *
- *
+ * Parse ACSE data 
+ * 
+ * @param data ACSE data 
  */
 void
 C1222_ACSE::parse(void * data)
@@ -427,32 +450,37 @@ C1222_ACSE::parse(void * data)
     int datalen, ber_size;
     int pdusize = 0;
 
-    printf("ACSE parsing start..\n");
+#ifdef DEBUG
+    printf("[*] ACSE parsing start..\n");
+#endif 
     if(*ptr != 0x60){
+#ifdef DEBUG
         printf("[!] Error packet\n");
+#endif
         return;
     }
     else {
-        printf("Decoding length of ACSE..\n");
         datalen = ber_len_decode(ptr + 1, &ber_size);
         ptr = ptr + 1 + ber_size; //now pointing elements
-        printf("data length is : %x \n", datalen);
+#ifdef DEBUG
+        printf("    [!] ACSE data length is : %x \n", datalen);
+#endif
         long datalen, berlen;
         
         pdusize = 1 + ber_size;
         //parse called
         if(*ptr == 0xA2){
-            printf("[*] Parsing called title... \n");
             this->called_title.data = 
                     ap_title_parse(ptr, &datalen, &berlen);
             this->called_title.size = datalen;
             ptr = ptr + 1 + berlen + datalen;
             pdusize += 1 + berlen + datalen;
+#ifdef DEBUG
+            printf("    [>] Called ap title is : %s\n", 
+                this->called_title.data);
+#endif
         }
 
-        printf("[---->] Called ap title is : %s\n", 
-            this->called_title.data);
-   
         //check first
         if(*ptr == 0xA4){
             this->called_id.data = 
@@ -460,36 +488,49 @@ C1222_ACSE::parse(void * data)
             this->called_id.size = datalen;
             ptr = ptr + 1 + berlen + datalen;
             pdusize += 1 + berlen + datalen;
+#ifdef DEBUG
+            printf("    [>] Called ap invocation id is : %s\n", 
+                this->called_id.data);
+#endif
         }
         
         //parse calling
         if(*ptr == 0xA6){
-            printf("[*] Parsing calling title... \n");
             this->calling_title.data = 
                     ap_title_parse(ptr, &datalen, &berlen);
             this->calling_title.size = datalen;
             ptr = ptr + 1 + berlen + datalen;
             pdusize += 1 + berlen + datalen;
-        }
-        
-        printf("[---->] Calling ap title is : %s\n", 
+#ifdef DEBUG
+            printf("    [>] Calling ap title is : %s\n", 
                 this->calling_title.data);
+#endif
+        }
          
         if(*ptr == 0xA8){
-            printf("[*] Parsing calling invo id... \n");
             this->calling_id.data = 
                     ap_title_parse(ptr, &datalen, &berlen);
             this->calling_id.size = datalen;
             ptr = ptr + 1 + berlen + datalen;
             pdusize += 1 + berlen + datalen;
+#ifdef DEBUG
+            printf("    [>] Calling ap invocation id is : %s\n", 
+                this->calling_id.data);
+#endif
         }
         
-        printf("[---->] Calling invo id is : %s\n",
-                 this->calling_id.data);
-         
+        //if calling id is not present, stop process 
+        if(this->calling_id.size == 0 &&
+                this->calling_id.data == NULL)
+        {
+#ifdef DEBUG
+            printf("    [!!] Calling id is not present, abort parsing\n");
+#endif
+            return;
+        }
+      
         //parse user information
         if(*ptr == 0xBE){
-            printf("[*] Parsing user info ... \n");
             //this->userinfo.data = ptr;
             this->userinfo.data = usrinfo_parse(ptr, &datalen, &berlen);
             this->userinfo.size = datalen;
@@ -497,11 +538,18 @@ C1222_ACSE::parse(void * data)
             printf("[!] userinfo data start with\
              : 0x%x and length 0x%lx\n", *(this->userinfo.data), datalen);
             pdusize += 1 + berlen + datalen;
+        } else {
+#ifdef DEBUG
+            printf("    [!!] User info Header is not present, abort\n");
+            return;
+#endif
         }
         
         this->acse_len = pdusize;
     }
+#ifdef DEBUG
     printf("[!!] ACSE Parsing done!\n");
+#endif
 }
 
 /* ================================================================ *
