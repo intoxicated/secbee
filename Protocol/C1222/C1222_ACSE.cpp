@@ -39,7 +39,7 @@ C1222_ACSE::C1222_ACSE(void * usrinfo, const char * calling_title,
     if(calling_title != NULL){
         this->calling_title.size = strlen(calling_title);
         this->calling_title.data = 
-                new uint8_t[this->calling_title.size];
+                new uint8_t[this->calling_title.size+1];
         this->calling_title.data[this->calling_title.size] = '\0';
 
         memcpy(this->calling_title.data, calling_title, 
@@ -53,7 +53,7 @@ C1222_ACSE::C1222_ACSE(void * usrinfo, const char * calling_title,
     if(called_title != NULL){
         this->called_title.size = strlen(called_title);
         this->called_title.data = 
-                new uint8_t[this->called_title.size];
+                new uint8_t[this->called_title.size+1];
         this->called_title.data[this->called_title.size] = '\0';
 
         memcpy(this->called_title.data, called_title, 
@@ -77,7 +77,7 @@ C1222_ACSE::C1222_ACSE(void * usrinfo, const char * calling_title,
     }
 
     this->calling_id.size = strlen(calling_id);
-    this->calling_id.data = new uint8_t[this->calling_id.size];
+    this->calling_id.data = new uint8_t[this->calling_id.size+1];
     this->calling_id.data[this->calling_id.size] = '\0';
 
     memcpy(this->calling_id.data, calling_id, this->calling_id.size);
@@ -85,11 +85,6 @@ C1222_ACSE::C1222_ACSE(void * usrinfo, const char * calling_title,
     //this->calling_title.size = 0;
     this->userinfo.data = (uint8_t *)usrinfo;
     this->userinfo.size = usrlen;
-}
-
-C1222_ACSE::C1222_ACSE(void * data)
-{
-
 }
 
 C1222_ACSE::~C1222_ACSE()
@@ -100,8 +95,8 @@ C1222_ACSE::~C1222_ACSE()
         delete this->calling_title.data;
     if(this->called_title.size != 0)
         delete this->called_title.data;
-
-    delete this->called_id.data;
+    if(this->called_id.size != 0)
+        delete this->called_id.data;
 
     if(raw_data != NULL)
         delete raw_data;
@@ -434,6 +429,7 @@ C1222_ACSE::parse(void * data)
 
     printf("ACSE parsing start..\n");
     if(*ptr != 0x60){
+        printf("[!] Error packet\n");
         return;
     }
     else {

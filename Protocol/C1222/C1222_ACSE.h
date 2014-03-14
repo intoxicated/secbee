@@ -48,8 +48,6 @@
 class C1222_ACSE : public C1222 {
     public:
         C1222_ACSE();
-        C1222_ACSE(const C1222_ACSE& other);
-        C1222_ACSE(void * data);
         C1222_ACSE(void * usrinfo, const char * calling_title, 
             const char * calling_id, const char * called_title, 
             const char * called_id, int usrlen);
