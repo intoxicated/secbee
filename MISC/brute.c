@@ -23,6 +23,7 @@ callback(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt,
 {
     if((*pkt)->dataLen == 0)
     {
+        printf("ND complete\n");
         return;
     }
     
@@ -131,9 +132,9 @@ restart:
 
 
     printf("Active Scanning ..\n");
-    xbee_conTx(con, NULL, "AS");
-    usleep(3000000);
-
+    xbee_conTx(con, NULL, "ND");
+    usleep(5000000);
+    exit(1);
     while(1)
     {
         //init id request
@@ -153,7 +154,7 @@ restart:
 
         //neighbor discovery
         ret = xbee_conTx(con, ret_ptr, "ND");
-        usleep(6000000);
+        usleep(5000000);
         if(didFound)
             break;
         else {

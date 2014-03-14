@@ -36,10 +36,11 @@ ret = xbee.wait_read_frame()
 print "Current ID"
 print ret
 
-xbee.at(command='AS')
+xbee.at(command='ND')
 print "ACTIVE SCAN RESULT:"
 print (xbee.wait_read_frame())
 
+exit()
 fd = open("scanlog.txt", "w+")
 
 while 1:
