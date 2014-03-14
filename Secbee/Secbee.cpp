@@ -78,17 +78,27 @@ myCB(struct xbee * xbee, struct xbee_con * con,
         return;
     }
     //prepare parsing incoming data
-    C1222_ACSE acse;
-    C1222_EPSEM epsem;
-    
+    //C1222_ACSE acse;
+    //C1222_EPSEM * epsem;
+    for(int i = 0; i < (*pkt)->dataLen; i++)
+    {
+        printf("0x%02x ", (*pkt)->data[i]);
+    }
+    printf("%s", (*pkt)->data);
+    puts("");
     //parse acse
-    acse.parse((*pkt)->data);
+    //acse.parse((*pkt)->data);
     //parse epsem
-    epsem.parse(acse.get_epsem());
+    
+    //epsem = C1222_EPSEM::parse(acse.get_epsem());
     //parse and print response part 
-    C1222_Response::parse(epsem.get_data(), 0x30);
+    
+    //C1222_Response_Logon * lres = C1222_Response_Logon::parse(epsem->get_data());
+    //printf("[*] Logon Response: %d %d\n", lres->get_response_num(), lres->get_timeout());
     //parse
-    printf("Receive: [%s]\n", (*pkt)->data);
+    //if(epsem != NULL)
+    //    delete epsem;
+    //delete lres;
 }
 
 /**
@@ -196,21 +206,20 @@ int main(int argc, char ** argv)
 
  
     //construct packet
+    C1222_Request_Logon logon(2, "USER NAME", 60);
+    uint8_t * d = logon.build(); // build data;
 
-    C1222_Request_Read read(0x30, 5, NULL, 0,0);
-    uint8_t * d = read.build(); // build data;
-
-    C1222_EPSEM epsem (d, 0x80, 0, read.get_build_size());
+    C1222_EPSEM epsem (d, 0x80, 0, logon.get_build_size());
     d = epsem.build();
 
-    C1222_ACSE acse ( d, "123.4", "7", "123.8437", NULL, epsem.get_length());
+    C1222_ACSE acse ( d, "123.4", "7", "123.8437", NULL, epsem.get_build_size());
     d = acse.build();
 
-
     //sending phase
-    ret = xbee_conTx(con, NULL, (const char *)d);
+    printf("[!] Sending request to Node..\n");
+    ret = xbee_connTx(con, NULL, (const unsigned char *)d, acse.get_build_size());
     printf("Ret: %d\n", ret);
-    usleep(3000000);
+    usleep(10000000);
 
     //ret = xbee_conTx(con, NULL, "LOW\r\n");
     //printf("Ret: %d\n", ret);
