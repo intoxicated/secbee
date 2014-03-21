@@ -36,11 +36,6 @@ ret = xbee.wait_read_frame()
 print "Current ID"
 print ret
 
-xbee.at(command='ND')
-print "ACTIVE SCAN RESULT:"
-print (xbee.wait_read_frame())
-
-exit()
 fd = open("scanlog.txt", "w+")
 
 while 1:
@@ -63,8 +58,6 @@ while 1:
         #python xbee api read whatever data was received
         #that might cause to bypass current ND 
         #therefore to work around this if status is not ok, redo
-        if ret['status'] != '\x00':
-            continue
 
         if ret['status'] == '\x00':
             print "\n", ret

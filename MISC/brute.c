@@ -23,7 +23,6 @@ callback(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt,
 {
     if((*pkt)->dataLen == 0)
     {
-        printf("ND complete\n");
         return;
     }
     
@@ -31,7 +30,7 @@ callback(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt,
         uint16_t panid;
         memcpy(&panid, (*pkt)->data + 6, 2);
         panid = ntohs(panid);    
-        printf("id rx: 0x%02x\n", panid);
+        //printf("0x%02x\n", panid);
     }
     else if((*pkt)->dataLen == 16)
     {
@@ -127,19 +126,22 @@ restart:
     xbee_conSettings(con, &settings, NULL);
     
     printf("Check current PAN ID ..\n");
-    xbee_conTx(con, NULL, "ID");
+    xbee_conTx(con, NULL, argv[1]);
     usleep(1000000);
-
-
-    printf("Active Scanning ..\n");
+    
+    printf("Coordinator start\n");
     xbee_conTx(con, NULL, "ND");
     usleep(5000000);
-    exit(1);
+    
+    printf("Recheck\n");
+    xbee_conTx(con, NULL, "ND");
+    usleep(5000000);
+    
     while(1)
     {
         //init id request
-        fprintf(fd, "[*] Testing pan id 0x%02x :", pan_force); 
-        printf("\rAttempting 0x%02x", pan_force);
+        fprintf(fd, "[*] Testing pan id 0x%04x :", pan_force); 
+        printf("\rAttempting 0x%04x", pan_force);
         fflush(stdout);
         pan_request = ID_REQUEST | (pan_force);
         pan_request = htonl(pan_request);
@@ -151,6 +153,14 @@ restart:
         //change pan id 
         ret = xbee_connTx(con, NULL, (const unsigned char *)req_ptr, 4);
         usleep(1000000);
+        
+        if(ret != 0x0){
+            fprintf(fd, "[!!] out of frame id.. reset\n");
+            break;
+        }
+
+        ret = xbee_conTx(con, NULL, "ND");
+        usleep(5000000);
 
         //neighbor discovery
         ret = xbee_conTx(con, ret_ptr, "ND");
@@ -164,7 +174,7 @@ restart:
         //increment pan id 
         pan_force++;
     }
-
+exit:
     fclose(fd);
 
     if((ret = xbee_conEnd(con)) != XBEE_ENONE)
@@ -177,8 +187,8 @@ restart:
     usleep(2000000);
 
     //alternative solution for frame ID incrementation
-    if(pan_force < 0xFFFF)
-        goto restart;
+    //if(pan_force < 0xFFFF)
+    //    goto restart;
     
     return 0;
 }
@@ -190,7 +200,7 @@ restart:
  * uint8_t channel;
  * 
  * uint16_t    pan_be;
- * 
+ * :
  * addr64  extended_pan_be;
  * 
  * uint8_t allow_join;
