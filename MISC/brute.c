@@ -30,7 +30,7 @@ callback(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt,
         uint16_t panid;
         memcpy(&panid, (*pkt)->data + 6, 2);
         panid = ntohs(panid);    
-        //printf("0x%02x\n", panid);
+        printf("0x%04x\n", panid);
     }
     else if((*pkt)->dataLen == 16)
     {
@@ -126,17 +126,19 @@ restart:
     xbee_conSettings(con, &settings, NULL);
     
     printf("Check current PAN ID ..\n");
-    xbee_conTx(con, NULL, argv[1]);
+    xbee_conTx(con, NULL, "ID");
     usleep(1000000);
     
-    printf("Coordinator start\n");
-    xbee_conTx(con, NULL, "ND");
-    usleep(5000000);
-    
+    printf("Change pan id... to 0x%04x\n", argv[1]);
+    xbee_conTx(con, NULL, argv[1]);
+    usleep(1000000);
+
+    usleep(12000000);
+
     printf("Recheck\n");
     xbee_conTx(con, NULL, "ND");
     usleep(5000000);
-    
+    exit(1); 
     while(1)
     {
         //init id request
@@ -161,7 +163,7 @@ restart:
 
         ret = xbee_conTx(con, NULL, "ND");
         usleep(5000000);
-
+        
         //neighbor discovery
         ret = xbee_conTx(con, ret_ptr, "ND");
         usleep(5000000);

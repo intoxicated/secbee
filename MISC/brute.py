@@ -35,7 +35,7 @@ xbee.at(command='ID')
 ret = xbee.wait_read_frame()
 print "Current ID"
 print ret
-
+exit()
 fd = open("scanlog.txt", "w+")
 
 while 1:
