@@ -109,7 +109,7 @@ C1222_EPSEM::build()
     //encode size
     memcpy(raw_data + offset, &service_len, encoded_size);
     offset += encoded_size;
-    //epsem data
+    //copy epsem data
     memcpy(raw_data + offset, e_data.data, e_data.size);
     
     return raw_data;
@@ -175,36 +175,60 @@ C1222_EPSEM::get_service_len()
     return service_len;
 }
 
+/**
+ *
+ *
+ */ 
 uint8_t 
 C1222_EPSEM::get_flags()
 {
     return control;
 }
 
+/**
+ *
+ *
+ */ 
 long
 C1222_EPSEM::get_class()
 {
     return ed_class;
 }
 
+/**
+ *
+ *
+ */ 
 uint8_t * 
 C1222_EPSEM::get_data()
 {
     return e_data.data;
 }
 
+/**
+ *
+ *
+ */ 
 long
 C1222_EPSEM::get_data_len()
 {
     return e_data.size;
 }
 
+/**
+ *
+ *
+ */ 
 long
 C1222_EPSEM::get_build_size()
 {
     return build_size;
 }
 
+/**
+ *
+ *
+ */ 
 uint8_t
 C1222_EPSEM::get_flag(int tag)
 {

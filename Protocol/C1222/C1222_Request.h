@@ -10,6 +10,9 @@
 #include <string>
 #include <stdint.h>
 #include <cstddef>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "C1222.h"
 
 using namespace std;

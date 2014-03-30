@@ -9,9 +9,7 @@
 #include "Utils.hpp"
 
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
 
 using namespace std;
 
@@ -25,30 +23,50 @@ C1222_Request::C1222_Request()
     request_num = 0;
 }
 
+/**
+ *
+ *
+ */ 
 C1222_Request::~C1222_Request()
 {
     if(raw_data != NULL)
         delete raw_data;
 }
 
+/**
+ *
+ *
+ */ 
 uint8_t *
 C1222_Request::build()
 {
     return raw_data;
 }
 
+/**
+ *
+ *
+ */ 
 uint8_t *
 C1222_Request::get_build_data()
 {
     return raw_data;
 }
 
+/**
+ *
+ *
+ */ 
 uint8_t
 C1222_Request::get_request_num()
 {
     return request_num;
 }
 
+/**
+ *
+ *
+ */ 
 unsigned long
 C1222_Request::get_build_size()
 {
@@ -164,18 +182,30 @@ C1222_Request_Logon::C1222_Request_Logon( short user_id,
     strcpy(this->username, username);
 }
 
+/**
+ *
+ *
+ */ 
 short
 C1222_Request_Logon::get_user_id()
 {
     return user_id;
 }
-    
+ 
+/**
+ *
+ *
+ */    
 short 
 C1222_Request_Logon::get_timeout()
 {
     return timeout;
 }
 
+/**
+ *
+ *
+ */ 
 char *         
 C1222_Request_Logon::get_username()
 {
@@ -274,6 +304,10 @@ C1222_Request_Read::~C1222_Request_Read()
         delete this->index;
 }
 
+/**
+ *
+ *
+ */ 
 C1222_Request_Read::C1222_Request_Read(uint8_t req, short tableid,
                                  uint8_t * index,  short index_size, 
                                  short e_count):C1222_Request()
@@ -290,18 +324,30 @@ C1222_Request_Read::C1222_Request_Read(uint8_t req, short tableid,
     }
 }
 
+/**
+ *
+ *
+ */ 
 uint8_t * 
 C1222_Request_Read::get_index()
 {
     return index;
 }
 
+/**
+ *
+ *
+ */ 
 short
 C1222_Request_Read::get_tableid()
 {
     return tableid;
 }
 
+/**
+ *
+ *
+ */ 
 short
 C1222_Request_Read::get_e_count()
 {
@@ -311,7 +357,6 @@ C1222_Request_Read::get_e_count()
 uint8_t *
 C1222_Request_Read::build()
 {
-    //full read
 #ifdef DEBUG
     printf("[*] Building read data...\n");
 #endif
@@ -415,6 +460,10 @@ C1222_Request_Write::~C1222_Request_Write()
         delete index;
 }
 
+/**
+ *
+ *
+ */ 
 C1222_Request_Write::C1222_Request_Write(uint8_t req, short tableid, 
                                     short * index, short index_size,
                                         short count, uint8_t * data)
@@ -438,24 +487,40 @@ C1222_Request_Write::C1222_Request_Write(uint8_t req, short tableid,
     }
 }
 
+/**
+ *
+ *
+ */ 
 short 
 C1222_Request_Write::get_tableid()
 {
     return tableid;
 }
 
+/**
+ *
+ *
+ */ 
 short
 C1222_Request_Write::get_count()
 {
     return count;
 }
 
+/**
+ *
+ *
+ */ 
 uint8_t * 
 C1222_Request_Write::get_data()
 {
     return data;
 }
 
+/**
+ *
+ *
+ */ 
 uint8_t *
 C1222_Request_Write::get_index()
 {
@@ -581,6 +646,10 @@ C1222_Request_Wait::C1222_Request_Wait(uint8_t interval)
     this->interval = interval;
 }
 
+/**
+ *
+ *
+ */ 
 uint8_t 
 C1222_Request_Wait::get_interval()
 {
@@ -645,6 +714,10 @@ C1222_Request_Resolve::~C1222_Request_Resolve()
         delete ap_title;
 }
 
+/**
+ *
+ *
+ */ 
 char *
 C1222_Request_Resolve::get_ap_title()
 {
@@ -719,6 +792,10 @@ C1222_Request_Trace::~C1222_Request_Trace()
         delete ap_title;
 }
 
+/**
+ *
+ *
+ */ 
 char *
 C1222_Request_Trace::get_ap_title()
 {
@@ -788,12 +865,20 @@ C1222_Request_Security::C1222_Request_Security(const char * passwd,
     this->userid = user_id;
 }
 
+/**
+ *
+ *
+ */ 
 char *
 C1222_Request_Security::get_passwd()
 {
     return passwd;
 }
 
+/**
+ *
+ *
+ */ 
 short 
 C1222_Request_Security::get_user_id()
 {

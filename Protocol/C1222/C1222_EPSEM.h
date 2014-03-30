@@ -8,6 +8,7 @@
 #define __C1222_EPSEM_H__
 
 #include "C1222.h"
+ 
 /**
  * EPSEM format representation class
  */
