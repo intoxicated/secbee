@@ -21,6 +21,7 @@ C1222_ACSE::C1222_ACSE()
     this->calling_title.size = 0;
     this->called_id.size = 0;
     this->called_title.size = 0;
+    this->raw_data = NULL;
 }
 
 /**
@@ -124,6 +125,11 @@ C1222_ACSE::~C1222_ACSE()
 void
 cleanup(element * ptr, const char * name)
 {
+
+#ifdef DEBUG
+    printf("[!] Cleaning %s\n", name);
+#endif
+
     if(ptr != NULL)
     {
         delete ptr->data;
@@ -210,13 +216,6 @@ C1222_ACSE::build()
     element * e_calling_id = NULL, * e_calling_title = NULL;
     element * e_called_id = NULL, * e_called_title = NULL;
 
-    //validate presense of optional 
-    //if(calling_title.data != NULL)
-    //{
-    //    printf("CT: %s\n CID: %s\n CllT: %s\n", calling_title.data, 
-    //        calling_id.data, called_title.data);
-    //}
-    
     //variables for encoded length 
     long calling_t_len = 0, calling_id_len = 0;
     long  called_t_len = 0, called_id_len = 0;
@@ -266,8 +265,6 @@ C1222_ACSE::build()
     }
 #ifdef DEBUG
     printf("    [!] finish id/title fields\n");
-    //printf("berlen %x %x %x", 
-    //    calling_t_blen, calling_id_blen, called_t_blen);
     printf("    [!] USER INFO LEN : 0x%x\ncin %lx cid %lx ced %lx\n", 
         usrinfo_len ,calling_t_len, calling_id_len, called_t_len);
 #endif
@@ -457,11 +454,13 @@ C1222_ACSE::parse(void * data)
 #ifdef DEBUG
         printf("[!] Error packet\n");
 #endif
+        this->error = -1;
         return;
     }
     else {
         datalen = ber_len_decode(ptr + 1, &ber_size);
         ptr = ptr + 1 + ber_size; //now pointing elements
+        
 #ifdef DEBUG
         printf("    [!] ACSE data length is : %x \n", datalen);
 #endif
@@ -558,42 +557,75 @@ C1222_ACSE::parse(void * data)
  *                                                                  *
  * ================================================================ */
 
+/**
+ *
+ *
+ */ 
 char * 
 C1222_ACSE::get_calling_title()
 {
     return (char *)this->calling_title.data;
 }
 
+/**
+ *
+ *
+ */ 
 char * 
 C1222_ACSE::get_calling_id()
 {
     return (char *)this->calling_id.data;;
 }
-     
+ 
+/**
+ *
+ *
+ */     
 char * 
 C1222_ACSE::get_called_title()
 {
     return (char *)this->called_title.data;;
 }
-                
+      
+/**
+ *
+ *
+ */           
 char * 
 C1222_ACSE::get_called_id()
 {
     return (char *)this->called_id.data;;
 }
  
+/**
+ *
+ *
+ */ 
 uint8_t * 
 C1222_ACSE::get_epsem()
 {
     return this->userinfo.data;
 }
 
+/**
+ *
+ *
+ */ 
 long
 C1222_ACSE::get_build_size()
 {
     return this->acse_len;
 }
 
+int
+C1222_ACSE::get_error()
+{
+    return this->error;
+}
+/**
+ *
+ *
+ */ 
 void
 C1222_ACSE::set_epsem(void * data, long size)
 {

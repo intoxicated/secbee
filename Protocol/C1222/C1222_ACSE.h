@@ -61,6 +61,7 @@ class C1222_ACSE : public C1222 {
         char * get_calling_id();
         char * get_called_title();
         char * get_called_id();
+        int    get_error();
 
         uint8_t * get_epsem();
         long get_build_size();
