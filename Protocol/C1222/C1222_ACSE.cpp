@@ -127,7 +127,7 @@ cleanup(element * ptr, const char * name)
 {
 
 #ifdef DEBUG
-    printf("[!] Cleaning %s\n", name);
+    printf("    [!] Cleaning %s\n", name);
 #endif
 
     if(ptr != NULL)
@@ -265,7 +265,7 @@ C1222_ACSE::build()
     }
 #ifdef DEBUG
     printf("    [!] finish id/title fields\n");
-    printf("    [!] USER INFO LEN : 0x%x\ncin %lx cid %lx ced %lx\n", 
+    printf("    [!] USER INFO LEN : 0x%x cin %lx cid %lx ced %lx\n", 
         usrinfo_len ,calling_t_len, calling_id_len, called_t_len);
 #endif
     //add up all length of title/id 
@@ -337,10 +337,10 @@ C1222_ACSE::build()
     //free up memory....... better manangement needs
     //TO do
 
-    cleanup(e_called_title, "ct");
-    cleanup(e_called_id, "c id");
-    cleanup(e_calling_title, "ced t");
-    cleanup(e_calling_id, "ced id");
+    cleanup(e_called_title, "called title");
+    cleanup(e_called_id, "called id");
+    cleanup(e_calling_title, "calling title");
+    cleanup(e_calling_id, "calling id");
 #ifdef DEBUG
     printf("    [!!] Finish clean up memory\n");
 #endif
@@ -462,7 +462,7 @@ C1222_ACSE::parse(void * data)
         ptr = ptr + 1 + ber_size; //now pointing elements
         
 #ifdef DEBUG
-        printf("    [!] ACSE data length is : %x \n", datalen);
+        printf("    [-] ACSE data length is : %x \n", datalen);
 #endif
         long datalen, berlen;
         
@@ -475,7 +475,7 @@ C1222_ACSE::parse(void * data)
             ptr = ptr + 1 + berlen + datalen;
             pdusize += 1 + berlen + datalen;
 #ifdef DEBUG
-            printf("    [>] Called ap title is : %s\n", 
+            printf("    [-] Called ap title is : %s\n", 
                 this->called_title.data);
 #endif
         }
@@ -488,7 +488,7 @@ C1222_ACSE::parse(void * data)
             ptr = ptr + 1 + berlen + datalen;
             pdusize += 1 + berlen + datalen;
 #ifdef DEBUG
-            printf("    [>] Called ap invocation id is : %s\n", 
+            printf("    [-] Called ap invocation id is : %s\n", 
                 this->called_id.data);
 #endif
         }
@@ -501,7 +501,7 @@ C1222_ACSE::parse(void * data)
             ptr = ptr + 1 + berlen + datalen;
             pdusize += 1 + berlen + datalen;
 #ifdef DEBUG
-            printf("    [>] Calling ap title is : %s\n", 
+            printf("    [-] Calling ap title is : %s\n", 
                 this->calling_title.data);
 #endif
         }
@@ -513,7 +513,7 @@ C1222_ACSE::parse(void * data)
             ptr = ptr + 1 + berlen + datalen;
             pdusize += 1 + berlen + datalen;
 #ifdef DEBUG
-            printf("    [>] Calling ap invocation id is : %s\n", 
+            printf("    [-] Calling ap invocation id is : %s\n", 
                 this->calling_id.data);
 #endif
         }
@@ -523,8 +523,9 @@ C1222_ACSE::parse(void * data)
                 this->calling_id.data == NULL)
         {
 #ifdef DEBUG
-            printf("    [!!] Calling id is not present, abort parsing\n");
+            printf("    [!] Calling id is not present, abort parsing\n");
 #endif
+            this->error = -2;
             return;
         }
       
@@ -534,12 +535,15 @@ C1222_ACSE::parse(void * data)
             this->userinfo.data = usrinfo_parse(ptr, &datalen, &berlen);
             this->userinfo.size = datalen;
             ptr = ptr + 1 + berlen + datalen;
-            printf("[!] userinfo data start with\
-             : 0x%x and length 0x%lx\n", *(this->userinfo.data), datalen);
+#ifdef DEBUG
+            printf("    [-] userinfo data start with\
+: 0x%x and length 0x%lx\n", *(this->userinfo.data), datalen);
+#endif 
             pdusize += 1 + berlen + datalen;
         } else {
 #ifdef DEBUG
-            printf("    [!!] User info Header is not present, abort\n");
+            printf("    [!] User info Header is not present, abort\n");
+            this->error = -3;
             return;
 #endif
         }
@@ -547,7 +551,7 @@ C1222_ACSE::parse(void * data)
         this->acse_len = pdusize;
     }
 #ifdef DEBUG
-    printf("[!!] ACSE Parsing done!\n");
+    printf("[*] ACSE Parsing done!\n");
 #endif
 }
 

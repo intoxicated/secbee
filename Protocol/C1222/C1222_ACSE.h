@@ -75,6 +75,7 @@ class C1222_ACSE : public C1222 {
 
         uint8_t * raw_data;
         long acse_len;
+        int error;
 };
 
 #endif

@@ -78,26 +78,29 @@ myCB(struct xbee * xbee, struct xbee_con * con,
         return;
     }
     //prepare parsing incoming data
-    //C1222_ACSE acse;
-    //C1222_EPSEM * epsem;
+    C1222_ACSE acse;
+    C1222_EPSEM * epsem;
     for(int i = 0; i < (*pkt)->dataLen; i++)
     {
         printf("0x%02x ", (*pkt)->data[i]);
     }
-    printf("%s", (*pkt)->data);
     puts("");
+    printf("%s\n", (*pkt)->data);
     //parse acse
-    //acse.parse((*pkt)->data);
+    acse.parse((*pkt)->data);
     //parse epsem
-    
-    //epsem = C1222_EPSEM::parse(acse.get_epsem());
+    if(acse.get_error() != 0x0)
+        return;
+    epsem = C1222_EPSEM::parse(acse.get_epsem());
     //parse and print response part 
     
-    //C1222_Response_Logon * lres = C1222_Response_Logon::parse(epsem->get_data());
-    //printf("[*] Logon Response: %d %d\n", lres->get_response_num(), lres->get_timeout());
+    C1222_Response_Logon * lres = C1222_Response_Logon::parse(epsem->get_data());
+    printf("[*] Logon Response: %d %d\n", lres->get_response_num(), lres->get_timeout());
     //parse
-    //if(epsem != NULL)
-    //    delete epsem;
+    if(epsem != NULL)
+        delete epsem;
+    if(lres != NULL)
+        delete lres;
     //delete lres;
 }
 
@@ -181,6 +184,7 @@ int main(int argc, char ** argv)
     //memcpy(target_addr.addr64, "\x00\x13\xA2\x00\x40\xA9\x33\x85", 8);
     memcpy(target_addr.addr64, "\x00\x00\x00\x00\x00\x00\xFF\xFF", 8);
 
+    //memcpy(target_addr.addr64, "\x00\x13\xA2\x00\x40\x69\xC4\xA0", 8);
     //setup connection 
     if((ret = xbee_conNew(xbee, &con, "Data", &target_addr)) != XBEE_ENONE){
         printf("[!] xbee_newCon() return :%d(%s)\n", ret, XBEE_ERR(ret));
@@ -206,7 +210,7 @@ int main(int argc, char ** argv)
 
  
     //construct packet
-    C1222_Request_Logon logon(2, "USER NAME", 60);
+    C1222_Request_Logon logon(2, "USER NAME", 33);
     uint8_t * d = logon.build(); // build data;
 
     C1222_EPSEM epsem (d, 0x80, 0, logon.get_build_size());
@@ -217,9 +221,10 @@ int main(int argc, char ** argv)
 
     //sending phase
     printf("[!] Sending request to Node..\n");
+    //ret = xbee_conTx(con, NULL, "HIGH\r\n");
     ret = xbee_connTx(con, NULL, (const unsigned char *)d, acse.get_build_size());
     printf("Ret: %d\n", ret);
-    usleep(10000000);
+    usleep(5000000);
 
     //ret = xbee_conTx(con, NULL, "LOW\r\n");
     //printf("Ret: %d\n", ret);

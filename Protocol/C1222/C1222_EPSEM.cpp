@@ -129,13 +129,13 @@ C1222_EPSEM::parse(uint8_t * data)
     int eclass = 0;
     int ber_size = 0, serv_len = 0;
 #ifdef DEBUG
-    printf("[!!] EPSEM Parsing start... \n");
+    printf("[*] EPSEM Parsing start... \n");
 #endif
     
     if(*ptr == 0x0)
     {
 #ifdef DEBUG
-        printf("Empty EPSEM, still valid\n");
+        printf("    [-] Empty EPSEM, still valid\n");
 #endif
         return NULL;
     }
@@ -143,11 +143,11 @@ C1222_EPSEM::parse(uint8_t * data)
     if((flag >> 4) & 0x1) //if eclass flag is on
     {
 #ifdef DEBUG
-        printf("[*] eclass flag copy... \n");
+        printf("    [-] eclass flag copy... \n");
 #endif
         copy_to(&eclass, ptr+1, 4); 
 #ifdef DEBUG
-        printf("[*] get data part... \n");
+        printf("    [-] get data part... \n");
 #endif
         serv_len = ber_len_decode(ptr+5, &ber_size);
         ptr = ptr + 1 + 4 + ber_size;
@@ -155,13 +155,14 @@ C1222_EPSEM::parse(uint8_t * data)
     else //if e_class is not present
     {
 #ifdef DEBUG
-        printf("[*] get data part... \n");
+        printf("    [-] get data part... \n");
 #endif
         serv_len = ber_len_decode(ptr+1, &ber_size);
         ptr = ptr + 1 + ber_size;
     }
 #ifdef DEBUG
-    printf("[*] data header :0x%x and length 0x%x\n", *ptr, serv_len);
+    printf("    [-] Data start with :0x%x and length 0x%x\n", *ptr, serv_len);
+    printf("[*] EPSEM Parsing done\n");
 #endif
     return new C1222_EPSEM(ptr, *data, eclass, serv_len);
 }
