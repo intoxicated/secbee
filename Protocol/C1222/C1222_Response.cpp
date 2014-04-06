@@ -12,7 +12,7 @@
 
 
 /**
- *
+ * Base class constructor
  *
  */ 
 C1222_Response::C1222_Response()
@@ -22,7 +22,7 @@ C1222_Response::C1222_Response()
 }
 
 /**
- *
+ * Base class destructor
  *
  */ 
 C1222_Response::~C1222_Response()
@@ -32,8 +32,8 @@ C1222_Response::~C1222_Response()
 }
 
 /**
- *
- *
+ * Get built data
+ * @return pointer to raw_data
  */ 
 uint8_t *
 C1222_Response::build()
@@ -42,8 +42,8 @@ C1222_Response::build()
 }
 
 /**
- *
- *
+ * Get response number
+ * @return byte response number
  */ 
 uint8_t
 C1222_Response::get_response_num()
@@ -52,8 +52,8 @@ C1222_Response::get_response_num()
 }
 
 /**
- *
- *
+ * Get build size
+ * @return long build size
  */ 
 long
 C1222_Response::get_build_size()
@@ -140,30 +140,18 @@ C1222_Response_Ident::build()
     return raw_data;
 }
 
-/**
- *
- *
- */ 
 uint8_t
 C1222_Response_Ident::get_std()
 {
     return std;
 }
 
-/**
- *
- *
- */ 
 uint8_t
 C1222_Response_Ident::get_ver()
 {
     return ver;
 }
 
-/**
- *
- *
- */ 
 uint8_t
 C1222_Response_Ident::get_rev()
 {
@@ -200,30 +188,18 @@ C1222_Response_Read::build()
     return raw_data;
 }
 
-/**
- *
- *
- */ 
 uint8_t *
 C1222_Response_Read::get_data()
 {
     return data;
 }
 
-/**
- *
- *
- */ 
 uint8_t
 C1222_Response_Read::get_chksum()
 {
     return chksum;
 }
 
-/**
- *
- *
- */ 
 short
 C1222_Response_Read::get_count()
 {
@@ -328,20 +304,13 @@ C1222_Response_Resolve::build()
     return raw_data;
 }
 
-/**
- *
- *
- */ 
 uint8_t
 C1222_Response_Resolve::get_addrlen()
 {
     return addr_len;
 }
 
-/**
- *
- *
- */ 
+ 
 uint8_t *
 C1222_Response_Resolve::get_addr()
 {
@@ -367,20 +336,12 @@ C1222_Response_Trace::C1222_Response_Trace(uint8_t res,
     this->aptitles = aptitles;
 }
 
-/**
- *
- *
- */ 
 char **
 C1222_Response_Trace::get_aptitles()
 {
     return aptitles;
 }
 
-/**
- *
- *
- */ 
 uint8_t *
 C1222_Response_Trace::build()
 {
@@ -447,40 +408,24 @@ C1222_Response_Registration::build()
     return raw_data;
 }
 
-/**
- *
- *
- */ 
 char *
 C1222_Response_Registration::get_aptitle()
 {
     return ap_title;
 }
 
-/**
- *
- *
- */ 
 long
 C1222_Response_Registration::get_period()
 {
     return period;
 }
 
-/**
- *
- *
- */ 
 uint8_t
 C1222_Response_Registration::get_info()
 {
     return info;
 }
 
-/**
- *
- *
- */ 
 short
 C1222_Response_Registration::get_delay()
 {

@@ -562,8 +562,8 @@ C1222_ACSE::parse(void * data)
  * ================================================================ */
 
 /**
- *
- *
+ * Get AP calling title 
+ * @return pointer to AP calling title
  */ 
 char * 
 C1222_ACSE::get_calling_title()
@@ -572,8 +572,8 @@ C1222_ACSE::get_calling_title()
 }
 
 /**
- *
- *
+ * Get AP calling invocation id
+ * @return pointer to AP calling invocation id
  */ 
 char * 
 C1222_ACSE::get_calling_id()
@@ -582,8 +582,8 @@ C1222_ACSE::get_calling_id()
 }
  
 /**
- *
- *
+ * Get AP called title
+ * @return pointer to AP called title
  */     
 char * 
 C1222_ACSE::get_called_title()
@@ -592,8 +592,8 @@ C1222_ACSE::get_called_title()
 }
       
 /**
- *
- *
+ * Get AP called invocation id
+ * @return pointer to AP called invocation id
  */           
 char * 
 C1222_ACSE::get_called_id()
@@ -602,8 +602,8 @@ C1222_ACSE::get_called_id()
 }
  
 /**
- *
- *
+ * Get EPSEM section 
+ * @return pointer to EPSEM section
  */ 
 uint8_t * 
 C1222_ACSE::get_epsem()
@@ -612,8 +612,8 @@ C1222_ACSE::get_epsem()
 }
 
 /**
- *
- *
+ * Get build size
+ * @return size of ACSE build size in long
  */ 
 long
 C1222_ACSE::get_build_size()
@@ -621,19 +621,15 @@ C1222_ACSE::get_build_size()
     return this->acse_len;
 }
 
+/**
+ * Get error state
+ * @return int error
+ */
 int
 C1222_ACSE::get_error()
 {
     return this->error;
 }
-/**
- *
- *
- */ 
-void
-C1222_ACSE::set_epsem(void * data, long size)
-{
-    
-}
+
 
 

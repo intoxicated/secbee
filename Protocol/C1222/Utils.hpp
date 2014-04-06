@@ -14,7 +14,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "C1222.h"
-/*
+
+/* this is for Arduino 
 #define htons(x) ( ((x)<<8) | (((x)>>8)&0xFF) )
 #define ntohs(x) htons(x)
 
@@ -24,6 +25,7 @@
                    ((x)>>24 & 0x000000FFUL) )
 #define ntohl(x) htonl(x)
 */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

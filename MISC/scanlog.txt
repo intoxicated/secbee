@@ -1,0 +1,4 @@
+[*] pan id 0x0000
+[*] pan id 0x0001
+[*] pan id 0x0002
+[*] pan id 0x0003

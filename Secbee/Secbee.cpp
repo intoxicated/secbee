@@ -208,7 +208,6 @@ int main(int argc, char ** argv)
     settings.catchAll = 1;
     xbee_conSettings(con, &settings, NULL);
 
- 
     //construct packet
     C1222_Request_Logon logon(2, "USER NAME", 33);
     uint8_t * d = logon.build(); // build data;

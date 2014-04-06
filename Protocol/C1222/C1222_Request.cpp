@@ -14,7 +14,7 @@
 using namespace std;
 
 /**
- *  Base class Request
+ *  Base class Request Constructor
  */
 C1222_Request::C1222_Request()
 {
@@ -24,7 +24,7 @@ C1222_Request::C1222_Request()
 }
 
 /**
- *
+ * Destructor
  *
  */ 
 C1222_Request::~C1222_Request()
@@ -34,8 +34,8 @@ C1222_Request::~C1222_Request()
 }
 
 /**
- *
- *
+ * Get built data (subclass overwrite)
+ * @return pointer to raw_data
  */ 
 uint8_t *
 C1222_Request::build()
@@ -44,7 +44,7 @@ C1222_Request::build()
 }
 
 /**
- *
+ * Get build data
  *
  */ 
 uint8_t *
@@ -54,8 +54,8 @@ C1222_Request::get_build_data()
 }
 
 /**
- *
- *
+ * Get request number 
+ * @return byte request number
  */ 
 uint8_t
 C1222_Request::get_request_num()
@@ -64,8 +64,8 @@ C1222_Request::get_request_num()
 }
 
 /**
- *
- *
+ * Get build size 
+ * @return long build size 
  */ 
 unsigned long
 C1222_Request::get_build_size()
@@ -487,40 +487,24 @@ C1222_Request_Write::C1222_Request_Write(uint8_t req, short tableid,
     }
 }
 
-/**
- *
- *
- */ 
 short 
 C1222_Request_Write::get_tableid()
 {
     return tableid;
 }
 
-/**
- *
- *
- */ 
 short
 C1222_Request_Write::get_count()
 {
     return count;
 }
 
-/**
- *
- *
- */ 
 uint8_t * 
 C1222_Request_Write::get_data()
 {
     return data;
 }
 
-/**
- *
- *
- */ 
 uint8_t *
 C1222_Request_Write::get_index()
 {
@@ -646,10 +630,6 @@ C1222_Request_Wait::C1222_Request_Wait(uint8_t interval)
     this->interval = interval;
 }
 
-/**
- *
- *
- */ 
 uint8_t 
 C1222_Request_Wait::get_interval()
 {
@@ -792,10 +772,6 @@ C1222_Request_Trace::~C1222_Request_Trace()
         delete ap_title;
 }
 
-/**
- *
- *
- */ 
 char *
 C1222_Request_Trace::get_ap_title()
 {
@@ -865,20 +841,12 @@ C1222_Request_Security::C1222_Request_Security(const char * passwd,
     this->userid = user_id;
 }
 
-/**
- *
- *
- */ 
 char *
 C1222_Request_Security::get_passwd()
 {
     return passwd;
 }
 
-/**
- *
- *
- */ 
 short 
 C1222_Request_Security::get_user_id()
 {

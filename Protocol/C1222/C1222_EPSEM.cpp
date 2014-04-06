@@ -168,7 +168,8 @@ C1222_EPSEM::parse(uint8_t * data)
 }
 
 /**
- * Getters 
+ * Get service length 
+ * @return long service length
  */
 long
 C1222_EPSEM::get_service_len()
@@ -177,8 +178,8 @@ C1222_EPSEM::get_service_len()
 }
 
 /**
- *
- *
+ * Get flags
+ * @return byte flag
  */ 
 uint8_t 
 C1222_EPSEM::get_flags()
@@ -187,8 +188,8 @@ C1222_EPSEM::get_flags()
 }
 
 /**
- *
- *
+ * Get class 
+ * @return long class
  */ 
 long
 C1222_EPSEM::get_class()
@@ -197,8 +198,8 @@ C1222_EPSEM::get_class()
 }
 
 /**
- *
- *
+ * Get data section of EPSEM
+ * @return pointer to data section
  */ 
 uint8_t * 
 C1222_EPSEM::get_data()
@@ -207,8 +208,8 @@ C1222_EPSEM::get_data()
 }
 
 /**
- *
- *
+ * Get data length
+ * @return long data section size
  */ 
 long
 C1222_EPSEM::get_data_len()
@@ -217,8 +218,8 @@ C1222_EPSEM::get_data_len()
 }
 
 /**
- *
- *
+ * Get build size of EPSEM
+ * @return long build size
  */ 
 long
 C1222_EPSEM::get_build_size()
@@ -227,8 +228,10 @@ C1222_EPSEM::get_build_size()
 }
 
 /**
- *
- *
+ * Get flag
+ * @param tag flag position in byte 
+ * @return if flag is on 1 or other value (security mode) 
+ *          for valid tag, otherwise -1 for invalid tag
  */ 
 uint8_t
 C1222_EPSEM::get_flag(int tag)
