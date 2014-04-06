@@ -122,6 +122,7 @@ restart:
     
     struct xbee_conSettings settings;
     xbee_conSettings(con, NULL, &settings);  
+    settings.catchAll = 1;
     settings.extendTimeout = 1;
     xbee_conSettings(con, &settings, NULL);
     
@@ -133,7 +134,7 @@ restart:
     xbee_conTx(con, NULL, argv[1]);
     usleep(1000000);
 
-    usleep(12000000);
+    usleep(14000000);
 
     printf("Recheck\n");
     xbee_conTx(con, NULL, "ND");
